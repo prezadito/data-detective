@@ -1,11 +1,27 @@
 """Data Detective Academy - Main Application"""
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from app.database import create_db_and_tables
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Application lifespan manager.
+    Handles startup and shutdown events.
+    """
+    # Startup: Creates database tables if they don't exist
+    create_db_and_tables()
+    yield
+    # Shutdown: cleanup code would go here if needed
+
 
 app = FastAPI(
     title="Data Detective Academy API",
     description="Backend API for Data Detective Academy Learning Platform",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 
