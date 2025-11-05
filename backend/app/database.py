@@ -4,6 +4,7 @@ Database configuration and session management
 
 from sqlmodel import create_engine, SQLModel, Session
 from typing import Generator
+from app.models import User  # noqa: F401
 
 # Database URL (SQLite for development)
 DATABASE_URL = "sqlite:///./data_detective_academy.db"
