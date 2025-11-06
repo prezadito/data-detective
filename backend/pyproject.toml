@@ -6,8 +6,11 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.17.1",
+    "bcrypt>=4.3.0,<5.0",
+    "email-validator>=2.3.0",
     "fastapi>=0.120.4",
     "passlib[bcrypt]>=1.7.4",
+    "pydantic>=2.12.3",
     "python-dotenv>=1.2.1",
     "python-jose[cryptography]>=3.5.0",
     "python-multipart>=0.0.20",
@@ -21,6 +24,7 @@ dev = [
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
     "ruff>=0.14.3",
+    "sqlite-web>=0.6.5",
 ]
 
 [build-system]
