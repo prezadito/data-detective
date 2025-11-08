@@ -7,6 +7,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 import os
+import uuid
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -23,6 +24,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 
 # OAuth2 scheme for token extraction
 # tokenUrl points to our login endpoint
@@ -77,7 +79,14 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
         )
 
-    to_encode.update({"exp": expire})
+    # Add standard JWT claims for uniqueness and tracking
+    to_encode.update(
+        {
+            "exp": expire,
+            "iat": datetime.now(timezone.utc),  # Issued at
+            "jti": str(uuid.uuid4()),  # Unique JWT ID
+        }
+    )
 
     # Create and return the JWT token
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -137,3 +146,161 @@ def get_current_user(
         raise credentials_exception
 
     return user
+
+
+def create_refresh_token(user_id: int, db: Session) -> str:
+    """
+    Create a refresh token and store it in the database.
+
+    Refresh tokens are long-lived (days instead of minutes) and allow
+    users to get new access tokens without re-entering credentials.
+
+    Args:
+        user_id: ID of the user
+        db: Database session
+
+    Returns:
+        JWT refresh token string
+    """
+    from app.models import RefreshToken
+
+    # Create JWT with longer expiration
+    expires_delta = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    token_data = {
+        "sub": str(user_id),  # User ID as subject
+        "type": "refresh",  # Mark as refresh token
+    }
+
+    # Create the JWT token
+    token_string = create_access_token(token_data, expires_delta)
+
+    # Calculate expiration datetime
+    expires_at = datetime.now(timezone.utc) + expires_delta
+
+    # Store in database
+    refresh_token = RefreshToken(
+        token=token_string, user_id=user_id, expires_at=expires_at, revoked=False
+    )
+
+    db.add(refresh_token)
+    db.commit()
+    db.refresh(refresh_token)
+
+    return token_string
+
+
+def verify_refresh_token(token: str, db: Session):
+    """
+    Verify a refresh token and return the associated user.
+
+    Checks that the token:
+    - Is a valid JWT
+    - Is marked as a refresh token
+    - Exists in the database
+    - Is not revoked
+    - Is not expired
+    - Belongs to an existing user
+
+    Args:
+        token: Refresh token string
+        db: Database session
+
+    Returns:
+        User object if token is valid
+
+    Raises:
+        HTTPException: 401 if token is invalid for any reason
+    """
+    from app.models import RefreshToken, User
+    from sqlmodel import select
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid refresh token",
+    )
+
+    try:
+        # Decode JWT
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: int = int(payload.get("sub"))
+        token_type: str = payload.get("type")
+
+        # Verify it's a refresh token
+        if token_type != "refresh":
+            raise credentials_exception
+
+    except (JWTError, ValueError, TypeError):
+        raise credentials_exception
+
+    # Check token exists in database
+    statement = select(RefreshToken).where(
+        RefreshToken.token == token, RefreshToken.user_id == user_id
+    )
+    db_token = db.exec(statement).first()
+
+    if not db_token:
+        raise credentials_exception
+
+    # Check not revoked
+    if db_token.revoked:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has been revoked"
+        )
+
+    # Check not expired
+    # Make database datetime timezone-aware (SQLite stores naive datetimes)
+    expires_at_aware = db_token.expires_at.replace(tzinfo=timezone.utc)
+    if datetime.now(timezone.utc) > expires_at_aware:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
+        )
+
+    # Get and return user
+    user = db.get(User, user_id)
+    if not user:
+        raise credentials_exception
+
+    return user
+
+
+def revoke_refresh_token(token: str, db: Session) -> bool:
+    """
+    Revoke a refresh token (logout).
+
+    Marks the token as revoked in the database, preventing it from
+    being used for future token refreshes.
+
+    Args:
+        token: Refresh token to revoke
+        db: Database session
+
+    Returns:
+        True if successful
+
+    Raises:
+        HTTPException: 401 if token doesn't exist or is already revoked
+    """
+    from app.models import RefreshToken
+    from sqlmodel import select
+
+    statement = select(RefreshToken).where(RefreshToken.token == token)
+    db_token = db.exec(statement).first()
+
+    if not db_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+        )
+
+    # Check if already revoked
+    if db_token.revoked:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token",
+        )
+
+    # Mark as revoked
+    db_token.revoked = True
+    db.add(db_token)
+    db.commit()
+
+    return True

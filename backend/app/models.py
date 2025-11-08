@@ -31,3 +31,28 @@ class User(SQLModel, table=True):
     # Timestamps
     created_at: datetime = Field(default_factory=datetime.now)
     last_login: Optional[datetime] = None
+
+
+class RefreshToken(SQLModel, table=True):
+    """
+    RefreshToken model - stores refresh tokens for user sessions.
+
+    Allows:
+    - Long-lived authentication (days instead of minutes)
+    - Token revocation (logout)
+    - Multiple sessions per user (different devices)
+    """
+
+    __tablename__ = "refresh_tokens"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Token data
+    token: str = Field(unique=True, index=True, max_length=500)
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    # Token lifecycle
+    expires_at: datetime
+    revoked: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=datetime.now)

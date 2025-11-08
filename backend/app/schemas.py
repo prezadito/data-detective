@@ -46,10 +46,12 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     """
     Schema for JWT token response.
+    Now includes both access and refresh tokens.
     """
 
     access_token: str
     token_type: str
+    refresh_token: str
 
 
 class TokenData(BaseModel):
@@ -60,3 +62,22 @@ class TokenData(BaseModel):
     email: str
     user_id: int
     role: str
+
+
+class RefreshTokenRequest(BaseModel):
+    """
+    Schema for refresh token request.
+    Used for /auth/refresh and /auth/logout endpoints.
+    """
+
+    refresh_token: str
+
+
+class RefreshTokenResponse(BaseModel):
+    """
+    Schema for refresh token response.
+    Returns new access token.
+    """
+
+    access_token: str
+    token_type: str
