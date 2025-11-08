@@ -174,3 +174,152 @@ def test_password_is_hashed(client: TestClient, session: Session):
 
     assert verify_password(password, user.password_hash) is True
     assert verify_password("wrongpassword", user.password_hash) is False
+
+
+# ============================================================================
+# LOGIN TESTS
+# ============================================================================
+
+
+def test_login_success(client: TestClient):
+    """Test successful login returns access token."""
+    # First register a user
+    register_data = {
+        "email": "login@test.com",
+        "name": "Login Test",
+        "password": "securepass123",
+        "role": "student",
+    }
+    client.post("/auth/register", json=register_data)
+
+    # Now login with correct credentials
+    login_data = {"email": "login@test.com", "password": "securepass123"}
+    response = client.post("/auth/login", json=login_data)
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should return access token and token type
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
+    assert isinstance(data["access_token"], str)
+    assert len(data["access_token"]) > 0
+
+
+def test_login_wrong_password(client: TestClient):
+    """Test login with wrong password fails with 401."""
+    # Register a user
+    register_data = {
+        "email": "wrongpass@test.com",
+        "name": "Wrong Pass Test",
+        "password": "correctpassword",
+        "role": "student",
+    }
+    client.post("/auth/register", json=register_data)
+
+    # Attempt login with wrong password
+    login_data = {"email": "wrongpass@test.com", "password": "wrongpassword"}
+    response = client.post("/auth/login", json=login_data)
+
+    assert response.status_code == 401
+    data = response.json()
+    # Error message should be generic (don't leak info about user existence)
+    assert "detail" in data
+    assert "incorrect" in data["detail"].lower()
+
+
+def test_login_user_not_found(client: TestClient):
+    """Test login with non-existent email fails with 401."""
+    # Attempt login with email that doesn't exist
+    login_data = {
+        "email": "nonexistent@test.com",
+        "password": "somepassword",
+    }
+    response = client.post("/auth/login", json=login_data)
+
+    assert response.status_code == 401
+    data = response.json()
+    # Error should be same as wrong password (prevent user enumeration)
+    assert "detail" in data
+    assert "incorrect" in data["detail"].lower()
+
+
+def test_login_invalid_email_format(client: TestClient):
+    """Test login with invalid email format fails with 422."""
+    login_data = {"email": "notanemail", "password": "somepassword"}
+    response = client.post("/auth/login", json=login_data)
+
+    assert response.status_code == 422  # Validation error
+
+
+def test_login_missing_credentials(client: TestClient):
+    """Test login with missing fields fails with 422."""
+    # Missing password
+    response1 = client.post("/auth/login", json={"email": "test@test.com"})
+    assert response1.status_code == 422
+
+    # Missing email
+    response2 = client.post("/auth/login", json={"password": "testpass"})
+    assert response2.status_code == 422
+
+
+def test_token_contains_user_info(client: TestClient):
+    """Test that JWT token contains correct user information."""
+    from jose import jwt
+    from app.auth import SECRET_KEY, ALGORITHM
+
+    # Register and login
+    register_data = {
+        "email": "token@test.com",
+        "name": "Token Test",
+        "password": "testpass123",
+        "role": "teacher",
+    }
+    client.post("/auth/register", json=register_data)
+
+    login_data = {"email": "token@test.com", "password": "testpass123"}
+    response = client.post("/auth/login", json=login_data)
+
+    token = response.json()["access_token"]
+
+    # Decode and verify token
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+    # Token should contain user info
+    assert "sub" in payload  # Subject (standard JWT claim for user identifier)
+    assert payload["sub"] == "token@test.com"
+    assert "user_id" in payload
+    assert "role" in payload
+    assert payload["role"] == "teacher"
+    assert "exp" in payload  # Expiration
+
+
+def test_last_login_updated(client: TestClient, session: Session):
+    """Test that last_login timestamp is updated on successful login."""
+    from sqlmodel import select
+    from datetime import datetime
+
+    # Register user
+    register_data = {
+        "email": "lastlogin@test.com",
+        "name": "Last Login Test",
+        "password": "testpass123",
+        "role": "student",
+    }
+    client.post("/auth/register", json=register_data)
+
+    # Get user from database - last_login should be None initially
+    statement = select(User).where(User.email == "lastlogin@test.com")
+    user_before = session.exec(statement).first()
+    assert user_before.last_login is None
+
+    # Login
+    login_data = {"email": "lastlogin@test.com", "password": "testpass123"}
+    response = client.post("/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Refresh session and check last_login was updated
+    session.expire_all()  # Clear session cache
+    user_after = session.exec(statement).first()
+    assert user_after.last_login is not None
+    assert isinstance(user_after.last_login, datetime)

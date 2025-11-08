@@ -2,7 +2,7 @@
 Pydantic schemas for request/response validation.
 """
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from datetime import datetime
 
 
@@ -24,11 +24,39 @@ class UserResponse(BaseModel):
     NEVER includes password or password_hash!
     """
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: str
     name: str
     role: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True  # Allows conversion from SQLModel
+
+class UserLogin(BaseModel):
+    """
+    Schema for user login.
+    Used for login requests.
+    """
+
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    """
+    Schema for JWT token response.
+    """
+
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    """
+    Schema for decoded JWT token payload.
+    """
+
+    email: str
+    user_id: int
+    role: str

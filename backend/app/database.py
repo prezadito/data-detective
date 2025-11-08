@@ -4,10 +4,15 @@ Database configuration and session management
 
 from sqlmodel import create_engine, SQLModel, Session
 from typing import Generator
+import os
+from dotenv import load_dotenv
 from app.models import User  # noqa: F401
 
-# Database URL (SQLite for development)
-DATABASE_URL = "sqlite:///./data_detective_academy.db"
+# Load environment variables from .env file
+load_dotenv()
+
+# Database URL from environment variable (defaults to SQLite for development)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data_detective_academy.db")
 
 # Create engine
 # check_same_thread=False is only needed for SQLite
