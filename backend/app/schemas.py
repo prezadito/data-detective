@@ -273,3 +273,30 @@ class HintAccessResponse(BaseModel):
 
     hint_id: int
     accessed_at: datetime
+
+
+class StudentProgressSummary(BaseModel):
+    """
+    Summary of a single student's progress in the past week.
+    Used in weekly reports to show individual student statistics.
+    """
+
+    student_name: str
+    completions_this_week: int
+    points_this_week: int
+
+
+class WeeklyReportResponse(BaseModel):
+    """
+    Complete weekly progress report for all students.
+    Provides aggregated metrics and top/struggling student lists.
+    """
+
+    students_active: int  # Count of students with activity in past 7 days
+    total_completions: int  # Total challenges completed by all students in week
+    avg_points_per_student: float  # Average points earned per active student
+
+    top_performers: list[StudentProgressSummary]  # Top 5 by points
+    struggling_students: list[StudentProgressSummary]  # <3 completions
+
+    generated_at: datetime  # When this report was generated
