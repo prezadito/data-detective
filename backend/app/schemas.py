@@ -229,3 +229,24 @@ class ProgressSummaryResponse(BaseModel):
 
     progress_items: list[ProgressDetailResponse]
     summary: ProgressSummaryStats
+
+
+class LeaderboardEntry(BaseModel):
+    """
+    Single entry in the leaderboard.
+    Represents a student's ranking and statistics.
+    """
+
+    rank: int
+    student_name: str
+    total_points: int
+    challenges_completed: int
+
+
+class LeaderboardResponse(BaseModel):
+    """
+    Complete leaderboard response.
+    Contains top 100 students ranked by total points.
+    """
+
+    entries: list[LeaderboardEntry]

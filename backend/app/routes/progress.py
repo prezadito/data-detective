@@ -17,6 +17,7 @@ from app.schemas import (
 )
 from app.auth import get_current_user, require_student, require_teacher
 from app.challenges import get_challenge
+from app.routes.leaderboard import invalidate_cache
 
 
 router = APIRouter(prefix="/progress", tags=["Progress"])
@@ -169,6 +170,8 @@ async def submit_challenge(
         session.add(progress)
         session.commit()
         session.refresh(progress)
+        # Invalidate leaderboard cache after new submission
+        invalidate_cache()
         return progress
 
     except IntegrityError:
@@ -176,6 +179,8 @@ async def submit_challenge(
         # Rollback and return existing
         session.rollback()
         existing_progress = session.exec(statement).first()
+        # Invalidate cache in case this completes a first-time submission
+        invalidate_cache()
         return existing_progress
 
 
