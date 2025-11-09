@@ -497,3 +497,49 @@ class ClassAnalyticsResponse(BaseModel):
     difficulty_distribution: ChallengeDistribution  # Hardest/easiest ranking
     weekly_trends: list[WeeklyTrend]  # Past 4 weeks of data
     cache_expires_at: datetime  # When cache will be refreshed
+
+
+class StudentImportRow(BaseModel):
+    """
+    Schema for validating a single row from bulk import CSV.
+    Contains email and name - both required fields.
+    """
+
+    email: EmailStr
+    name: str = Field(min_length=1, max_length=100)
+
+
+class ImportedStudent(BaseModel):
+    """
+    Schema for a successfully imported student.
+    Includes the generated temporary password.
+    """
+
+    email: str
+    name: str
+    temporary_password: str
+
+
+class BulkImportError(BaseModel):
+    """
+    Schema for a single error during bulk import.
+    Contains row number and specific error message.
+    """
+
+    row_number: int
+    email: str | None
+    error: str
+
+
+class BulkImportResponse(BaseModel):
+    """
+    Complete response from bulk import endpoint.
+    Returns summary statistics and detailed results.
+    """
+
+    message: str
+    successful: int  # Number of students successfully imported
+    skipped: int  # Number of duplicates skipped
+    failed: int  # Number of validation errors
+    imported_students: list[ImportedStudent]  # List of created students with passwords
+    errors: list[BulkImportError]  # Detailed error messages per row
