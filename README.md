@@ -19,8 +19,3 @@ A comprehensive SQL education platform for grades 4-8.
 ## Development Setup
 
 See `backend/README.md` for backend setup.
-
-## Learning Journey
-
-This project is being built step-by-step to learn full-stack development.
-Following TDD principles throughout.
