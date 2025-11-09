@@ -219,10 +219,10 @@ def test_get_current_user_malformed_authorization_header(client: TestClient):
 
 
 def test_get_user_by_id_success(client: TestClient):
-    """Test getting another user by ID with authentication."""
-    # Create two users
+    """Test getting another user by ID with authentication (teacher accessing another user)."""
+    # Create teacher and student
     token1 = create_user_and_get_token(
-        client, "user1@test.com", "password123", "User One", "student"
+        client, "user1@test.com", "password123", "User One", "teacher"
     )
 
     client.post(
@@ -231,18 +231,18 @@ def test_get_user_by_id_success(client: TestClient):
             "email": "user2@test.com",
             "name": "User Two",
             "password": "password123",
-            "role": "teacher",
+            "role": "student",
         },
     )
 
-    # User1 gets User2's data
+    # Teacher gets student's data
     response = client.get("/users/2", headers={"Authorization": f"Bearer {token1}"})
 
     assert response.status_code == 200
     data = response.json()
     assert data["email"] == "user2@test.com"
     assert data["name"] == "User Two"
-    assert data["role"] == "teacher"
+    assert data["role"] == "student"
 
 
 def test_get_user_by_id_self(client: TestClient):
@@ -269,10 +269,10 @@ def test_get_user_by_id_no_token(client: TestClient):
 
 
 def test_get_user_by_id_not_found(client: TestClient):
-    """Test getting non-existent user by ID."""
-    # Create user and get token
+    """Test getting non-existent user by ID (teacher can check, gets 404)."""
+    # Create teacher and get token
     token = create_user_and_get_token(
-        client, "finder@test.com", "password123", "Finder User", "student"
+        client, "finder@test.com", "password123", "Finder User", "teacher"
     )
 
     # Try to get non-existent user
@@ -522,3 +522,257 @@ def test_update_current_user_idempotent(client: TestClient):
     # Both should return same name
     assert response1.json()["name"] == "New Name"
     assert response2.json()["name"] == "New Name"
+
+
+# ============================================================================
+# GET /users TESTS (LIST ALL USERS - TEACHER ONLY)
+# ============================================================================
+
+
+def test_get_all_users_as_teacher_success(client: TestClient):
+    """Test that teacher can successfully list all users."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher User", "teacher"
+    )
+
+    # Create some students
+    create_user_and_get_token(
+        client, "student1@test.com", "password123", "Student One", "student"
+    )
+    create_user_and_get_token(
+        client, "student2@test.com", "password123", "Student Two", "student"
+    )
+
+    # Teacher calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should return list of all 3 users
+    assert isinstance(data, list)
+    assert len(data) == 3
+
+
+def test_get_all_users_as_student_forbidden(client: TestClient):
+    """Test that student gets 403 Forbidden when trying to list users."""
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student User", "student"
+    )
+
+    # Student calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {student_token}"}
+    )
+
+    assert response.status_code == 403
+    data = response.json()
+    assert "detail" in data
+    assert "permission" in data["detail"].lower()
+
+
+def test_get_all_users_no_token(client: TestClient):
+    """Test that GET /users without authentication returns 401."""
+    response = client.get("/users")
+
+    assert response.status_code == 401
+
+
+def test_get_all_users_returns_multiple_users(client: TestClient):
+    """Test that GET /users returns array with all user data."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher User", "teacher"
+    )
+
+    # Create multiple students
+    create_user_and_get_token(
+        client, "student1@test.com", "password123", "Student One", "student"
+    )
+    create_user_and_get_token(
+        client, "student2@test.com", "password123", "Student Two", "student"
+    )
+    create_user_and_get_token(
+        client, "student3@test.com", "password123", "Student Three", "student"
+    )
+
+    # Teacher calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should return list of 4 users
+    assert isinstance(data, list)
+    assert len(data) == 4
+
+    # Each user should have required fields
+    for user in data:
+        assert "id" in user
+        assert "email" in user
+        assert "name" in user
+        assert "role" in user
+        assert "created_at" in user
+
+
+def test_get_all_users_excludes_passwords(client: TestClient):
+    """Test that GET /users does not include password fields."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher User", "teacher"
+    )
+
+    # Create student
+    create_user_and_get_token(
+        client, "student@test.com", "password123", "Student User", "student"
+    )
+
+    # Teacher calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # No user should have password or password_hash fields
+    for user in data:
+        assert "password" not in user
+        assert "password_hash" not in user
+
+
+# ============================================================================
+# GET /users/{user_id} PERMISSION TESTS
+# ============================================================================
+
+
+def test_student_can_view_own_profile(client: TestClient):
+    """Test that student can view their own profile by ID."""
+    # Create student (will be user_id=1)
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student User", "student"
+    )
+
+    # Student views their own profile
+    response = client.get(
+        "/users/1", headers={"Authorization": f"Bearer {student_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "student@test.com"
+    assert data["name"] == "Student User"
+    assert data["role"] == "student"
+
+
+def test_student_cannot_view_other_user(client: TestClient):
+    """Test that student gets 403 when trying to view another user."""
+    # Create two students
+    student1_token = create_user_and_get_token(
+        client, "student1@test.com", "password123", "Student One", "student"
+    )
+    create_user_and_get_token(
+        client, "student2@test.com", "password123", "Student Two", "student"
+    )
+
+    # Student1 tries to view Student2's profile
+    response = client.get(
+        "/users/2", headers={"Authorization": f"Bearer {student1_token}"}
+    )
+
+    assert response.status_code == 403
+    data = response.json()
+    assert "detail" in data
+    assert "permission" in data["detail"].lower()
+
+
+def test_teacher_can_view_any_student(client: TestClient):
+    """Test that teacher can view any student's profile."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher User", "teacher"
+    )
+
+    # Create student
+    client.post(
+        "/auth/register",
+        json={
+            "email": "student@test.com",
+            "name": "Student User",
+            "password": "password123",
+            "role": "student",
+        },
+    )
+
+    # Teacher views student's profile (user_id=2)
+    response = client.get(
+        "/users/2", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "student@test.com"
+    assert data["name"] == "Student User"
+    assert data["role"] == "student"
+
+
+def test_teacher_can_view_another_teacher(client: TestClient):
+    """Test that teacher can view another teacher's profile."""
+    # Create two teachers
+    teacher1_token = create_user_and_get_token(
+        client, "teacher1@test.com", "password123", "Teacher One", "teacher"
+    )
+    client.post(
+        "/auth/register",
+        json={
+            "email": "teacher2@test.com",
+            "name": "Teacher Two",
+            "password": "password123",
+            "role": "teacher",
+        },
+    )
+
+    # Teacher1 views Teacher2's profile
+    response = client.get(
+        "/users/2", headers={"Authorization": f"Bearer {teacher1_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "teacher2@test.com"
+    assert data["role"] == "teacher"
+
+
+def test_student_cannot_view_teacher(client: TestClient):
+    """Test that student cannot view teacher's profile."""
+    # Create teacher
+    client.post(
+        "/auth/register",
+        json={
+            "email": "teacher@test.com",
+            "name": "Teacher User",
+            "password": "password123",
+            "role": "teacher",
+        },
+    )
+
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student User", "student"
+    )
+
+    # Student tries to view teacher's profile (user_id=1)
+    response = client.get(
+        "/users/1", headers={"Authorization": f"Bearer {student_token}"}
+    )
+
+    assert response.status_code == 403
+    data = response.json()
+    assert "detail" in data
+    assert "permission" in data["detail"].lower()

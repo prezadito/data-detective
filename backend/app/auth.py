@@ -14,6 +14,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
 from app.database import get_session
+from app.models import User
 
 # Load environment variables from .env file
 load_dotenv()
@@ -117,8 +118,6 @@ def get_current_user(
     Raises:
         HTTPException: 401 if token is invalid, expired, or user not found
     """
-    from app.models import User
-
     # Exception to raise for any authentication failure
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -150,6 +149,44 @@ def get_current_user(
         raise credentials_exception
 
     return user
+
+
+def require_role(allowed_roles: list[str]):
+    """
+    Factory function to create role-checking dependency.
+
+    Creates a dependency that verifies the current user has one of the allowed roles.
+    Must be used AFTER get_current_user dependency.
+
+    Args:
+        allowed_roles: List of role names that are allowed (e.g., ["teacher"])
+
+    Returns:
+        Dependency function that checks user role
+
+    Example:
+        @router.get("/admin-only")
+        def admin_endpoint(
+            current_user: User = Depends(get_current_user),
+            _: None = Depends(require_role(["admin"])),
+        ):
+            return {"message": "Admin access granted"}
+    """
+
+    def role_checker(current_user: User = Depends(get_current_user)):
+        """Check if current user has required role."""
+        if current_user.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to access this resource",
+            )
+        return None  # Return None since we just need the side effect of checking
+
+    return role_checker
+
+
+# Convenience dependency for teacher-only endpoints
+require_teacher = require_role(["teacher"])
 
 
 def create_refresh_token(user_id: int, db: Session) -> str:

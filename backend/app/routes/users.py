@@ -3,14 +3,45 @@ User routes - protected endpoints requiring authentication.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
+from sqlmodel import Session, select
 from app.database import get_session
 from app.models import User
 from app.schemas import UserResponse, UserUpdate
-from app.auth import get_current_user
+from app.auth import get_current_user, require_teacher
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get("/", response_model=list[UserResponse])
+async def list_all_users(
+    current_user: User = Depends(get_current_user),
+    _: None = Depends(require_teacher),
+    session: Session = Depends(get_session),
+):
+    """
+    List all users (teachers only).
+
+    This endpoint returns a list of all registered users in the system.
+    Only users with the 'teacher' role can access this endpoint.
+
+    Args:
+        current_user: Current authenticated user (injected by dependency)
+        _: Permission check (teacher role required)
+        session: Database session (injected)
+
+    Returns:
+        List of all users (without passwords)
+
+    Raises:
+        HTTPException: 401 if not authenticated
+        HTTPException: 403 if user is not a teacher
+    """
+    # Get all users from database
+    statement = select(User)
+    users = session.exec(statement).all()
+
+    return users
 
 
 @router.get("/me", response_model=UserResponse)
@@ -36,9 +67,11 @@ async def read_user_by_id(
     session: Session = Depends(get_session),
 ):
     """
-    Get user by ID (requires authentication).
+    Get user by ID with role-based permissions.
 
-    Any authenticated user can view any other user's profile.
+    - Teachers can view any user's profile
+    - Students can only view their own profile
+
     This endpoint requires a valid JWT token in the Authorization header.
 
     Args:
@@ -50,8 +83,17 @@ async def read_user_by_id(
         User data for requested user_id (without password)
 
     Raises:
+        HTTPException: 401 if not authenticated
+        HTTPException: 403 if student tries to view another user
         HTTPException: 404 if user not found
     """
+    # Permission check: students can only view their own profile
+    if current_user.role == "student" and current_user.id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to access this resource",
+        )
+
     user = session.get(User, user_id)
 
     if user is None:
