@@ -322,3 +322,108 @@ class StudentListResponse(BaseModel):
     total_count: int  # Total number of students matching the filter
     offset: int  # Pagination offset
     limit: int  # Pagination limit
+
+
+class AttemptRecord(BaseModel):
+    """
+    Single attempt record for detailed student view.
+    Represents one submission attempt (correct or incorrect).
+    """
+
+    unit_id: int
+    challenge_id: int
+    query: str  # The SQL query submitted
+    is_correct: bool  # Whether query was correct
+    attempted_at: datetime
+
+
+class HintAccessRecord(BaseModel):
+    """
+    Single hint access record for detailed student view.
+    Represents one hint accessed by the student.
+    """
+
+    unit_id: int
+    challenge_id: int
+    hint_level: int
+    accessed_at: datetime
+
+
+class ChallengeMetrics(BaseModel):
+    """
+    Metrics for a single challenge.
+    Calculated from attempts and completions.
+    """
+
+    total_attempts: int  # Total submissions (correct + incorrect)
+    correct_attempts: int  # Number of correct submissions
+    success_rate: float  # Percentage (0-100)
+    total_hints_used: int  # Total hint accesses for this challenge
+    last_attempted: datetime  # Timestamp of last attempt
+
+
+class ChallengeDetail(BaseModel):
+    """
+    Detailed view of a single challenge.
+    Includes challenge metadata, metrics, and attempt history.
+    """
+
+    unit_id: int
+    challenge_id: int
+    title: str  # From CHALLENGES dict
+    description: str  # From CHALLENGES dict
+    points: int  # From CHALLENGES dict
+    metrics: ChallengeMetrics
+    attempts: list[AttemptRecord]
+    hints: list[HintAccessRecord]
+
+
+class UnitDetail(BaseModel):
+    """
+    Detailed view of a unit.
+    Contains all challenges in the unit with their details.
+    """
+
+    unit_id: int
+    unit_title: str  # e.g., "Unit 1: SELECT Basics"
+    challenges: list[ChallengeDetail]
+
+
+class StudentMetrics(BaseModel):
+    """
+    Overall metrics for a student.
+    Aggregated statistics across all challenges.
+    """
+
+    total_points: int
+    total_challenges_completed: int
+    total_attempts: int
+    average_attempts_per_challenge: float
+    overall_success_rate: float
+    total_hints_used: int
+
+
+class ActivityLogEntry(BaseModel):
+    """
+    Single entry in activity log.
+    Represents either an attempt or hint access.
+    """
+
+    action_type: str  # "attempt" or "hint"
+    unit_id: int
+    challenge_id: int
+    challenge_title: str
+    timestamp: datetime
+    details: str  # Human-readable action description
+
+
+class StudentDetailResponse(BaseModel):
+    """
+    Complete detailed student profile.
+    Returned by GET /users/{user_id}?detailed=true
+    """
+
+    user: UserResponse
+    metrics: StudentMetrics
+    units: list[UnitDetail]
+    activity_log: list[ActivityLogEntry]  # Last 10 actions, newest first
