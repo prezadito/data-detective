@@ -2,7 +2,7 @@
 Database models for SQL Query Master.
 """
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, UniqueConstraint
 from typing import Optional
 from datetime import datetime
 
@@ -82,3 +82,43 @@ class PasswordResetToken(SQLModel, table=True):
     expires_at: datetime
     used: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.now)
+
+
+class Progress(SQLModel, table=True):
+    """
+    Progress model - tracks student progress on challenges.
+
+    Records when a student completes a challenge, tracking:
+    - Which challenge was completed
+    - When it was completed
+    - Points earned
+    - How many hints were used
+
+    One record per student per challenge (unique constraint).
+    """
+
+    __tablename__ = "progress"
+
+    # Unique constraint: one progress record per user per challenge
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id", "unit_id", "challenge_id", name="unique_user_challenge"
+        ),
+    )
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Foreign keys
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    # Challenge identifiers (no foreign keys yet - tables don't exist)
+    unit_id: int = Field(index=True)
+    challenge_id: int = Field(index=True)
+
+    # Progress data
+    points_earned: int
+    hints_used: int = Field(default=0)
+
+    # Timestamp
+    completed_at: datetime = Field(default_factory=datetime.now)

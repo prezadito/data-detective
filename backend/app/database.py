@@ -6,7 +6,7 @@ from sqlmodel import create_engine, SQLModel, Session
 from typing import Generator
 import os
 from dotenv import load_dotenv
-from app.models import User, RefreshToken, PasswordResetToken  # noqa: F401
+from app.models import User, RefreshToken, PasswordResetToken, Progress  # noqa: F401
 
 # Load environment variables from .env file
 load_dotenv()

@@ -4,6 +4,7 @@ Pydantic schemas for request/response validation.
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from datetime import datetime
+from typing import Optional
 
 
 class UserCreate(BaseModel):
@@ -129,3 +130,43 @@ class PasswordResetConfirmResponse(BaseModel):
     """
 
     message: str
+
+
+class ProgressCreate(BaseModel):
+    """
+    Schema for creating a new progress record.
+    Used when student completes a challenge.
+    """
+
+    user_id: int
+    unit_id: int
+    challenge_id: int
+    points_earned: int
+    hints_used: int = Field(default=0)
+
+
+class ProgressResponse(BaseModel):
+    """
+    Schema for progress in responses.
+    Returns all progress data including timestamps.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    unit_id: int
+    challenge_id: int
+    points_earned: int
+    hints_used: int
+    completed_at: datetime
+
+
+class ProgressUpdate(BaseModel):
+    """
+    Schema for updating progress record.
+    Allows updating points_earned and hints_used only.
+    """
+
+    points_earned: Optional[int] = None
+    hints_used: Optional[int] = None
