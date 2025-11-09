@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from app.database import get_session
 from app.models import User
-from app.schemas import UserResponse
+from app.schemas import UserResponse, UserUpdate
 from app.auth import get_current_user
 
 
@@ -60,3 +60,36 @@ async def read_user_by_id(
         )
 
     return user
+
+
+@router.put("/me", response_model=UserResponse)
+async def update_current_user(
+    user_update: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    """
+    Update current authenticated user's profile.
+
+    Only allows updating name. Email and role cannot be changed for security.
+    Requires valid JWT token in Authorization header.
+
+    Args:
+        user_update: Updated user data (name only)
+        current_user: Current authenticated user (injected by dependency)
+        session: Database session (injected)
+
+    Returns:
+        Updated user data
+
+    Raises:
+        HTTPException: 401 if not authenticated
+        HTTPException: 422 if validation fails (name too short/long)
+    """
+    # Update user name
+    current_user.name = user_update.name
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+
+    return current_user

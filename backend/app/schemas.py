@@ -33,6 +33,16 @@ class UserResponse(BaseModel):
     created_at: datetime
 
 
+class UserUpdate(BaseModel):
+    """
+    Schema for updating user profile.
+    Used for PUT /users/me endpoint.
+    Only allows updating name (email/role cannot be changed for security).
+    """
+
+    name: str = Field(min_length=1, max_length=100)
+
+
 class UserLogin(BaseModel):
     """
     Schema for user login.

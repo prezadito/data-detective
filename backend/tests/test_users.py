@@ -321,3 +321,204 @@ def test_get_current_user_with_missing_claims(client: TestClient):
 
     assert response.status_code == 401
     assert "detail" in response.json()
+
+
+# ============================================================================
+# PUT /users/me TESTS (PROFILE UPDATE)
+# ============================================================================
+
+
+def test_update_current_user_success(client: TestClient):
+    """Test updating current user's name successfully."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "update@test.com", "password123", "Original Name", "student"
+    )
+
+    # Update user name
+    response = client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "Updated Name"},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should have updated name
+    assert data["name"] == "Updated Name"
+    assert data["email"] == "update@test.com"
+    assert data["role"] == "student"
+
+
+def test_update_current_user_returns_updated_data(client: TestClient):
+    """Test that update response contains the new name."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "return@test.com", "password123", "Old Name", "teacher"
+    )
+
+    # Update user name
+    response = client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "New Name"},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Response should contain updated name
+    assert data["name"] == "New Name"
+    assert "id" in data
+    assert "email" in data
+    assert "role" in data
+    assert "created_at" in data
+
+
+def test_update_current_user_persists_changes(client: TestClient, session: Session):
+    """Test that name update is actually persisted to database."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "persist@test.com", "password123", "Before Update", "student"
+    )
+
+    # Update user name
+    client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "After Update"},
+    )
+
+    # Read from database to verify persistence
+    statement = select(User).where(User.email == "persist@test.com")
+    user = session.exec(statement).first()
+
+    assert user is not None
+    assert user.name == "After Update"
+
+
+def test_update_does_not_change_other_fields(client: TestClient, session: Session):
+    """Test that updating name doesn't change email, role, or other fields."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "fields@test.com", "password123", "Original Name", "teacher"
+    )
+
+    # Get user before update
+    statement = select(User).where(User.email == "fields@test.com")
+    user_before = session.exec(statement).first()
+    original_email = user_before.email
+    original_role = user_before.role
+    original_id = user_before.id
+    original_created_at = user_before.created_at
+
+    # Update user name
+    client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "New Name"},
+    )
+
+    # Get user after update
+    session.expire_all()  # Refresh session
+    user_after = session.exec(statement).first()
+
+    # Name should change
+    assert user_after.name == "New Name"
+
+    # Other fields should NOT change
+    assert user_after.email == original_email
+    assert user_after.role == original_role
+    assert user_after.id == original_id
+    assert user_after.created_at == original_created_at
+
+
+def test_update_current_user_no_token(client: TestClient):
+    """Test updating user without authentication token."""
+    response = client.put("/users/me", json={"name": "New Name"})
+
+    assert response.status_code == 401
+    assert "detail" in response.json()
+
+
+def test_update_current_user_invalid_token(client: TestClient):
+    """Test updating user with invalid token."""
+    response = client.put(
+        "/users/me",
+        headers={"Authorization": "Bearer invalid-token"},
+        json={"name": "New Name"},
+    )
+
+    assert response.status_code == 401
+    assert "detail" in response.json()
+
+
+def test_update_current_user_name_too_short(client: TestClient):
+    """Test that empty name is rejected."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "short@test.com", "password123", "Valid Name", "student"
+    )
+
+    # Try to update with empty name
+    response = client.put(
+        "/users/me", headers={"Authorization": f"Bearer {token}"}, json={"name": ""}
+    )
+
+    # Should return 422 Unprocessable Entity
+    assert response.status_code == 422
+    data = response.json()
+    assert "detail" in data
+
+
+def test_update_current_user_name_too_long(client: TestClient):
+    """Test that name longer than 100 characters is rejected."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "long@test.com", "password123", "Valid Name", "student"
+    )
+
+    # Try to update with 101 character name
+    long_name = "a" * 101
+
+    response = client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": long_name},
+    )
+
+    # Should return 422 Unprocessable Entity
+    assert response.status_code == 422
+    data = response.json()
+    assert "detail" in data
+
+
+def test_update_current_user_idempotent(client: TestClient):
+    """Test that updating with same name twice works (idempotent)."""
+    # Create user and get token
+    token = create_user_and_get_token(
+        client, "idempotent@test.com", "password123", "Original", "student"
+    )
+
+    # Update name first time
+    response1 = client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "New Name"},
+    )
+
+    # Update name second time with same value
+    response2 = client.put(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": "New Name"},
+    )
+
+    # Both should succeed
+    assert response1.status_code == 200
+    assert response2.status_code == 200
+
+    # Both should return same name
+    assert response1.json()["name"] == "New Name"
+    assert response2.json()["name"] == "New Name"
