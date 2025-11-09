@@ -119,6 +119,7 @@ class Progress(SQLModel, table=True):
     # Progress data
     points_earned: int
     hints_used: int = Field(default=0)
+    query: str = Field(max_length=5000)  # SQL query submitted by student
 
     # Timestamp
     completed_at: datetime = Field(default_factory=datetime.now)

@@ -188,6 +188,9 @@ def require_role(allowed_roles: list[str]):
 # Convenience dependency for teacher-only endpoints
 require_teacher = require_role(["teacher"])
 
+# Convenience dependency for student-only endpoints
+require_student = require_role(["student"])
+
 
 def create_refresh_token(user_id: int, db: Session) -> str:
     """

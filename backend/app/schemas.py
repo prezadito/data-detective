@@ -170,3 +170,22 @@ class ProgressUpdate(BaseModel):
 
     points_earned: Optional[int] = None
     hints_used: Optional[int] = None
+
+
+class ChallengeSubmitRequest(BaseModel):
+    """
+    Schema for challenge submission request.
+    Student submits their SQL query for a specific challenge.
+
+    Note: user_id is NOT in request body - it's extracted from JWT token.
+    This prevents students from submitting on behalf of others.
+    """
+
+    unit_id: int = Field(ge=1, description="Unit ID (must be >= 1)")
+    challenge_id: int = Field(
+        ge=1, description="Challenge ID within unit (must be >= 1)"
+    )
+    query: str = Field(
+        min_length=1, max_length=5000, description="SQL query submitted by student"
+    )
+    hints_used: int = Field(default=0, ge=0, description="Number of hints used (>= 0)")

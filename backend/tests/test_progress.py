@@ -54,6 +54,7 @@ def test_create_progress_record(session: Session):
         challenge_id=1,
         points_earned=100,
         hints_used=2,
+        query="SELECT * FROM users",
     )
     session.add(progress)
     session.commit()
@@ -88,6 +89,7 @@ def test_progress_default_values(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=50,
+        query="SELECT name FROM users",
     )
     session.add(progress)
     session.commit()
@@ -120,6 +122,7 @@ def test_progress_completed_at_timestamp(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=75,
+        query="SELECT * FROM students WHERE age > 18",
     )
     session.add(progress)
     session.commit()
@@ -146,9 +149,19 @@ def test_progress_points_earned(session: Session):
     session.refresh(user)
 
     # Create progress with different point values
-    progress1 = Progress(user_id=user.id, unit_id=1, challenge_id=1, points_earned=100)
-    progress2 = Progress(user_id=user.id, unit_id=1, challenge_id=2, points_earned=0)
-    progress3 = Progress(user_id=user.id, unit_id=1, challenge_id=3, points_earned=250)
+    progress1 = Progress(
+        user_id=user.id, unit_id=1, challenge_id=1, points_earned=100, query="SELECT *"
+    )
+    progress2 = Progress(
+        user_id=user.id, unit_id=1, challenge_id=2, points_earned=0, query="SELECT name"
+    )
+    progress3 = Progress(
+        user_id=user.id,
+        unit_id=1,
+        challenge_id=3,
+        points_earned=250,
+        query="SELECT COUNT(*)",
+    )
 
     session.add(progress1)
     session.add(progress2)
@@ -184,6 +197,7 @@ def test_unique_constraint_user_unit_challenge(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=100,
+        query="SELECT * FROM users",
     )
     session.add(progress1)
     session.commit()
@@ -194,6 +208,7 @@ def test_unique_constraint_user_unit_challenge(session: Session):
         unit_id=1,
         challenge_id=1,  # Same combination!
         points_earned=200,
+        query="SELECT name FROM users",
     )
     session.add(progress2)
 
@@ -221,6 +236,7 @@ def test_different_challenges_allowed(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=100,
+        query="SELECT * FROM users",
     )
     session.add(progress1)
     session.commit()
@@ -231,6 +247,7 @@ def test_different_challenges_allowed(session: Session):
         unit_id=1,
         challenge_id=2,  # Different challenge
         points_earned=150,
+        query="SELECT name, email FROM users",
     )
     session.add(progress2)
     session.commit()
@@ -268,12 +285,14 @@ def test_different_users_same_challenge_allowed(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=100,
+        query="SELECT * FROM users",
     )
     progress2 = Progress(
         user_id=user2.id,  # Different user
         unit_id=1,
         challenge_id=1,  # Same challenge
         points_earned=150,
+        query="SELECT name FROM users WHERE age > 18",
     )
     session.add(progress1)
     session.add(progress2)
@@ -298,6 +317,7 @@ def test_progress_requires_valid_user(session: Session):
         unit_id=1,
         challenge_id=1,
         points_earned=100,
+        query="SELECT * FROM users",
     )
     session.add(progress)
 
@@ -321,9 +341,23 @@ def test_user_can_have_multiple_progress_records(session: Session):
     session.refresh(user)
 
     # Create 3 different progress records for same user
-    progress1 = Progress(user_id=user.id, unit_id=1, challenge_id=1, points_earned=100)
-    progress2 = Progress(user_id=user.id, unit_id=1, challenge_id=2, points_earned=150)
-    progress3 = Progress(user_id=user.id, unit_id=2, challenge_id=1, points_earned=200)
+    progress1 = Progress(
+        user_id=user.id, unit_id=1, challenge_id=1, points_earned=100, query="SELECT *"
+    )
+    progress2 = Progress(
+        user_id=user.id,
+        unit_id=1,
+        challenge_id=2,
+        points_earned=150,
+        query="SELECT name, email",
+    )
+    progress3 = Progress(
+        user_id=user.id,
+        unit_id=2,
+        challenge_id=1,
+        points_earned=200,
+        query="SELECT COUNT(*)",
+    )
 
     session.add(progress1)
     session.add(progress2)
