@@ -16,7 +16,7 @@ from app.schemas import (
     AttemptRecord,
     HintAccessRecord,
     ChallengeMetrics,
-    ChallengeDetail,
+    ChallengeProgressDetail,
     UnitDetail,
     StudentMetrics,
     ActivityLogEntry,
@@ -190,7 +190,7 @@ def _build_detailed_response(
         metrics.total_hints_used = len(hint_records)
 
         # Build challenge detail
-        challenge_detail = ChallengeDetail(
+        challenge_detail = ChallengeProgressDetail(
             unit_id=p.unit_id,
             challenge_id=p.challenge_id,
             title=challenge.get("title", "Unknown"),

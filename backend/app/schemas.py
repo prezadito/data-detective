@@ -362,10 +362,11 @@ class ChallengeMetrics(BaseModel):
     last_attempted: datetime  # Timestamp of last attempt
 
 
-class ChallengeDetail(BaseModel):
+class ChallengeProgressDetail(BaseModel):
     """
-    Detailed view of a single challenge.
+    Detailed view of a single challenge for student progress.
     Includes challenge metadata, metrics, and attempt history.
+    Used in StudentDetailResponse to show individual challenge progress.
     """
 
     unit_id: int
@@ -386,7 +387,7 @@ class UnitDetail(BaseModel):
 
     unit_id: int
     unit_title: str  # e.g., "Unit 1: SELECT Basics"
-    challenges: list[ChallengeDetail]
+    challenges: list[ChallengeProgressDetail]
 
 
 class StudentMetrics(BaseModel):
@@ -543,3 +544,42 @@ class BulkImportResponse(BaseModel):
     failed: int  # Number of validation errors
     imported_students: list[ImportedStudent]  # List of created students with passwords
     errors: list[BulkImportError]  # Detailed error messages per row
+
+
+class ChallengeDetail(BaseModel):
+    """
+    Detailed view of a single challenge.
+    Includes challenge metadata, statistics, and optional solution.
+    """
+
+    unit_id: int
+    challenge_id: int
+    title: str
+    points: int
+    description: str
+    sample_solution: str | None = None  # None for students, included for teachers
+    completion_rate: float = 0.0  # 0-100%
+    avg_attempts: float = 0.0
+    total_attempts: int = 0  # How many students attempted
+    success_count: int = 0  # How many got it right
+
+
+class UnitChallenges(BaseModel):
+    """
+    Challenges grouped by unit.
+    Contains all challenges in a specific unit with their details.
+    """
+
+    unit_id: int
+    unit_title: str  # e.g., "Unit 1: SELECT Basics"
+    challenges: list[ChallengeDetail]
+
+
+class AllChallengesResponse(BaseModel):
+    """
+    Complete response with all units and challenges.
+    Returned by GET /challenges endpoint.
+    """
+
+    units: list[UnitChallenges]
+    generated_at: datetime
