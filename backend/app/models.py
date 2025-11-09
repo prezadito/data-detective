@@ -123,3 +123,35 @@ class Progress(SQLModel, table=True):
 
     # Timestamp
     completed_at: datetime = Field(default_factory=datetime.now)
+
+
+class Hint(SQLModel, table=True):
+    """
+    Hint model - tracks when students access hints for challenges.
+
+    Records every hint access (no unique constraint - students can access
+    same hint multiple times, and each access is tracked separately).
+
+    Allows tracking:
+    - Which student accessed a hint
+    - Which challenge and hint level
+    - When the hint was accessed
+    """
+
+    __tablename__ = "hints"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Foreign key
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    # Challenge identifiers (indexed for analytics queries)
+    unit_id: int = Field(index=True)
+    challenge_id: int = Field(index=True)
+
+    # Hint level (1-3 for MVP, flexible for future validation)
+    hint_level: int
+
+    # Timestamp (when hint was accessed)
+    accessed_at: datetime = Field(default_factory=datetime.now)

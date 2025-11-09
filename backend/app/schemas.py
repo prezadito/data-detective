@@ -250,3 +250,26 @@ class LeaderboardResponse(BaseModel):
     """
 
     entries: list[LeaderboardEntry]
+
+
+class HintAccessRequest(BaseModel):
+    """
+    Request to access a hint for a challenge.
+    Student submits unit, challenge, and hint level.
+    """
+
+    unit_id: int = Field(ge=1, description="Unit ID (must be >= 1)")
+    challenge_id: int = Field(ge=1, description="Challenge ID (must be >= 1)")
+    hint_level: int = Field(ge=1, description="Hint level (must be >= 1)")
+
+
+class HintAccessResponse(BaseModel):
+    """
+    Response when a hint is successfully accessed.
+    Returns the hint record ID and timestamp.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    hint_id: int
+    accessed_at: datetime
