@@ -189,3 +189,43 @@ class ChallengeSubmitRequest(BaseModel):
         min_length=1, max_length=5000, description="SQL query submitted by student"
     )
     hints_used: int = Field(default=0, ge=0, description="Number of hints used (>= 0)")
+
+
+class ProgressDetailResponse(BaseModel):
+    """
+    Progress detail with challenge title and query.
+    Extends ProgressResponse with enriched challenge info from CHALLENGES dict.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    unit_id: int
+    challenge_id: int
+    points_earned: int
+    hints_used: int
+    completed_at: datetime
+    query: str
+    challenge_title: str  # Looked up from CHALLENGES dict
+
+
+class ProgressSummaryStats(BaseModel):
+    """
+    Aggregate statistics for student progress.
+    Calculated from all completed challenges.
+    """
+
+    total_points: int
+    total_completed: int
+    completion_percentage: float
+
+
+class ProgressSummaryResponse(BaseModel):
+    """
+    Complete progress response with details and summary statistics.
+    Returned by GET /progress/me and GET /progress/user/{user_id}.
+    """
+
+    progress_items: list[ProgressDetailResponse]
+    summary: ProgressSummaryStats
