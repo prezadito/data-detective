@@ -204,8 +204,8 @@ def test_submit_stores_query(client: TestClient, session: Session):
         client, "student@test.com", "password123", "Test Student"
     )
 
-    # Submit with specific query
-    test_query = "SELECT name FROM students WHERE age > 18"
+    # Submit with specific query (must match expected for challenge 1-3)
+    test_query = "SELECT * FROM users WHERE age > 18"
     response = client.post(
         "/progress/submit",
         headers={"Authorization": f"Bearer {token}"},
@@ -239,14 +239,14 @@ def test_duplicate_submission_returns_existing(client: TestClient, session: Sess
         client, "student@test.com", "password123", "Test Student"
     )
 
-    # First submission
+    # First submission (correct query for challenge 2-1)
     response1 = client.post(
         "/progress/submit",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "unit_id": 2,
             "challenge_id": 1,
-            "query": "SELECT * FROM users INNER JOIN orders",
+            "query": "SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id",
             "hints_used": 0,
         },
     )
@@ -256,14 +256,14 @@ def test_duplicate_submission_returns_existing(client: TestClient, session: Sess
     first_id = data1["id"]
     first_completed_at = data1["completed_at"]
 
-    # Second submission (duplicate)
+    # Second submission (same correct query but with extra whitespace)
     response2 = client.post(
         "/progress/submit",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "unit_id": 2,
             "challenge_id": 1,
-            "query": "SELECT * FROM users JOIN orders",  # Different query!
+            "query": "SELECT   *   FROM   users   INNER   JOIN   orders   ON   users.id = orders.user_id",
             "hints_used": 3,  # Different hints!
         },
     )
@@ -291,7 +291,7 @@ def test_duplicate_with_different_query_ignored(client: TestClient, session: Ses
         client, "student@test.com", "password123", "Test Student"
     )
 
-    # First submission
+    # First submission (exact match to expected)
     original_query = "SELECT COUNT(*) FROM users"
     client.post(
         "/progress/submit",
@@ -304,8 +304,8 @@ def test_duplicate_with_different_query_ignored(client: TestClient, session: Ses
         },
     )
 
-    # Second submission with different data
-    new_query = "SELECT COUNT(*) AS total FROM users"
+    # Second submission with same query (different formatting) and different hints
+    new_query = "SELECT   COUNT(*)   FROM   users"
     response = client.post(
         "/progress/submit",
         headers={"Authorization": f"Bearer {token}"},
@@ -422,7 +422,7 @@ def test_multiple_challenges_same_student(client: TestClient, session: Session):
         json={
             "unit_id": 2,
             "challenge_id": 1,
-            "query": "SELECT * FROM users JOIN orders",
+            "query": "SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id",
             "hints_used": 0,
         },
     )
@@ -526,14 +526,14 @@ def test_submit_response_format(client: TestClient):
         client, "student@test.com", "password123", "Test Student"
     )
 
-    # Submit challenge
+    # Submit challenge (correct query for 2-2)
     response = client.post(
         "/progress/submit",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "unit_id": 2,
             "challenge_id": 2,
-            "query": "SELECT * FROM users LEFT JOIN orders",
+            "query": "SELECT * FROM users LEFT JOIN orders ON users.id = orders.user_id",
             "hints_used": 1,
         },
     )
@@ -640,30 +640,34 @@ def test_get_progress_me_with_multiple_challenges(client: TestClient):
         client, "student@test.com", "password123", "Test Student"
     )
 
-    # Submit challenges from different units
-    for unit_id in [1, 2, 3]:
-        for challenge_id in [1, 2]:
-            try:
-                client.post(
-                    "/progress/submit",
-                    headers={"Authorization": f"Bearer {token}"},
-                    json={
-                        "unit_id": unit_id,
-                        "challenge_id": challenge_id,
-                        "query": f"SELECT * FROM table_{unit_id}_{challenge_id}",
-                        "hints_used": 0,
-                    },
-                )
-            except Exception:
-                pass  # Some challenges may not exist, that's ok
+    # Define valid queries for each challenge
+    challenges = {
+        (1, 1): "SELECT * FROM users",
+        (1, 2): "SELECT name, email FROM users",
+        (2, 1): "SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id",
+        (3, 1): "SELECT COUNT(*) FROM users",
+    }
+
+    # Submit valid challenges
+    for (unit_id, challenge_id), query in challenges.items():
+        client.post(
+            "/progress/submit",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "unit_id": unit_id,
+                "challenge_id": challenge_id,
+                "query": query,
+                "hints_used": 0,
+            },
+        )
 
     response = client.get("/progress/me", headers={"Authorization": f"Bearer {token}"})
 
     assert response.status_code == 200
     data = response.json()
 
-    # Verify we got some progress items
-    assert len(data["progress_items"]) > 0
+    # Verify we got all submitted progress items
+    assert len(data["progress_items"]) == 4
     # Verify ordered by unit_id then challenge_id
     for i in range(len(data["progress_items"]) - 1):
         curr = data["progress_items"][i]

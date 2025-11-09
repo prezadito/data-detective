@@ -90,6 +90,17 @@ def create_student_and_submit_challenges(
         name: Student name
         challenges: List of (unit_id, challenge_id) tuples to submit
     """
+    # Map of valid queries for each challenge
+    valid_queries = {
+        (1, 1): "SELECT * FROM users",
+        (1, 2): "SELECT name, email FROM users",
+        (1, 3): "SELECT * FROM users WHERE age > 18",
+        (2, 1): "SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id",
+        (2, 2): "SELECT * FROM users LEFT JOIN orders ON users.id = orders.user_id",
+        (3, 1): "SELECT COUNT(*) FROM users",
+        (3, 2): "SELECT role, COUNT(*) FROM users GROUP BY role",
+    }
+
     # Register student
     client.post(
         "/auth/register",
@@ -109,16 +120,18 @@ def create_student_and_submit_challenges(
 
     # Submit challenges
     for unit_id, challenge_id in challenges:
-        client.post(
-            "/progress/submit",
-            headers={"Authorization": f"Bearer {token}"},
-            json={
-                "unit_id": unit_id,
-                "challenge_id": challenge_id,
-                "query": f"SELECT * FROM table_{unit_id}_{challenge_id}",
-                "hints_used": 0,
-            },
-        )
+        # Only submit if we have a valid query for this challenge
+        if (unit_id, challenge_id) in valid_queries:
+            client.post(
+                "/progress/submit",
+                headers={"Authorization": f"Bearer {token}"},
+                json={
+                    "unit_id": unit_id,
+                    "challenge_id": challenge_id,
+                    "query": valid_queries[(unit_id, challenge_id)],
+                    "hints_used": 0,
+                },
+            )
 
 
 def create_teacher(client: TestClient, email: str, name: str) -> str:

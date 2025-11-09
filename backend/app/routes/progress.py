@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from app.database import get_session
-from app.models import User, Progress
+from app.models import User, Progress, Attempt
 from app.schemas import (
     ChallengeSubmitRequest,
     ProgressResponse,
@@ -16,7 +16,7 @@ from app.schemas import (
     ProgressSummaryResponse,
 )
 from app.auth import get_current_user, require_student, require_teacher
-from app.challenges import get_challenge
+from app.challenges import get_challenge, validate_query
 from app.routes.leaderboard import invalidate_cache
 
 
@@ -118,9 +118,11 @@ async def submit_challenge(
     Students submit their SQL query for a specific challenge.
     The endpoint:
     1. Validates the challenge exists
-    2. Records the submission (without validating the query - MVP)
-    3. Awards points based on challenge definition
-    4. Returns idempotent responses (duplicate submissions return existing record)
+    2. Validates the query matches the expected solution (MVP)
+    3. Creates an Attempt record for every submission (tracks all attempts)
+    4. If correct: creates Progress record and awards points
+    5. If incorrect: returns 400 error with helpful message
+    6. Returns idempotent responses for correct submissions
 
     Args:
         submission: Challenge submission data (unit_id, challenge_id, query, hints_used)
@@ -129,12 +131,13 @@ async def submit_challenge(
         session: Database session (injected)
 
     Returns:
-        Progress record with points earned
+        Progress record with points earned (only if query is correct)
 
     Raises:
         HTTPException: 401 if not authenticated
         HTTPException: 403 if not a student
         HTTPException: 404 if challenge doesn't exist
+        HTTPException: 400 if query is incorrect
     """
     # 1. Validate challenge exists
     challenge = get_challenge(submission.unit_id, submission.challenge_id)
@@ -144,7 +147,28 @@ async def submit_challenge(
             detail=f"Challenge not found: unit={submission.unit_id}, challenge={submission.challenge_id}",
         )
 
-    # 2. Check if already completed (idempotency)
+    # 2. Validate query (MVP: simple string comparison after normalization)
+    is_correct = validate_query(submission.query, challenge["sample_solution"])
+
+    # 3. Create Attempt record (for EVERY submission - correct or incorrect)
+    attempt = Attempt(
+        user_id=current_user.id,
+        unit_id=submission.unit_id,
+        challenge_id=submission.challenge_id,
+        query=submission.query,
+        is_correct=is_correct,
+    )
+    session.add(attempt)
+    session.commit()
+
+    # 4. If incorrect, return error
+    if not is_correct:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Query is incorrect. Expected: {challenge['sample_solution']}",
+        )
+
+    # 5. Check if already completed (idempotency - only for correct submissions)
     statement = select(Progress).where(
         Progress.user_id == current_user.id,
         Progress.unit_id == submission.unit_id,
@@ -156,7 +180,7 @@ async def submit_challenge(
         # Already completed - return existing record (idempotent)
         return existing_progress
 
-    # 3. Create new progress record
+    # 6. Create new progress record (only for first correct submission)
     progress = Progress(
         user_id=current_user.id,  # From JWT token - no spoofing!
         unit_id=submission.unit_id,

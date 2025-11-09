@@ -155,3 +155,36 @@ class Hint(SQLModel, table=True):
 
     # Timestamp (when hint was accessed)
     accessed_at: datetime = Field(default_factory=datetime.now)
+
+
+class Attempt(SQLModel, table=True):
+    """
+    Attempt model - tracks every challenge submission attempt.
+
+    Records each attempt to solve a challenge (correct or incorrect).
+    Multiple attempts per student per challenge allowed (no unique constraint).
+
+    Enables:
+    - Tracking learning progress (how many tries before success)
+    - Analytics on common mistakes
+    - Future: difficulty scoring, hint effectiveness
+    """
+
+    __tablename__ = "attempts"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Foreign key
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    # Challenge identifiers (indexed for analytics)
+    unit_id: int = Field(index=True)
+    challenge_id: int = Field(index=True)
+
+    # Attempt data
+    query: str = Field(max_length=5000)  # Student's SQL query
+    is_correct: bool  # True if query matches expected, False otherwise
+
+    # Timestamp
+    attempted_at: datetime = Field(default_factory=datetime.now)
