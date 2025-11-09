@@ -19,6 +19,7 @@ from app.auth import get_current_user, require_student, require_teacher
 from app.challenges import get_challenge, validate_query
 from app.routes.leaderboard import invalidate_cache
 from app.routes.reports import invalidate_weekly_cache
+from app.routes.analytics import invalidate_analytics_cache
 
 
 router = APIRouter(prefix="/progress", tags=["Progress"])
@@ -198,6 +199,7 @@ async def submit_challenge(
         # Invalidate leaderboard and weekly report caches after new submission
         invalidate_cache()
         invalidate_weekly_cache()
+        invalidate_analytics_cache()
         return progress
 
     except IntegrityError:
@@ -208,6 +210,7 @@ async def submit_challenge(
         # Invalidate caches in case this completes a first-time submission
         invalidate_cache()
         invalidate_weekly_cache()
+        invalidate_analytics_cache()
         return existing_progress
 
 

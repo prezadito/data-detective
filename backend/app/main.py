@@ -3,7 +3,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database import create_db_and_tables
-from app.routes import auth, users, progress, leaderboard, hints, reports
+from app.routes import auth, users, progress, leaderboard, hints, reports, analytics
 
 
 @asynccontextmanager
@@ -32,6 +32,7 @@ app.include_router(progress.router)
 app.include_router(leaderboard.router)
 app.include_router(hints.router)
 app.include_router(reports.router)
+app.include_router(analytics.router)
 
 
 @app.get("/")

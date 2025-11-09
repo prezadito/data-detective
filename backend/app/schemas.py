@@ -427,3 +427,73 @@ class StudentDetailResponse(BaseModel):
     metrics: StudentMetrics
     units: list[UnitDetail]
     activity_log: list[ActivityLogEntry]  # Last 10 actions, newest first
+
+
+class ChallengeAnalytics(BaseModel):
+    """
+    Analytics for a single challenge across all students.
+    Includes success rates and attempt statistics.
+    """
+
+    unit_id: int
+    challenge_id: int
+    challenge_title: str
+    total_attempts: int  # Total submissions by all students
+    correct_attempts: int  # Correct submissions by all students
+    success_rate: float  # Percentage (0-100)
+    avg_hints_per_attempt: float  # Average hints used per attempt
+
+
+class ClassMetrics(BaseModel):
+    """
+    Overall metrics for the entire class.
+    Aggregated statistics across all students.
+    """
+
+    total_students: int  # Total students in system
+    active_students: int  # Students with at least 1 completion
+    avg_completion_rate: float  # Average % of 7 challenges completed per active student
+    median_points: int  # Median total points earned
+    percentile_25: int  # 25th percentile of points
+    percentile_50: int  # 50th percentile (same as median)
+    percentile_75: int  # 75th percentile of points
+    total_challenges_completed: int  # Sum of all completions
+    total_attempts: int  # Sum of all attempts (correct + incorrect)
+    avg_success_rate: float  # Overall success rate across all attempts
+
+
+class ChallengeDistribution(BaseModel):
+    """
+    Challenges ranked by difficulty.
+    Shows hardest and easiest challenges based on success rates.
+    """
+
+    easiest_challenges: list[ChallengeAnalytics]  # Top 3 by success rate
+    hardest_challenges: list[ChallengeAnalytics]  # Bottom 3 by success rate
+
+
+class WeeklyTrend(BaseModel):
+    """
+    Class progress for a single week.
+    Used for tracking week-over-week trends.
+    """
+
+    week_start_date: datetime
+    week_end_date: datetime
+    completions: int  # Challenges completed this week
+    total_points_earned: int  # Points earned this week
+    unique_students: int  # Number of students active this week
+
+
+class ClassAnalyticsResponse(BaseModel):
+    """
+    Complete class-wide analytics response.
+    Returned by GET /analytics/class endpoint (teachers only).
+    """
+
+    generated_at: datetime  # When this report was generated
+    metrics: ClassMetrics
+    challenges: list[ChallengeAnalytics]  # All 7 challenges with stats
+    difficulty_distribution: ChallengeDistribution  # Hardest/easiest ranking
+    weekly_trends: list[WeeklyTrend]  # Past 4 weeks of data
+    cache_expires_at: datetime  # When cache will be refreshed
