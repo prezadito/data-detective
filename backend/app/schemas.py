@@ -81,3 +81,41 @@ class RefreshTokenResponse(BaseModel):
 
     access_token: str
     token_type: str
+
+
+class PasswordResetRequest(BaseModel):
+    """
+    Schema for password reset request.
+    Used for /auth/password-reset-request endpoint.
+    """
+
+    email: EmailStr
+
+
+class PasswordResetResponse(BaseModel):
+    """
+    Schema for password reset response.
+    Returns message and reset token (temporarily - will be sent via email later).
+    """
+
+    message: str
+    reset_token: str
+
+
+class PasswordResetConfirm(BaseModel):
+    """
+    Schema for password reset confirmation.
+    Used for /auth/password-reset-confirm endpoint.
+    """
+
+    reset_token: str
+    new_password: str = Field(min_length=8, max_length=100)
+
+
+class PasswordResetConfirmResponse(BaseModel):
+    """
+    Schema for password reset confirmation response.
+    Returns success message.
+    """
+
+    message: str

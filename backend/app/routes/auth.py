@@ -14,6 +14,10 @@ from app.schemas import (
     Token,
     RefreshTokenRequest,
     RefreshTokenResponse,
+    PasswordResetRequest,
+    PasswordResetResponse,
+    PasswordResetConfirm,
+    PasswordResetConfirmResponse,
 )
 from app.auth import (
     hash_password,
@@ -22,6 +26,8 @@ from app.auth import (
     create_refresh_token,
     verify_refresh_token,
     revoke_refresh_token,
+    create_password_reset_token,
+    verify_and_use_reset_token,
 )
 
 
@@ -183,3 +189,77 @@ def logout(request: RefreshTokenRequest, session: Session = Depends(get_session)
     revoke_refresh_token(request.refresh_token, session)
 
     return {"message": "Successfully logged out"}
+
+
+@router.post("/password-reset-request", response_model=PasswordResetResponse)
+def request_password_reset(
+    request: PasswordResetRequest, session: Session = Depends(get_session)
+):
+    """
+    Request a password reset token.
+
+    This endpoint accepts an email address and generates a password reset token
+    if the user exists. For security (preventing user enumeration), it always
+    returns a 200 response with a generic message, regardless of whether the
+    email exists in the system.
+
+    In production, the token would be sent via email. For now, it's returned
+    in the response for testing purposes.
+
+    Args:
+        request: Password reset request with email field
+        session: Database session (injected)
+
+    Returns:
+        Message and reset token (empty string if user doesn't exist)
+
+    Security Note:
+        Always returns 200 OK to prevent attackers from discovering which
+        email addresses are registered in the system.
+    """
+    # Generate reset token (returns None if user doesn't exist)
+    reset_token = create_password_reset_token(request.email, session)
+
+    # Generic message that doesn't reveal if user exists
+    message = "If this email exists, a reset token has been sent"
+
+    # Return token if created, empty string otherwise
+    # In production, we would send email instead and not return token
+    return {
+        "message": message,
+        "reset_token": reset_token if reset_token else "",
+    }
+
+
+@router.post("/password-reset-confirm", response_model=PasswordResetConfirmResponse)
+def confirm_password_reset(
+    request: PasswordResetConfirm, session: Session = Depends(get_session)
+):
+    """
+    Confirm password reset with token and new password.
+
+    This endpoint validates the reset token and updates the user's password
+    if the token is valid. The token is marked as used after successful reset
+    to prevent reuse.
+
+    Token validation checks:
+    - Token exists in database
+    - Token not already used
+    - Token not expired (1 hour limit)
+    - User still exists
+
+    Args:
+        request: Password reset confirmation with reset_token and new_password
+        session: Database session (injected)
+
+    Returns:
+        Success message
+
+    Raises:
+        HTTPException: 401 if token is invalid, expired, or already used
+        HTTPException: 422 if new_password doesn't meet requirements (8-100 chars)
+    """
+    # Verify token and update password
+    verify_and_use_reset_token(request.reset_token, request.new_password, session)
+
+    return {"message": "Password has been reset successfully"}

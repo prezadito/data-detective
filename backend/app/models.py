@@ -56,3 +56,29 @@ class RefreshToken(SQLModel, table=True):
     expires_at: datetime
     revoked: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.now)
+
+
+class PasswordResetToken(SQLModel, table=True):
+    """
+    PasswordResetToken model - stores temporary tokens for password reset.
+
+    Allows:
+    - Secure password reset flow
+    - Single-use tokens (via used flag)
+    - Short expiration (1 hour)
+    - Multiple pending reset requests per user
+    """
+
+    __tablename__ = "password_reset_tokens"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Token data
+    token: str = Field(unique=True, index=True, max_length=500)
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    # Token lifecycle
+    expires_at: datetime
+    used: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=datetime.now)
