@@ -552,9 +552,12 @@ def test_get_all_users_as_teacher_success(client: TestClient):
     assert response.status_code == 200
     data = response.json()
 
-    # Should return list of all 3 users
-    assert isinstance(data, list)
-    assert len(data) == 3
+    # Should return StudentListResponse with all 3 users
+    assert isinstance(data, dict)
+    assert "students" in data
+    assert "total_count" in data
+    assert data["total_count"] == 3
+    assert len(data["students"]) == 3
 
 
 def test_get_all_users_as_student_forbidden(client: TestClient):
@@ -608,12 +611,15 @@ def test_get_all_users_returns_multiple_users(client: TestClient):
     assert response.status_code == 200
     data = response.json()
 
-    # Should return list of 4 users
-    assert isinstance(data, list)
-    assert len(data) == 4
+    # Should return StudentListResponse with 4 users
+    assert isinstance(data, dict)
+    assert "students" in data
+    assert "total_count" in data
+    assert data["total_count"] == 4
+    assert len(data["students"]) == 4
 
     # Each user should have required fields
-    for user in data:
+    for user in data["students"]:
         assert "id" in user
         assert "email" in user
         assert "name" in user
@@ -642,7 +648,7 @@ def test_get_all_users_excludes_passwords(client: TestClient):
     data = response.json()
 
     # No user should have password or password_hash fields
-    for user in data:
+    for user in data["students"]:
         assert "password" not in user
         assert "password_hash" not in user
 
@@ -770,6 +776,610 @@ def test_student_cannot_view_teacher(client: TestClient):
     # Student tries to view teacher's profile (user_id=1)
     response = client.get(
         "/users/1", headers={"Authorization": f"Bearer {student_token}"}
+    )
+
+    assert response.status_code == 403
+    data = response.json()
+    assert "detail" in data
+    assert "permission" in data["detail"].lower()
+
+
+# ============================================================================
+# GET /users WITH FILTERS, SORTING, PAGINATION (NEW TESTS)
+# ============================================================================
+
+
+def test_list_users_with_pagination_default(client: TestClient):
+    """Test GET /users with default pagination parameters."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create 3 students
+    for i in range(1, 4):
+        create_user_and_get_token(
+            client, f"student{i}@test.com", "password123", f"Student {i}", "student"
+        )
+
+    # Call with no parameters (default: offset=0, limit=10)
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should have pagination structure
+    assert "students" in data
+    assert "total_count" in data
+    assert "offset" in data
+    assert "limit" in data
+
+    # Should return 4 users (1 teacher + 3 students)
+    assert data["total_count"] == 4
+    assert len(data["students"]) == 4
+    assert data["offset"] == 0
+    assert data["limit"] == 10
+
+
+def test_list_users_with_role_filter_student(client: TestClient):
+    """Test GET /users with role=student filter."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create 3 students and 1 more teacher
+    for i in range(1, 4):
+        create_user_and_get_token(
+            client, f"student{i}@test.com", "password123", f"Student {i}", "student"
+        )
+
+    create_user_and_get_token(
+        client, "teacher2@test.com", "password123", "Teacher 2", "teacher"
+    )
+
+    # Filter by role=student
+    response = client.get(
+        "/users?role=student", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should only return students
+    assert data["total_count"] == 3
+    assert len(data["students"]) == 3
+    for student in data["students"]:
+        assert student["role"] == "student"
+
+
+def test_list_users_with_role_filter_teacher(client: TestClient):
+    """Test GET /users with role=teacher filter."""
+    # Create 2 teachers
+    teacher_token = create_user_and_get_token(
+        client, "teacher1@test.com", "password123", "Teacher 1", "teacher"
+    )
+    create_user_and_get_token(
+        client, "teacher2@test.com", "password123", "Teacher 2", "teacher"
+    )
+
+    # Create 2 students
+    for i in range(1, 3):
+        create_user_and_get_token(
+            client, f"student{i}@test.com", "password123", f"Student {i}", "student"
+        )
+
+    # Filter by role=teacher
+    response = client.get(
+        "/users?role=teacher", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should only return teachers
+    assert data["total_count"] == 2
+    assert len(data["students"]) == 2
+    for teacher in data["students"]:
+        assert teacher["role"] == "teacher"
+
+
+def test_list_users_sort_by_name(client: TestClient):
+    """Test GET /users with sort=name parameter."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Alice", "teacher"
+    )
+
+    # Create students with specific names
+    create_user_and_get_token(
+        client, "charlie@test.com", "password123", "Charlie", "student"
+    )
+    create_user_and_get_token(client, "bob@test.com", "password123", "Bob", "student")
+
+    # Sort by name
+    response = client.get(
+        "/users?sort=name", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should be sorted by name
+    assert len(data["students"]) == 3
+    names = [s["name"] for s in data["students"]]
+    assert names == sorted(names)
+
+
+def test_list_users_sort_by_points(client: TestClient):
+    """Test GET /users with sort=points parameter."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create students
+    student1_token = create_user_and_get_token(
+        client, "student1@test.com", "password123", "Student One", "student"
+    )
+    student2_token = create_user_and_get_token(
+        client, "student2@test.com", "password123", "Student Two", "student"
+    )
+
+    # Student 1 completes 1 challenge (100 points)
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student1_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 1,
+            "query": "SELECT * FROM users",
+            "hints_used": 0,
+        },
+    )
+
+    # Student 2 completes 2 challenges (250 points)
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student2_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 1,
+            "query": "SELECT * FROM users",
+            "hints_used": 0,
+        },
+    )
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student2_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 2,
+            "query": "SELECT name, email FROM users",
+            "hints_used": 0,
+        },
+    )
+
+    # Sort by points (descending)
+    response = client.get(
+        "/users?sort=points", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should be sorted by points descending
+    students = data["students"]
+    points = [s.get("total_points", 0) for s in students]
+    # Student2 (250) should come before Student1 (100)
+    assert points[0] >= points[1]
+
+
+def test_list_users_sort_by_date(client: TestClient):
+    """Test GET /users with sort=date parameter."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create students
+    create_user_and_get_token(
+        client, "student1@test.com", "password123", "Student One", "student"
+    )
+    create_user_and_get_token(
+        client, "student2@test.com", "password123", "Student Two", "student"
+    )
+
+    # Sort by date (created_at ascending)
+    response = client.get(
+        "/users?sort=date", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should be sorted by created_at ascending
+    students = data["students"]
+    dates = [s["created_at"] for s in students]
+    assert dates == sorted(dates)
+
+
+def test_list_users_invalid_sort_parameter(client: TestClient):
+    """Test GET /users with invalid sort parameter returns error."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Try with invalid sort parameter
+    response = client.get(
+        "/users?sort=invalid", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    # Should return 422 Unprocessable Entity
+    assert response.status_code == 422
+
+
+def test_list_users_pagination_offset(client: TestClient):
+    """Test GET /users with offset parameter."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create 5 students
+    for i in range(1, 6):
+        create_user_and_get_token(
+            client, f"student{i}@test.com", "password123", f"Student {i}", "student"
+        )
+
+    # Get second page (offset=2, limit=2)
+    response = client.get(
+        "/users?offset=2&limit=2",
+        headers={"Authorization": f"Bearer {teacher_token}"},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should have pagination info
+    assert data["total_count"] == 6  # 1 teacher + 5 students
+    assert data["offset"] == 2
+    assert data["limit"] == 2
+    assert len(data["students"]) == 2
+
+
+def test_list_users_pagination_limit_enforced(client: TestClient):
+    """Test that limit parameter is enforced (max 100)."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Try to use limit > 100
+    response = client.get(
+        "/users?limit=200",
+        headers={"Authorization": f"Bearer {teacher_token}"},
+    )
+
+    # Should return 422 Unprocessable Entity (validation error)
+    assert response.status_code == 422
+
+
+def test_list_users_pagination_total_count_accurate(client: TestClient):
+    """Test that total_count is accurate regardless of pagination."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create 5 students
+    for i in range(1, 6):
+        create_user_and_get_token(
+            client, f"student{i}@test.com", "password123", f"Student {i}", "student"
+        )
+
+    # Get first page (limit=2)
+    response1 = client.get(
+        "/users?limit=2",
+        headers={"Authorization": f"Bearer {teacher_token}"},
+    )
+
+    # Get second page (limit=2, offset=2)
+    response2 = client.get(
+        "/users?offset=2&limit=2",
+        headers={"Authorization": f"Bearer {teacher_token}"},
+    )
+
+    # Both should report same total_count
+    assert response1.json()["total_count"] == 6
+    assert response2.json()["total_count"] == 6
+
+
+def test_student_stats_total_points(client: TestClient):
+    """Test that student stats include total_points earned."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Student completes 2 challenges
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 1,
+            "query": "SELECT * FROM users",
+            "hints_used": 0,
+        },
+    )
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 2,
+            "query": "SELECT name, email FROM users",
+            "hints_used": 0,
+        },
+    )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Find student in list
+    student = next(s for s in data["students"] if s["email"] == "student@test.com")
+    assert "total_points" in student
+    assert (
+        student["total_points"] == 250
+    )  # 100 + 150 points from challenges (1,1) and (1,2)
+
+
+def test_student_stats_challenges_completed(client: TestClient):
+    """Test that student stats include challenges_completed count."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Student completes 3 challenges
+    for i in range(1, 4):
+        client.post(
+            "/progress/submit",
+            headers={"Authorization": f"Bearer {student_token}"},
+            json={
+                "unit_id": 1,
+                "challenge_id": i,
+                "query": "SELECT * FROM users"
+                if i == 1
+                else "SELECT name, email FROM users"
+                if i == 2
+                else "SELECT * FROM users WHERE age > 18",
+                "hints_used": 0,
+            },
+        )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Find student in list
+    student = next(s for s in data["students"] if s["email"] == "student@test.com")
+    assert "challenges_completed" in student
+    assert student["challenges_completed"] == 3
+
+
+def test_student_stats_zero_when_no_progress(client: TestClient):
+    """Test that student with no progress shows 0 stats."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student (no progress)
+    create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Find student in list
+    student = next(s for s in data["students"] if s["email"] == "student@test.com")
+    assert student["total_points"] == 0
+    assert student["challenges_completed"] == 0
+
+
+def test_student_stats_multi_challenge_aggregation(client: TestClient):
+    """Test that stats correctly aggregate multiple challenges."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Student completes 2 unit 1 challenges and 1 unit 2 challenge
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 1,
+            "query": "SELECT * FROM users",
+            "hints_used": 0,
+        },
+    )
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student_token}"},
+        json={
+            "unit_id": 1,
+            "challenge_id": 2,
+            "query": "SELECT name, email FROM users",
+            "hints_used": 0,
+        },
+    )
+    client.post(
+        "/progress/submit",
+        headers={"Authorization": f"Bearer {student_token}"},
+        json={
+            "unit_id": 2,
+            "challenge_id": 1,
+            "query": "SELECT * FROM users INNER JOIN orders ON users.id = orders.user_id",
+            "hints_used": 0,
+        },
+    )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Find student in list
+    student = next(s for s in data["students"] if s["email"] == "student@test.com")
+    assert student["total_points"] == 500  # 100 + 150 + 250 from (1,1), (1,2), (2,1)
+    assert student["challenges_completed"] == 3
+
+
+def test_list_users_response_structure(client: TestClient):
+    """Test that response has correct structure with required fields."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student
+    create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check top-level structure
+    assert isinstance(data, dict)
+    assert "students" in data
+    assert "total_count" in data
+    assert "offset" in data
+    assert "limit" in data
+
+    # Check student fields
+    assert isinstance(data["students"], list)
+    for student in data["students"]:
+        assert "id" in student
+        assert "email" in student
+        assert "name" in student
+        assert "role" in student
+        assert "created_at" in student
+        assert "total_points" in student
+        assert "challenges_completed" in student
+        # Should not include password
+        assert "password" not in student
+        assert "password_hash" not in student
+
+
+def test_list_users_response_field_types(client: TestClient):
+    """Test that response fields have correct types."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Create student
+    create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Get students list
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check types
+    assert isinstance(data["students"], list)
+    assert isinstance(data["total_count"], int)
+    assert isinstance(data["offset"], int)
+    assert isinstance(data["limit"], int)
+
+    # Check student field types
+    student = data["students"][0]
+    assert isinstance(student["id"], int)
+    assert isinstance(student["email"], str)
+    assert isinstance(student["name"], str)
+    assert isinstance(student["role"], str)
+    assert isinstance(student["created_at"], str)  # ISO format string
+    assert isinstance(student["total_points"], int)
+    assert isinstance(student["challenges_completed"], int)
+
+
+def test_list_users_teacher_can_access(client: TestClient):
+    """Test that teacher can access the list students endpoint."""
+    # Create teacher
+    teacher_token = create_user_and_get_token(
+        client, "teacher@test.com", "password123", "Teacher", "teacher"
+    )
+
+    # Teacher calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {teacher_token}"}
+    )
+
+    assert response.status_code == 200
+    assert "students" in response.json()
+
+
+def test_list_users_student_forbidden(client: TestClient):
+    """Test that student gets 403 when accessing the list students endpoint."""
+    # Create student
+    student_token = create_user_and_get_token(
+        client, "student@test.com", "password123", "Student", "student"
+    )
+
+    # Student calls GET /users
+    response = client.get(
+        "/users", headers={"Authorization": f"Bearer {student_token}"}
     )
 
     assert response.status_code == 403

@@ -2,46 +2,127 @@
 User routes - protected endpoints requiring authentication.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func
 from sqlmodel import Session, select
 from app.database import get_session
-from app.models import User
-from app.schemas import UserResponse, UserUpdate
+from app.models import User, Progress
+from app.schemas import (
+    UserResponse,
+    UserUpdate,
+    StudentWithStats,
+    StudentListResponse,
+)
 from app.auth import get_current_user, require_teacher
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("/", response_model=list[UserResponse])
+@router.get("/", response_model=StudentListResponse)
 async def list_all_users(
     current_user: User = Depends(get_current_user),
     _: None = Depends(require_teacher),
     session: Session = Depends(get_session),
+    role: str | None = None,
+    sort: str = Query(
+        default="name", pattern="^(name|points|date)$"
+    ),  # Validate sort parameter
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=10, ge=1, le=100),
 ):
     """
-    List all users (teachers only).
+    List all users with filtering, sorting, and pagination (teachers only).
 
-    This endpoint returns a list of all registered users in the system.
-    Only users with the 'teacher' role can access this endpoint.
+    Teachers can view all students in the system with their progress statistics.
+    Results can be filtered by role, sorted by name/points/date, and paginated.
 
-    Args:
-        current_user: Current authenticated user (injected by dependency)
-        _: Permission check (teacher role required)
-        session: Database session (injected)
+    Query Parameters:
+        role: Filter by user role (student|teacher). Optional.
+        sort: Sort by field (name|points|date). Default: name
+        offset: Pagination offset. Default: 0
+        limit: Pagination limit (1-100). Default: 10
 
     Returns:
-        List of all users (without passwords)
+        StudentListResponse with paginated students and their aggregated stats
 
     Raises:
         HTTPException: 401 if not authenticated
         HTTPException: 403 if user is not a teacher
+        HTTPException: 422 if validation fails (invalid sort or limit)
     """
-    # Get all users from database
-    statement = select(User)
-    users = session.exec(statement).all()
+    # Build aggregation subquery to get stats per user
+    stats_subquery = (
+        select(
+            Progress.user_id,
+            func.sum(Progress.points_earned).label("total_points"),
+            func.count(Progress.id).label("challenges_completed"),
+        )
+        .group_by(Progress.user_id)
+        .subquery()
+    )
 
-    return users
+    # Build main query with LEFT JOIN to stats subquery
+    statement = select(
+        User.id,
+        User.email,
+        User.name,
+        User.role,
+        User.created_at,
+        stats_subquery.c.total_points,
+        stats_subquery.c.challenges_completed,
+    ).outerjoin(stats_subquery, User.id == stats_subquery.c.user_id)
+
+    # Filter by role if provided
+    if role:
+        statement = statement.where(User.role == role)
+
+    # Sort based on parameter
+    if sort == "name":
+        statement = statement.order_by(User.name)
+    elif sort == "points":
+        # Sort by total_points descending, then by name for tie-breaking
+        statement = statement.order_by(
+            stats_subquery.c.total_points.desc().nullslast(), User.name
+        )
+    elif sort == "date":
+        # Sort by created_at ascending
+        statement = statement.order_by(User.created_at)
+
+    # Get total count BEFORE pagination
+    count_query = select(func.count(User.id)).select_from(User)
+    if role:
+        count_query = count_query.where(User.role == role)
+
+    total_count = session.exec(count_query).one()
+
+    # Apply pagination
+    statement = statement.offset(offset).limit(limit)
+
+    # Execute main query
+    results = session.exec(statement).all()
+
+    # Build StudentWithStats objects from results
+    students = []
+    for row in results:
+        students.append(
+            StudentWithStats(
+                id=row.id,
+                email=row.email,
+                name=row.name,
+                role=row.role,
+                created_at=row.created_at,
+                total_points=row.total_points or 0,
+                challenges_completed=row.challenges_completed or 0,
+            )
+        )
+
+    return StudentListResponse(
+        students=students,
+        total_count=total_count,
+        offset=offset,
+        limit=limit,
+    )
 
 
 @router.get("/me", response_model=UserResponse)

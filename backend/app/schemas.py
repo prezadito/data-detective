@@ -300,3 +300,25 @@ class WeeklyReportResponse(BaseModel):
     struggling_students: list[StudentProgressSummary]  # <3 completions
 
     generated_at: datetime  # When this report was generated
+
+
+class StudentWithStats(UserResponse):
+    """
+    User response extended with aggregated progress statistics.
+    Used when listing students with their total points and challenges completed.
+    """
+
+    total_points: int  # Sum of all points earned
+    challenges_completed: int  # Count of completed challenges
+
+
+class StudentListResponse(BaseModel):
+    """
+    Paginated list of students with their statistics.
+    Returned by GET /users endpoint with filtering and sorting.
+    """
+
+    students: list[StudentWithStats]
+    total_count: int  # Total number of students matching the filter
+    offset: int  # Pagination offset
+    limit: int  # Pagination limit
