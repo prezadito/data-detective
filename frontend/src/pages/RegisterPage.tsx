@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LoginForm } from '@/components/auth/LoginForm';
+import { RegisterForm } from '@/components/auth/RegisterForm';
 
-export function LoginPage() {
+export function RegisterPage() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -29,25 +29,25 @@ export function LoginPage() {
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900">Data Detective</h1>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            Create your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Master SQL through interactive challenges
+            Start learning SQL today
           </p>
         </div>
 
         <div className="mt-8 bg-white py-8 px-4 shadow-lg rounded-lg sm:px-10">
-          <LoginForm />
+          <RegisterForm />
         </div>
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Already have an account?{' '}
             <Link
-              to="/register"
+              to="/login"
               className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline transition"
             >
-              Sign up
+              Sign in
             </Link>
           </p>
         </div>
