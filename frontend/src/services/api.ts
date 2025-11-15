@@ -26,7 +26,7 @@ export const api = ky.create({
       },
     ],
     afterResponse: [
-      async (request, options, response) => {
+      async (_request, _options, response) => {
         // Handle 401 Unauthorized - clear token and redirect to login
         if (response.status === 401) {
           localStorage.removeItem('auth_token');
