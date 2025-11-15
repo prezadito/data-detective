@@ -1,5 +1,5 @@
 import { api } from '@/services/api';
-import type { LoginCredentials, AuthResponse, User } from '@/types';
+import type { LoginCredentials, AuthResponse, User, RegisterData } from '@/types';
 import { getUserFromToken } from '@/utils/jwt';
 
 const ACCESS_TOKEN_KEY = 'auth_token';
@@ -34,6 +34,18 @@ export const authService = {
       ...user,
       created_at: new Date().toISOString(), // Will be replaced when we fetch from API
     };
+  },
+
+  /**
+   * Register a new user
+   * Note: Does not automatically log the user in
+   */
+  async register(data: RegisterData): Promise<User> {
+    const response = await api.post('auth/register', {
+      json: data,
+    }).json<User>();
+
+    return response;
   },
 
   /**
