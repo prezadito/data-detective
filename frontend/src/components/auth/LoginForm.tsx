@@ -54,17 +54,22 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         navigate('/dashboard');
       }
     } catch (error) {
-      // Handle different error types
-      if (error instanceof Error) {
-        // Check if it's a network error
-        if (error.message.includes('fetch')) {
-          setApiError('Connection failed. Please check your internet connection.');
+      // Handle ky HTTPError
+      if (error && typeof error === 'object' && 'response' in error) {
+        try {
+          const kyError = error as { response: Response };
+          const errorData = await kyError.response.json() as { detail?: string };
+          setApiError(errorData.detail || 'Login failed. Please try again.');
+        } catch {
+          setApiError('Login failed. Please try again.');
+        }
+      } else if (error instanceof Error) {
+        // Network errors (connection refused, timeout, etc.)
+        if (error.name === 'TypeError' || error.message.includes('fetch') || error.message.includes('network')) {
+          setApiError('Cannot connect to server. Make sure the backend is running at http://localhost:8000');
         } else {
           setApiError(error.message);
         }
-      } else if (typeof error === 'object' && error !== null && 'detail' in error) {
-        // API error with detail
-        setApiError((error as { detail: string }).detail);
       } else {
         setApiError('An unexpected error occurred. Please try again.');
       }
