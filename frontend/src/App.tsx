@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { DatabaseProvider } from '@/contexts/DatabaseContext';
 import { ProtectedRoute } from '@/components/routing/ProtectedRoute';
+import { RoleProtectedRoute } from '@/components/routing/RoleProtectedRoute';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { LoginPage } from '@/pages/LoginPage';
@@ -16,6 +17,7 @@ import { DatasetUploadPage } from '@/pages/DatasetUploadPage';
 import { DatasetDetailPage } from '@/pages/DatasetDetailPage';
 import { ChallengeBuilderPage } from '@/pages/ChallengeBuilderPage';
 import { ChallengeLibraryPage } from '@/pages/ChallengeLibraryPage';
+import { StudentListPage } from '@/pages/teacher/StudentListPage';
 
 function App() {
   return (
@@ -98,6 +100,14 @@ function App() {
                     <ProtectedRoute>
                       <ChallengeLibraryPage />
                     </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/teacher/students"
+                  element={
+                    <RoleProtectedRoute requiredRole="teacher">
+                      <StudentListPage />
+                    </RoleProtectedRoute>
                   }
                 />
                 <Route path="/" element={<Navigate to="/practice" replace />} />
