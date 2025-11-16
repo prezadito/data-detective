@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { leaderboardService } from '@/services/leaderboardService';
-import { Navigation } from '@/components/navigation/Navigation';
 import { LeaderboardTable } from '@/components/leaderboard';
 import { Button } from '@/components/ui/Button';
 import { showApiErrorToast } from '@/utils/toast';
@@ -81,8 +80,6 @@ export function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">

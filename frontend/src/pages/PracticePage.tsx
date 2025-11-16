@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { challengeService } from '@/services/challengeService';
-import { Navigation } from '@/components/navigation/Navigation';
 import { ChallengeCard } from '@/components/challenge';
 import { QueryEditor } from '@/components/query';
 import { Button } from '@/components/ui/Button';
@@ -179,8 +178,6 @@ export function PracticePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
       <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Top Controls */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">

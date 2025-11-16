@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService } from '@/services/userService';
-import { Navigation } from '@/components/navigation/Navigation';
 import { StudentTable } from '@/components/teacher/StudentTable';
 import { showApiErrorToast } from '@/utils/toast';
 import type { StudentListResponse } from '@/types';
@@ -99,8 +98,6 @@ export function StudentListPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">

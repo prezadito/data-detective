@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { progressService } from '@/services/progressService';
-import { Navigation } from '@/components/navigation/Navigation';
 import { ProgressBar, ChallengeList } from '@/components/progress';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { showApiErrorToast } from '@/utils/toast';
@@ -54,8 +53,6 @@ export function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
