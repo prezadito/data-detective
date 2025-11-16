@@ -147,11 +147,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         disabled={isSubmitting}
       />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+      <fieldset>
+        <legend className="block text-sm font-medium text-gray-700 mb-3">
           I am a
-        </label>
-        <div className="flex gap-6">
+        </legend>
+        <div className="flex gap-6" role="group" aria-labelledby="role-legend">
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
@@ -159,10 +159,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               {...register('role')}
               className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
               disabled={isSubmitting}
+              aria-describedby="student-description"
             />
             <span className="ml-2 text-sm text-gray-700">
               <span className="font-medium">Student</span>
-              <span className="block text-xs text-gray-500">Learn SQL through challenges</span>
+              <span id="student-description" className="block text-xs text-gray-500">Learn SQL through challenges</span>
             </span>
           </label>
           <label className="flex items-center cursor-pointer">
@@ -172,10 +173,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               {...register('role')}
               className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
               disabled={isSubmitting}
+              aria-describedby="teacher-description"
             />
             <span className="ml-2 text-sm text-gray-700">
               <span className="font-medium">Teacher</span>
-              <span className="block text-xs text-gray-500">Create and manage challenges</span>
+              <span id="teacher-description" className="block text-xs text-gray-500">Create and manage challenges</span>
             </span>
           </label>
         </div>
@@ -184,7 +186,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.role.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
       <Button
         type="submit"

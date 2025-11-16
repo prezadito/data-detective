@@ -178,7 +178,7 @@ export function PracticePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <main id="main-content" className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Top Controls */}
         <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col space-y-4">

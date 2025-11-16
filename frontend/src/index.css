@@ -4,3 +4,58 @@ body {
   margin: 0;
   min-height: 100vh;
 }
+
+/* Screen reader only utility - hide visually but available to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Remove sr-only on focus */
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Enhanced focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #3b82f6; /* blue-600 */
+  outline-offset: 2px;
+}
+
+/* High contrast focus for links */
+a:focus-visible {
+  outline: 2px solid #2563eb; /* blue-700 */
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
+/* Ensure focus is always visible, never hidden */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Improve focus visibility on interactive elements */
+[role="button"]:focus-visible,
+[role="link"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

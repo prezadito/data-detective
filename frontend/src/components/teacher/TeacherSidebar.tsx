@@ -54,6 +54,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
 
       {/* Sidebar */}
       <aside
+        aria-label="Teacher navigation sidebar"
         className={`
           fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50
           flex flex-col
@@ -67,7 +68,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-bold text-gray-900 flex items-center">
-                <span className="mr-2">🔍</span>
+                <span className="mr-2" aria-hidden="true">🔍</span>
                 Data Detective
               </h1>
               <p className="text-xs text-gray-600 mt-1">Teacher Portal</p>
@@ -96,7 +97,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav className="flex-1 overflow-y-auto p-4" aria-label="Teacher menu">
           <ul className="space-y-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -106,6 +107,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
                   <Link
                     to={item.path}
                     onClick={onClose} // Close mobile menu on navigation
+                    aria-current={isActive ? 'page' : undefined}
                     className={`
                       flex items-center px-4 py-3 rounded-lg text-sm font-medium
                       transition-colors
@@ -130,7 +132,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
         {/* Footer - User Info & Logout */}
         <div className="p-4 border-t border-gray-200">
           {user && (
-            <div className="mb-3 px-2">
+            <div className="mb-3 px-2" role="region" aria-label="User information">
               <p className="text-sm font-medium text-gray-900 truncate">
                 {user.name}
               </p>
@@ -143,6 +145,7 @@ export function TeacherSidebar({ isOpen, onClose }: TeacherSidebarProps) {
           <button
             onClick={handleLogout}
             className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            aria-label="Logout of your account"
           >
             Logout
           </button>
