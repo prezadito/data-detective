@@ -15,6 +15,8 @@ from app.routes import (
     export,
     bulk_import,
     challenges,
+    datasets,
+    custom_challenges,
 )
 
 
@@ -60,6 +62,8 @@ app.include_router(analytics.router)
 app.include_router(export.router)
 app.include_router(bulk_import.router)
 app.include_router(challenges.router)
+app.include_router(datasets.router)
+app.include_router(custom_challenges.router)
 
 
 @app.get("/")

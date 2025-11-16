@@ -270,3 +270,129 @@ export interface TableSchema {
   columns: TableColumn[];
   rowCount: number;
 }
+
+/**
+ * Dataset types (teacher-uploaded CSV files)
+ */
+export interface ColumnSchema {
+  name: string;
+  type: string; // "INTEGER", "REAL", "TEXT"
+}
+
+export interface DatasetSchema {
+  columns: ColumnSchema[];
+}
+
+export interface DatasetCreate {
+  name: string;
+  description?: string;
+}
+
+export interface DatasetResponse {
+  id: number;
+  name: string;
+  description: string | null;
+  original_filename: string;
+  table_name: string;
+  row_count: number;
+  schema: DatasetSchema;
+  created_at: string;
+}
+
+export interface DatasetListItem {
+  id: number;
+  name: string;
+  description: string | null;
+  row_count: number;
+  table_name: string;
+  challenge_count: number;
+  created_at: string;
+}
+
+export interface DatasetListResponse {
+  total: number;
+  datasets: DatasetListItem[];
+}
+
+export interface DatasetDetailResponse {
+  id: number;
+  name: string;
+  description: string | null;
+  table_name: string;
+  row_count: number;
+  schema: DatasetSchema;
+  sample_data: Record<string, any>[]; // Array of row objects
+  created_at: string;
+}
+
+/**
+ * Custom Challenge types (teacher-created challenges)
+ */
+export interface CustomChallengeCreate {
+  dataset_id: number;
+  title: string;
+  description: string;
+  points: number; // 50-500
+  difficulty: ChallengeDifficulty;
+  expected_query: string;
+  hints: [string, string, string]; // Exactly 3 hints
+}
+
+export interface CustomChallengeUpdate {
+  title?: string;
+  description?: string;
+  points?: number;
+  difficulty?: ChallengeDifficulty;
+  expected_query?: string;
+  hints?: [string, string, string];
+  is_active?: boolean;
+}
+
+export interface CustomChallengeResponse {
+  id: number;
+  dataset_id: number;
+  dataset_name: string;
+  title: string;
+  description: string;
+  points: number;
+  difficulty: ChallengeDifficulty;
+  expected_query: string;
+  hints: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomChallengeListItem {
+  id: number;
+  dataset_id: number;
+  dataset_name: string;
+  title: string;
+  points: number;
+  difficulty: ChallengeDifficulty;
+  is_active: boolean;
+  submission_count: number;
+  completion_rate: number; // 0-100%
+  created_at: string;
+}
+
+export interface CustomChallengeListResponse {
+  total: number;
+  challenges: CustomChallengeListItem[];
+}
+
+export interface CustomChallengeDetailResponse {
+  id: number;
+  dataset_id: number;
+  dataset_name: string;
+  title: string;
+  description: string;
+  points: number;
+  difficulty: ChallengeDifficulty;
+  expected_query: string;
+  hints: string[];
+  is_active: boolean;
+  expected_output: Record<string, any>[] | null;
+  created_at: string;
+  updated_at: string;
+}

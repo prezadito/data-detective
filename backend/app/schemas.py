@@ -172,25 +172,6 @@ class ProgressUpdate(BaseModel):
     hints_used: Optional[int] = None
 
 
-class ChallengeSubmitRequest(BaseModel):
-    """
-    Schema for challenge submission request.
-    Student submits their SQL query for a specific challenge.
-
-    Note: user_id is NOT in request body - it's extracted from JWT token.
-    This prevents students from submitting on behalf of others.
-    """
-
-    unit_id: int = Field(ge=1, description="Unit ID (must be >= 1)")
-    challenge_id: int = Field(
-        ge=1, description="Challenge ID within unit (must be >= 1)"
-    )
-    query: str = Field(
-        min_length=1, max_length=5000, description="SQL query submitted by student"
-    )
-    hints_used: int = Field(default=0, ge=0, description="Number of hints used (>= 0)")
-
-
 class ProgressDetailResponse(BaseModel):
     """
     Progress detail with challenge title and query.
@@ -583,3 +564,235 @@ class AllChallengesResponse(BaseModel):
 
     units: list[UnitChallenges]
     generated_at: datetime
+
+
+# ============================================================================
+# Dataset Schemas
+# ============================================================================
+
+
+class DatasetCreate(BaseModel):
+    """
+    Schema for creating a new dataset (used with file upload).
+    """
+
+    name: str = Field(min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=1000)
+
+
+class ColumnSchema(BaseModel):
+    """
+    Schema for a single column in a dataset.
+    """
+
+    name: str
+    type: str  # "INTEGER", "REAL", "TEXT"
+
+
+class DatasetSchema(BaseModel):
+    """
+    Schema describing the structure of a dataset.
+    """
+
+    columns: list[ColumnSchema]
+
+
+class DatasetResponse(BaseModel):
+    """
+    Basic dataset response schema.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str | None
+    original_filename: str
+    table_name: str
+    row_count: int
+    schema: DatasetSchema
+    created_at: datetime
+
+
+class DatasetListItem(BaseModel):
+    """
+    Dataset item in list view (without full schema).
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str | None
+    row_count: int
+    table_name: str
+    challenge_count: int  # Number of challenges using this dataset
+    created_at: datetime
+
+
+class DatasetListResponse(BaseModel):
+    """
+    Paginated list of datasets.
+    """
+
+    total: int
+    datasets: list[DatasetListItem]
+
+
+class DatasetDetailResponse(BaseModel):
+    """
+    Detailed dataset response including sample data.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str | None
+    table_name: str
+    row_count: int
+    schema: DatasetSchema
+    sample_data: list[dict]  # First 10 rows as list of dicts
+    created_at: datetime
+
+
+# ============================================================================
+# Custom Challenge Schemas
+# ============================================================================
+
+
+class CustomChallengeCreate(BaseModel):
+    """
+    Schema for creating a custom challenge.
+    """
+
+    dataset_id: int = Field(ge=1)
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(min_length=1, max_length=2000)
+    points: int = Field(ge=50, le=500, default=100)
+    difficulty: str = Field(pattern="^(easy|medium|hard)$", default="medium")
+    expected_query: str = Field(min_length=1, max_length=5000)
+    hints: list[str] = Field(min_length=3, max_length=3)  # Exactly 3 hints
+
+
+class CustomChallengeUpdate(BaseModel):
+    """
+    Schema for updating a custom challenge.
+    All fields are optional.
+    """
+
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, min_length=1, max_length=2000)
+    points: int | None = Field(default=None, ge=50, le=500)
+    difficulty: str | None = Field(default=None, pattern="^(easy|medium|hard)$")
+    expected_query: str | None = Field(default=None, min_length=1, max_length=5000)
+    hints: list[str] | None = Field(
+        default=None, min_length=3, max_length=3
+    )  # Exactly 3 hints
+    is_active: bool | None = None
+
+
+class CustomChallengeResponse(BaseModel):
+    """
+    Basic custom challenge response.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    dataset_id: int
+    dataset_name: str  # Joined from Dataset
+    title: str
+    description: str
+    points: int
+    difficulty: str
+    expected_query: str
+    hints: list[str]  # Parsed from JSON
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class CustomChallengeListItem(BaseModel):
+    """
+    Custom challenge item in list view.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    dataset_id: int
+    dataset_name: str
+    title: str
+    points: int
+    difficulty: str
+    is_active: bool
+    submission_count: int  # How many students attempted
+    completion_rate: float  # % who got it right (0-100)
+    created_at: datetime
+
+
+class CustomChallengeListResponse(BaseModel):
+    """
+    Paginated list of custom challenges.
+    """
+
+    total: int
+    challenges: list[CustomChallengeListItem]
+
+
+class CustomChallengeDetailResponse(BaseModel):
+    """
+    Detailed custom challenge response including expected output.
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    dataset_id: int
+    dataset_name: str
+    title: str
+    description: str
+    points: int
+    difficulty: str
+    expected_query: str
+    hints: list[str]
+    is_active: bool
+    expected_output: list[dict] | None  # Cached query result
+    created_at: datetime
+    updated_at: datetime
+
+
+# ============================================================================
+# Updated Challenge Submission Schema
+# ============================================================================
+
+
+class ChallengeSubmitRequest(BaseModel):
+    """
+    Schema for challenge submission request.
+    Student submits their SQL query for a specific challenge.
+
+    Note: user_id is NOT in request body - it's extracted from JWT token.
+    This prevents students from submitting on behalf of others.
+
+    Updated to support both hardcoded and custom challenges.
+    """
+
+    # For hardcoded challenges
+    unit_id: int | None = Field(
+        default=None, ge=1, description="Unit ID (must be >= 1)"
+    )
+    challenge_id: int | None = Field(
+        default=None, ge=1, description="Challenge ID within unit (must be >= 1)"
+    )
+
+    # For custom challenges
+    custom_challenge_id: int | None = Field(
+        default=None, ge=1, description="Custom challenge ID (must be >= 1)"
+    )
+
+    query: str = Field(
+        min_length=1, max_length=5000, description="SQL query submitted by student"
+    )
+    hints_used: int = Field(default=0, ge=0, description="Number of hints used (>= 0)")
