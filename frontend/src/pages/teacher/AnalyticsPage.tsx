@@ -140,36 +140,41 @@ export function AnalyticsPage() {
     <TeacherLayout breadcrumbs={breadcrumbs}>
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                <span className="mr-3">📊</span>
-                Class Analytics
+        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center">
+                <span className="mr-2 sm:mr-3">📊</span>
+                <span className="truncate">Class Analytics</span>
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-sm sm:text-base text-gray-600 mt-2">
                 Comprehensive insights into class performance and trends
               </p>
             </div>
             {user && (
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Teacher</p>
-                <p className="font-medium text-gray-900">{user.name}</p>
+              <div className="text-left sm:text-right flex-shrink-0">
+                <p className="text-xs sm:text-sm text-gray-600">Teacher</p>
+                <p className="text-sm sm:text-base font-medium text-gray-900 truncate">
+                  {user.name}
+                </p>
               </div>
             )}
           </div>
 
           {/* Cache Info */}
-          <div className="text-xs text-gray-500 mt-4">
-            Generated: {new Date(data.generated_at).toLocaleString()} •
-            Cache expires: {new Date(data.cache_expires_at).toLocaleTimeString()}
+          <div className="text-xs text-gray-500 mt-4 break-words">
+            <span className="block sm:inline">Generated: {new Date(data.generated_at).toLocaleString()}</span>
+            <span className="hidden sm:inline"> • </span>
+            <span className="block sm:inline">Cache expires: {new Date(data.cache_expires_at).toLocaleTimeString()}</span>
           </div>
         </div>
 
         {/* Key Metrics Grid */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Key Metrics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 px-1">
+            Key Metrics
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <MetricsCard
               icon="👥"
               label="Total Students"
@@ -214,12 +219,12 @@ export function AnalyticsPage() {
         </div>
 
         {/* Weekly Trends Chart */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <ChartContainer
             title="Weekly Trends"
             subtitle="Completions and points earned over the past 4 weeks"
           >
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250} className="sm:!h-[300px]">
               <LineChart data={weeklyTrendsData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="week" />
@@ -258,12 +263,12 @@ export function AnalyticsPage() {
         </div>
 
         {/* Challenge Performance Chart */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <ChartContainer
             title="Challenge Performance"
             subtitle="Success rate for each challenge across all students"
           >
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={300} className="sm:!h-[400px]">
               <BarChart data={challengeData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -272,6 +277,7 @@ export function AnalyticsPage() {
                   textAnchor="end"
                   height={100}
                   interval={0}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis label={{ value: 'Success Rate (%)', angle: -90, position: 'insideLeft' }} />
                 <Tooltip
@@ -310,14 +316,14 @@ export function AnalyticsPage() {
         </div>
 
         {/* Difficulty Distribution */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 px-1">
             Difficulty Distribution
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Easiest Challenges */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-green-900 mb-3 sm:mb-4 flex items-center">
                 <span className="mr-2">✓</span>
                 Easiest Challenges
               </h3>
@@ -325,20 +331,20 @@ export function AnalyticsPage() {
                 {data.difficulty_distribution.easiest_challenges.map((challenge, index) => (
                   <div
                     key={`${challenge.unit_id}-${challenge.challenge_id}`}
-                    className="bg-green-50 border border-green-200 rounded-lg p-4"
+                    className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg font-bold text-green-700">
+                      <span className="text-base sm:text-lg font-bold text-green-700">
                         #{index + 1}
                       </span>
-                      <span className="text-2xl font-bold text-green-900">
+                      <span className="text-xl sm:text-2xl font-bold text-green-900">
                         {Math.round(challenge.success_rate)}%
                       </span>
                     </div>
-                    <h4 className="font-semibold text-green-900 mb-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-green-900 mb-1 break-words">
                       {challenge.challenge_title}
                     </h4>
-                    <p className="text-sm text-green-700">
+                    <p className="text-xs sm:text-sm text-green-700">
                       {challenge.total_attempts} attempts • {challenge.correct_attempts} correct
                     </p>
                   </div>
@@ -347,8 +353,8 @@ export function AnalyticsPage() {
             </div>
 
             {/* Hardest Challenges */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-red-900 mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-red-900 mb-3 sm:mb-4 flex items-center">
                 <span className="mr-2">⚠</span>
                 Hardest Challenges
               </h3>
@@ -356,20 +362,20 @@ export function AnalyticsPage() {
                 {data.difficulty_distribution.hardest_challenges.map((challenge, index) => (
                   <div
                     key={`${challenge.unit_id}-${challenge.challenge_id}`}
-                    className="bg-red-50 border border-red-200 rounded-lg p-4"
+                    className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg font-bold text-red-700">
+                      <span className="text-base sm:text-lg font-bold text-red-700">
                         #{index + 1}
                       </span>
-                      <span className="text-2xl font-bold text-red-900">
+                      <span className="text-xl sm:text-2xl font-bold text-red-900">
                         {Math.round(challenge.success_rate)}%
                       </span>
                     </div>
-                    <h4 className="font-semibold text-red-900 mb-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-red-900 mb-1 break-words">
                       {challenge.challenge_title}
                     </h4>
-                    <p className="text-sm text-red-700">
+                    <p className="text-xs sm:text-sm text-red-700">
                       {challenge.total_attempts} attempts • {challenge.correct_attempts} correct •{' '}
                       {challenge.avg_hints_per_attempt.toFixed(1)} avg hints
                     </p>
@@ -382,16 +388,18 @@ export function AnalyticsPage() {
 
         {/* At-Risk Students */}
         {atRiskStudents.length > 0 && (
-          <div className="mb-8">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+          <div className="mb-6 sm:mb-8">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
                 <span className="mr-2">🚨</span>
                 At-Risk Students
               </h2>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Students with less than 30% completion rate who may need additional support
               </p>
-              <div className="overflow-x-auto">
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -437,7 +445,7 @@ export function AnalyticsPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             onClick={() => navigate(`/teacher/students/${student.id}`)}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium min-h-[44px] px-3 py-2"
                           >
                             View Details →
                           </button>
@@ -446,6 +454,54 @@ export function AnalyticsPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {atRiskStudents.map((student) => (
+                  <div
+                    key={student.id}
+                    className="bg-red-50 border border-red-200 rounded-lg p-4"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-900 truncate">
+                          {student.name}
+                        </h4>
+                        <p className="text-xs text-gray-600 truncate mt-1">
+                          {student.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Completion</p>
+                        <p className="text-sm">
+                          <span className="font-medium text-red-600">
+                            {Math.round((student.challenges_completed / 7) * 100)}%
+                          </span>
+                          <span className="text-gray-500 text-xs ml-1">
+                            ({student.challenges_completed}/7)
+                          </span>
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">Points</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {student.total_points}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => navigate(`/teacher/students/${student.id}`)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg px-4 py-3 transition-colors min-h-[44px]"
+                    >
+                      View Details →
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

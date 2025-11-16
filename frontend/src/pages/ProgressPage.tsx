@@ -53,23 +53,25 @@ export function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Page Header */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                <span className="mr-3">📊</span>
-                Your Progress
+        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center">
+                <span className="mr-2 sm:mr-3">📊</span>
+                <span className="truncate">Your Progress</span>
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-sm sm:text-base text-gray-600 mt-2">
                 Track your learning journey and see how far you've come!
               </p>
             </div>
             {user && (
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Student</p>
-                <p className="font-medium text-gray-900">{user.name}</p>
+              <div className="text-left sm:text-right flex-shrink-0">
+                <p className="text-xs sm:text-sm text-gray-600">Student</p>
+                <p className="text-sm sm:text-base font-medium text-gray-900 truncate">
+                  {user.name}
+                </p>
               </div>
             )}
           </div>
@@ -97,53 +99,57 @@ export function ProgressPage() {
 
           {/* Progress Summary */}
           {progress && !isLoading && !error && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                 {/* Total Points */}
-                <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg p-6 text-white shadow-lg">
+                <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg p-4 sm:p-6 text-white shadow-lg">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-yellow-100 text-sm font-medium">Total Points</p>
-                      <p className="text-4xl font-bold mt-1">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-yellow-100 text-xs sm:text-sm font-medium">
+                        Total Points
+                      </p>
+                      <p className="text-3xl sm:text-4xl font-bold mt-1 truncate">
                         {progress.summary.total_points}
                       </p>
                     </div>
-                    <span className="text-5xl">🏆</span>
+                    <span className="text-4xl sm:text-5xl ml-2">🏆</span>
                   </div>
                 </div>
 
                 {/* Challenges Completed */}
-                <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-lg p-6 text-white shadow-lg">
+                <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-lg p-4 sm:p-6 text-white shadow-lg">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-green-100 text-sm font-medium">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-green-100 text-xs sm:text-sm font-medium">
                         Challenges Completed
                       </p>
-                      <p className="text-4xl font-bold mt-1">
+                      <p className="text-3xl sm:text-4xl font-bold mt-1 truncate">
                         {progress.summary.total_completed}
                       </p>
                     </div>
-                    <span className="text-5xl">✅</span>
+                    <span className="text-4xl sm:text-5xl ml-2">✅</span>
                   </div>
                 </div>
 
                 {/* Completion Rate */}
-                <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg p-6 text-white shadow-lg">
+                <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg p-4 sm:p-6 text-white shadow-lg sm:col-span-2 lg:col-span-1">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-blue-100 text-sm font-medium">Completion Rate</p>
-                      <p className="text-4xl font-bold mt-1">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-blue-100 text-xs sm:text-sm font-medium">
+                        Completion Rate
+                      </p>
+                      <p className="text-3xl sm:text-4xl font-bold mt-1 truncate">
                         {Math.round(progress.summary.completion_percentage)}%
                       </p>
                     </div>
-                    <span className="text-5xl">📈</span>
+                    <span className="text-4xl sm:text-5xl ml-2">📈</span>
                   </div>
                 </div>
               </div>
 
               {/* Overall Progress Bar */}
-              <div className="bg-gray-50 rounded-lg p-6">
+              <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
                 <ProgressBar
                   current={progress.summary.total_completed}
                   total={7}
@@ -160,16 +166,18 @@ export function ProgressPage() {
           <div>
             {/* Filter Bar */}
             {availableUnits.length > 1 && (
-              <div className="bg-white rounded-lg shadow p-4 mb-6">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm font-medium text-gray-700">Filter by unit:</span>
-                  <div className="flex items-center space-x-2">
+              <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                  <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                    Filter by unit:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setSelectedUnit(null)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      className={`flex-1 sm:flex-none px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                         selectedUnit === null
                           ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300'
                       }`}
                     >
                       All Units
@@ -178,10 +186,10 @@ export function ProgressPage() {
                       <button
                         key={unitId}
                         onClick={() => setSelectedUnit(unitId)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        className={`flex-1 sm:flex-none px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                           selectedUnit === unitId
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300'
                         }`}
                       >
                         Unit {unitId}
