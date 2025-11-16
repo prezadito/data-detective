@@ -92,11 +92,9 @@ export function ProfilePage() {
     await updateProfile({ name: editedName.trim() });
   };
 
-  const isLoading = isLoadingUser || isLoadingProgress || isLoadingLeaderboard;
-  const hasError = userError || progressError;
-
-  // Loading state
-  if (isLoading && !user) {
+  // Only block on critical user data loading
+  // Loading state - only show if user data hasn't loaded yet
+  if (isLoadingUser && !user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />
@@ -107,8 +105,9 @@ export function ProfilePage() {
     );
   }
 
-  // Error state
-  if (hasError || !user) {
+  // Error state - only error out if critical user data fails
+  // Progress and leaderboard errors are non-fatal
+  if (userError || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />
@@ -232,6 +231,15 @@ export function ProfilePage() {
 
             {isLoadingProgress ? (
               <LoadingSpinner size="sm" text="Loading stats..." />
+            ) : progressError ? (
+              <div className="border-l-4 border-orange-500 bg-orange-50 p-4">
+                <p className="text-sm font-medium text-orange-700">
+                  Unable to load statistics
+                </p>
+                <p className="text-xs text-orange-600 mt-1">
+                  Your progress data could not be loaded at this time.
+                </p>
+              </div>
             ) : progressData ? (
               <div className="space-y-4">
                 {/* Total Points */}
@@ -286,7 +294,14 @@ export function ProfilePage() {
                 )}
               </div>
             ) : (
-              <p className="text-gray-500">No progress data available</p>
+              <div className="border-l-4 border-gray-500 bg-gray-50 p-4">
+                <p className="text-sm font-medium text-gray-700">
+                  No progress yet
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
+                  Complete challenges to see your statistics here.
+                </p>
+              </div>
             )}
           </div>
         </div>
