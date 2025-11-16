@@ -1,18 +1,9 @@
-import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { RegisterForm } from '@/components/auth/RegisterForm';
 
 export function RegisterPage() {
-  const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
-
-  // Redirect to dashboard if already authenticated
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [isAuthenticated, isLoading, navigate]);
+  const { isLoading } = useAuth();
 
   // Show loading state while checking authentication
   if (isLoading) {
