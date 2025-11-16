@@ -431,3 +431,108 @@ export interface StudentListParams {
   offset?: number;
   limit?: number;
 }
+
+/**
+ * Detailed student view types (for teacher dashboard)
+ * Matching backend StudentDetailResponse schema
+ */
+
+/**
+ * Single attempt record for a challenge
+ */
+export interface AttemptRecord {
+  unit_id: number;
+  challenge_id: number;
+  query: string;
+  is_correct: boolean;
+  attempted_at: string;
+}
+
+/**
+ * Single hint access record
+ */
+export interface HintAccessRecord {
+  unit_id: number;
+  challenge_id: number;
+  hint_level: number;
+  accessed_at: string;
+}
+
+/**
+ * Metrics for a single challenge
+ */
+export interface ChallengeMetrics {
+  total_attempts: number;
+  correct_attempts: number;
+  success_rate: number; // 0-100
+  total_hints_used: number;
+  last_attempted: string;
+}
+
+/**
+ * Detailed view of a single challenge with progress
+ */
+export interface ChallengeProgressDetail {
+  unit_id: number;
+  challenge_id: number;
+  title: string;
+  description: string;
+  points: number;
+  metrics: ChallengeMetrics;
+  attempts: AttemptRecord[];
+  hints: HintAccessRecord[];
+}
+
+/**
+ * Detailed view of a unit with all challenges
+ */
+export interface UnitDetail {
+  unit_id: number;
+  unit_title: string;
+  challenges: ChallengeProgressDetail[];
+}
+
+/**
+ * Overall student metrics across all challenges
+ */
+export interface StudentMetrics {
+  total_points: number;
+  total_challenges_completed: number;
+  total_attempts: number;
+  average_attempts_per_challenge: number;
+  overall_success_rate: number; // 0-100
+  total_hints_used: number;
+}
+
+/**
+ * Single activity log entry (attempt or hint access)
+ */
+export interface ActivityLogEntry {
+  action_type: 'attempt' | 'hint';
+  unit_id: number;
+  challenge_id: number;
+  challenge_title: string;
+  timestamp: string;
+  details: string;
+}
+
+/**
+ * Complete detailed student response
+ * Returned by GET /users/{user_id}?detailed=true
+ */
+export interface StudentDetailResponse {
+  user: User;
+  metrics: StudentMetrics;
+  units: UnitDetail[];
+  activity_log: ActivityLogEntry[];
+}
+
+/**
+ * Struggling area detection for student overview
+ */
+export interface StrugglingArea {
+  severity: 'high' | 'medium' | 'low';
+  message: string;
+  recommendation: string;
+  color: string;
+}

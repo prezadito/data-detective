@@ -1,5 +1,27 @@
 import { api } from '@/services/api';
-import type { User, UpdateUserRequest, StudentListResponse, StudentListParams } from '@/types';
+import type { User, UpdateUserRequest, StudentListResponse, StudentListParams, StudentDetailResponse } from '@/types';
+
+/**
+ * Get specific student details by ID (teachers only)
+ */
+async function getStudentById(userId: number, detailed: true): Promise<StudentDetailResponse>;
+async function getStudentById(userId: number, detailed?: false): Promise<User>;
+async function getStudentById(userId: number, detailed: boolean = false): Promise<User | StudentDetailResponse> {
+  const searchParams = new URLSearchParams();
+  if (detailed) {
+    searchParams.append('detailed', 'true');
+  }
+
+  const url = `users/${userId}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+
+  if (detailed) {
+    const response = await api.get(url).json<StudentDetailResponse>();
+    return response;
+  } else {
+    const response = await api.get(url).json<User>();
+    return response;
+  }
+}
 
 /**
  * User service for profile management
@@ -49,15 +71,8 @@ export const userService = {
 
   /**
    * Get specific student details by ID (teachers only)
+   * @param userId - The user ID to fetch
+   * @param detailed - If true, returns StudentDetailResponse with full progress data
    */
-  async getStudentById(userId: number, detailed: boolean = false): Promise<User> {
-    const searchParams = new URLSearchParams();
-    if (detailed) {
-      searchParams.append('detailed', 'true');
-    }
-
-    const url = `users/${userId}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    const response = await api.get(url).json<User>();
-    return response;
-  },
+  getStudentById,
 };
