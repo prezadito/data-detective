@@ -176,3 +176,72 @@ export interface PaginatedResponse<T> {
   page_size: number;
   total_pages: number;
 }
+
+/**
+ * Challenge detail from backend
+ * Matches backend ChallengeDetail schema
+ */
+export interface ChallengeDetail {
+  unit_id: number;
+  challenge_id: number;
+  title: string;
+  points: number;
+  description: string;
+  sample_solution: string | null; // null for students, visible for teachers
+  completion_rate: number; // 0-100%
+  avg_attempts: number;
+  total_attempts: number;
+  success_count: number;
+}
+
+/**
+ * Challenges grouped by unit
+ * Matches backend UnitChallenges schema
+ */
+export interface UnitChallenges {
+  unit_id: number;
+  unit_title: string; // e.g., "Unit 1: SELECT Basics"
+  challenges: ChallengeDetail[];
+}
+
+/**
+ * All challenges response from GET /challenges
+ * Matches backend AllChallengesResponse schema
+ */
+export interface AllChallengesResponse {
+  units: UnitChallenges[];
+  generated_at: string;
+}
+
+/**
+ * Hint access request
+ * For POST /hints/access
+ */
+export interface HintAccessRequest {
+  unit_id: number;
+  challenge_id: number;
+  hint_level: number; // 1, 2, or 3
+}
+
+/**
+ * Hint access response
+ * From POST /hints/access
+ */
+export interface HintAccessResponse {
+  hint_id: number;
+  accessed_at: string;
+}
+
+/**
+ * Database schema types for SchemaView component
+ */
+export interface TableColumn {
+  name: string;
+  type: 'INTEGER' | 'TEXT' | 'REAL';
+}
+
+export interface TableSchema {
+  name: string;
+  columns: TableColumn[];
+  rowCount: number;
+}
