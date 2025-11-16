@@ -273,7 +273,7 @@ async def list_all_users(
         default="name", pattern="^(name|points|date)$"
     ),  # Validate sort parameter
     offset: int = Query(default=0, ge=0),
-    limit: int = Query(default=10, ge=1, le=100),
+    limit: int = Query(default=10, ge=1, le=1000),
 ):
     """
     List all users with filtering, sorting, and pagination (teachers only).
@@ -285,7 +285,7 @@ async def list_all_users(
         role: Filter by user role (student|teacher). Optional.
         sort: Sort by field (name|points|date). Default: name
         offset: Pagination offset. Default: 0
-        limit: Pagination limit (1-100). Default: 10
+        limit: Pagination limit (1-1000). Default: 10
 
     Returns:
         StudentListResponse with paginated students and their aggregated stats
@@ -293,7 +293,7 @@ async def list_all_users(
     Raises:
         HTTPException: 401 if not authenticated
         HTTPException: 403 if user is not a teacher
-        HTTPException: 422 if validation fails (invalid sort or limit)
+        HTTPException: 422 if validation fails (invalid sort or limit > 1000)
     """
     # Build aggregation subquery to get stats per user
     stats_subquery = (

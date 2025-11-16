@@ -1052,15 +1052,15 @@ def test_list_users_pagination_offset(client: TestClient):
 
 
 def test_list_users_pagination_limit_enforced(client: TestClient):
-    """Test that limit parameter is enforced (max 100)."""
+    """Test that limit parameter is enforced (max 1000)."""
     # Create teacher
     teacher_token = create_user_and_get_token(
         client, "teacher@test.com", "password123", "Teacher", "teacher"
     )
 
-    # Try to use limit > 100
+    # Try to use limit > 1000
     response = client.get(
-        "/users?limit=200",
+        "/users?limit=2000",
         headers={"Authorization": f"Bearer {teacher_token}"},
     )
 
