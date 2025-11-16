@@ -396,3 +396,38 @@ export interface CustomChallengeDetailResponse {
   created_at: string;
   updated_at: string;
 }
+
+/**
+ * Student with aggregated statistics
+ * Used for teacher dashboard student list
+ */
+export interface StudentWithStats {
+  id: number;
+  email: string;
+  name: string;
+  role: UserRole;
+  created_at: string;
+  total_points: number;
+  challenges_completed: number;
+}
+
+/**
+ * Student list response with pagination
+ * Returned by GET /users endpoint
+ */
+export interface StudentListResponse {
+  students: StudentWithStats[];
+  total_count: number;
+  offset: number;
+  limit: number;
+}
+
+/**
+ * Query parameters for fetching student list
+ */
+export interface StudentListParams {
+  role?: UserRole;
+  sort?: 'name' | 'points' | 'date';
+  offset?: number;
+  limit?: number;
+}
