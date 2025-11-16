@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService } from '@/services/userService';
 import { StudentTable } from '@/components/teacher/StudentTable';
+import { ExportButton } from '@/components/teacher/ExportButton';
+import { ImportModal } from '@/components/teacher/ImportModal';
 import { showApiErrorToast } from '@/utils/toast';
 import type { StudentListResponse } from '@/types';
 
@@ -15,6 +17,7 @@ export function StudentListPage() {
   const [data, setData] = useState<StudentListResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   // Get query params from URL or defaults
   const sortBy = (searchParams.get('sort') as 'name' | 'points' | 'date') || 'name';
@@ -25,29 +28,30 @@ export function StudentListPage() {
   // Calculate offset from page
   const offset = (page - 1) * pageSize;
 
+  // Fetch students function (reusable)
+  const fetchStudents = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await userService.getStudents({
+        role: 'student',
+        sort: sortBy,
+        offset,
+        limit: pageSize,
+      });
+      setData(response);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load students';
+      setError(errorMessage);
+      await showApiErrorToast(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Fetch students on mount and when params change
   useEffect(() => {
-    async function fetchStudents() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const response = await userService.getStudents({
-          role: 'student',
-          sort: sortBy,
-          offset,
-          limit: pageSize,
-        });
-        setData(response);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to load students';
-        setError(errorMessage);
-        await showApiErrorToast(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     fetchStudents();
   }, [sortBy, offset, pageSize]);
 
@@ -96,6 +100,11 @@ export function StudentListPage() {
     navigate(`/teacher/students/${studentId}`);
   };
 
+  // Handle import success - refresh student list
+  const handleImportSuccess = () => {
+    fetchStudents();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -117,6 +126,20 @@ export function StudentListPage() {
                 <p className="font-medium text-gray-900">{user.name}</p>
               </div>
             )}
+          </div>
+
+          {/* Import/Export Actions */}
+          <div className="flex gap-3 mb-6">
+            <ExportButton variant="outline" size="md" />
+            <button
+              onClick={() => setIsImportModalOpen(true)}
+              className="inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 px-4 py-2 text-base bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:bg-blue-800"
+            >
+              <span className="mr-2" aria-hidden="true">
+                📤
+              </span>
+              Import Students
+            </button>
           </div>
 
           {/* Search Bar */}
@@ -298,6 +321,13 @@ export function StudentListPage() {
           </div>
         )}
       </main>
+
+      {/* Import Modal */}
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportSuccess={handleImportSuccess}
+      />
     </div>
   );
 }
