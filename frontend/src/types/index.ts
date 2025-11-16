@@ -636,3 +636,30 @@ export interface BulkImportResponse {
   imported_students: ImportedStudent[];
   errors: BulkImportError[];
 }
+
+/**
+ * Weekly report types for progress summaries (teachers only)
+ */
+
+/**
+ * Summary of a single student's progress in the past week
+ * Used in weekly reports
+ */
+export interface StudentProgressSummary {
+  student_name: string;
+  completions_this_week: number;
+  points_this_week: number;
+}
+
+/**
+ * Complete weekly progress report for all students
+ * Returned by GET /reports/weekly
+ */
+export interface WeeklyReportResponse {
+  students_active: number; // Students with activity in past 7 days
+  total_completions: number; // Total challenges completed
+  avg_points_per_student: number; // Average points per active student
+  top_performers: StudentProgressSummary[]; // Top 5 by points
+  struggling_students: StudentProgressSummary[]; // <3 completions
+  generated_at: string; // ISO datetime string
+}
