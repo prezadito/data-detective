@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService } from '@/services/userService';
+import { TeacherLayout } from '@/components/teacher/TeacherLayout';
 import { StudentTable } from '@/components/teacher/StudentTable';
 import { ExportButton } from '@/components/teacher/ExportButton';
 import { ImportModal } from '@/components/teacher/ImportModal';
@@ -105,9 +106,15 @@ export function StudentListPage() {
     fetchStudents();
   };
 
+  // Breadcrumbs
+  const breadcrumbs = [
+    { label: 'Dashboard', path: '/teacher/dashboard' },
+    { label: 'Students' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <TeacherLayout breadcrumbs={breadcrumbs}>
+      <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -320,7 +327,6 @@ export function StudentListPage() {
             </div>
           </div>
         )}
-      </main>
 
       {/* Import Modal */}
       <ImportModal
@@ -328,6 +334,7 @@ export function StudentListPage() {
         onClose={() => setIsImportModalOpen(false)}
         onImportSuccess={handleImportSuccess}
       />
-    </div>
+      </div>
+    </TeacherLayout>
   );
 }
