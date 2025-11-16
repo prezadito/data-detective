@@ -52,6 +52,8 @@ app.add_middleware(
 )
 
 # Include routers
+# NOTE: Order matters! Custom challenges must come before challenges
+# to avoid route conflicts (/challenges/custom vs /challenges/{unit_id})
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(progress.router)
@@ -61,9 +63,9 @@ app.include_router(reports.router)
 app.include_router(analytics.router)
 app.include_router(export.router)
 app.include_router(bulk_import.router)
-app.include_router(challenges.router)
 app.include_router(datasets.router)
-app.include_router(custom_challenges.router)
+app.include_router(custom_challenges.router)  # Before challenges!
+app.include_router(challenges.router)
 
 
 @app.get("/")

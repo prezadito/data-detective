@@ -140,14 +140,10 @@ def create_table_from_dataframe(
     session.exec(text(create_sql))
     session.commit()
 
-    # Insert data
-    # Use pandas to_sql for efficient insertion
-    # Note: We need to use the underlying SQLAlchemy connection
-    from sqlalchemy import create_engine
-    from app.database import DATABASE_URL
-
-    engine = create_engine(DATABASE_URL)
-    df.to_sql(table_name, engine, if_exists="append", index=False)
+    # Insert data using pandas to_sql
+    # Use the session's connection/engine
+    connection = session.connection()
+    df.to_sql(table_name, connection, if_exists="append", index=False)
 
     return {"columns": columns}
 
@@ -460,7 +456,7 @@ def get_dataset_detail(
         rows = result.fetchall()
 
         # Convert to list of dicts
-        column_names = [col["name"] for col in schema_obj.columns]
+        column_names = [col.name for col in schema_obj.columns]
         sample_data = [dict(zip(column_names, row)) for row in rows]
 
     except Exception as e:

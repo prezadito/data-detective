@@ -149,14 +149,16 @@ class ProgressResponse(BaseModel):
     """
     Schema for progress in responses.
     Returns all progress data including timestamps.
+    Supports both hardcoded and custom challenges.
     """
 
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     user_id: int
-    unit_id: int
-    challenge_id: int
+    unit_id: int | None  # None for custom challenges
+    challenge_id: int | None  # None for custom challenges
+    custom_challenge_id: int | None = None  # Set for custom challenges
     points_earned: int
     hints_used: int
     completed_at: datetime
