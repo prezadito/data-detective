@@ -22,18 +22,21 @@ import { StudentListPage } from '@/pages/teacher/StudentListPage';
 import { StudentDetailPage } from '@/pages/teacher/StudentDetailPage';
 import { AnalyticsPage } from '@/pages/teacher/AnalyticsPage';
 import { WeeklyReportPage } from '@/pages/teacher/WeeklyReportPage';
+import { Dashboard as TeacherDashboard } from '@/pages/teacher/Dashboard';
 
 /**
  * Layout wrapper that conditionally renders Navigation
  * Only shows navigation on authenticated pages (not login/register)
+ * Teacher routes use TeacherLayout with sidebar instead
  */
 function AppLayout() {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isTeacherRoute = location.pathname.startsWith('/teacher');
 
   return (
     <>
-      {!isAuthPage && <Navigation />}
+      {!isAuthPage && !isTeacherRoute && <Navigation />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -108,6 +111,14 @@ function AppLayout() {
             <ProtectedRoute>
               <ChallengeLibraryPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/dashboard"
+          element={
+            <RoleProtectedRoute requiredRole="teacher">
+              <TeacherDashboard />
+            </RoleProtectedRoute>
           }
         />
         <Route

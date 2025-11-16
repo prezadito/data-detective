@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { reportService } from '@/services/reportService';
+import { TeacherLayout } from '@/components/teacher/TeacherLayout';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { MetricsCard } from '@/components/teacher/MetricsCard';
 import { showApiErrorToast } from '@/utils/toast';
@@ -33,48 +34,51 @@ export function WeeklyReportPage() {
     fetchWeeklyReport();
   }, []);
 
+  // Breadcrumbs
+  const breadcrumbs = [
+    { label: 'Dashboard', path: '/teacher/dashboard' },
+    { label: 'Reports', path: '/teacher/reports/weekly' },
+    { label: 'Weekly' },
+  ];
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-            <LoadingSpinner />
-            <p className="text-gray-600 mt-4">Loading weekly report...</p>
-          </div>
-        </main>
-      </div>
+      <TeacherLayout breadcrumbs={breadcrumbs}>
+        <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+          <LoadingSpinner />
+          <p className="text-gray-600 mt-4">Loading weekly report...</p>
+        </div>
+      </TeacherLayout>
     );
   }
 
   // Error state
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-lg p-12">
-            <div className="border-l-4 border-red-500 bg-red-50 p-4">
-              <div className="flex items-start">
-                <span className="text-red-500 mr-2 mt-0.5">⚠</span>
-                <div>
-                  <p className="text-sm font-medium text-red-800">
-                    Error loading weekly report
-                  </p>
-                  <p className="text-sm text-red-700 mt-1">
-                    {error || 'Weekly report data not available'}
-                  </p>
-                </div>
+      <TeacherLayout breadcrumbs={breadcrumbs}>
+        <div className="bg-white rounded-lg shadow-lg p-12">
+          <div className="border-l-4 border-red-500 bg-red-50 p-4">
+            <div className="flex items-start">
+              <span className="text-red-500 mr-2 mt-0.5">⚠</span>
+              <div>
+                <p className="text-sm font-medium text-red-800">
+                  Error loading weekly report
+                </p>
+                <p className="text-sm text-red-700 mt-1">
+                  {error || 'Weekly report data not available'}
+                </p>
               </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </TeacherLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <TeacherLayout breadcrumbs={breadcrumbs}>
+      <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -321,7 +325,7 @@ export function WeeklyReportPage() {
             </div>
           )}
         </div>
-      </main>
-    </div>
+      </div>
+    </TeacherLayout>
   );
 }
