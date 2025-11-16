@@ -119,7 +119,7 @@ export interface ProgressDetailResponse {
 
 export interface ProgressSummaryResponse {
   summary: ProgressSummaryStats;
-  progress: ProgressDetailResponse[];
+  progress_items: ProgressDetailResponse[];
 }
 
 /**
