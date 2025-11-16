@@ -11,6 +11,11 @@ import { ProfilePage } from '@/pages/ProfilePage';
 import { PracticePage } from '@/pages/PracticePage';
 import { ProgressPage } from '@/pages/ProgressPage';
 import { LeaderboardPage } from '@/pages/LeaderboardPage';
+import { DatasetsPage } from '@/pages/DatasetsPage';
+import { DatasetUploadPage } from '@/pages/DatasetUploadPage';
+import { DatasetDetailPage } from '@/pages/DatasetDetailPage';
+import { ChallengeBuilderPage } from '@/pages/ChallengeBuilderPage';
+import { ChallengeLibraryPage } from '@/pages/ChallengeLibraryPage';
 
 function App() {
   return (
@@ -52,6 +57,46 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/datasets"
+                  element={
+                    <ProtectedRoute>
+                      <DatasetsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/datasets/upload"
+                  element={
+                    <ProtectedRoute>
+                      <DatasetUploadPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/datasets/:id"
+                  element={
+                    <ProtectedRoute>
+                      <DatasetDetailPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/challenges/custom/new"
+                  element={
+                    <ProtectedRoute>
+                      <ChallengeBuilderPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/challenges/custom"
+                  element={
+                    <ProtectedRoute>
+                      <ChallengeLibraryPage />
                     </ProtectedRoute>
                   }
                 />

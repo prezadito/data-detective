@@ -2,7 +2,7 @@
 Database models for SQL Query Master.
 """
 
-from sqlmodel import SQLModel, Field, UniqueConstraint
+from sqlmodel import SQLModel, Field, UniqueConstraint, Column, Text
 from typing import Optional
 from datetime import datetime
 
@@ -89,12 +89,13 @@ class Progress(SQLModel, table=True):
     Progress model - tracks student progress on challenges.
 
     Records when a student completes a challenge, tracking:
-    - Which challenge was completed
+    - Which challenge was completed (hardcoded or custom)
     - When it was completed
     - Points earned
     - How many hints were used
 
     One record per student per challenge (unique constraint).
+    For custom challenges, unit_id and challenge_id are nullable.
     """
 
     __tablename__ = "progress"
@@ -102,7 +103,11 @@ class Progress(SQLModel, table=True):
     # Unique constraint: one progress record per user per challenge
     __table_args__ = (
         UniqueConstraint(
-            "user_id", "unit_id", "challenge_id", name="unique_user_challenge"
+            "user_id",
+            "unit_id",
+            "challenge_id",
+            "custom_challenge_id",
+            name="unique_user_challenge",
         ),
     )
 
@@ -112,9 +117,14 @@ class Progress(SQLModel, table=True):
     # Foreign keys
     user_id: int = Field(foreign_key="users.id", index=True)
 
-    # Challenge identifiers (no foreign keys yet - tables don't exist)
-    unit_id: int = Field(index=True)
-    challenge_id: int = Field(index=True)
+    # Challenge identifiers (for hardcoded challenges)
+    unit_id: Optional[int] = Field(default=None, index=True)
+    challenge_id: Optional[int] = Field(default=None, index=True)
+
+    # Custom challenge identifier (for teacher-created challenges)
+    custom_challenge_id: Optional[int] = Field(
+        default=None, foreign_key="custom_challenges.id", index=True
+    )
 
     # Progress data
     points_earned: int
@@ -134,7 +144,7 @@ class Hint(SQLModel, table=True):
 
     Allows tracking:
     - Which student accessed a hint
-    - Which challenge and hint level
+    - Which challenge (hardcoded or custom) and hint level
     - When the hint was accessed
     """
 
@@ -146,9 +156,14 @@ class Hint(SQLModel, table=True):
     # Foreign key
     user_id: int = Field(foreign_key="users.id", index=True)
 
-    # Challenge identifiers (indexed for analytics queries)
-    unit_id: int = Field(index=True)
-    challenge_id: int = Field(index=True)
+    # Challenge identifiers (for hardcoded challenges)
+    unit_id: Optional[int] = Field(default=None, index=True)
+    challenge_id: Optional[int] = Field(default=None, index=True)
+
+    # Custom challenge identifier (for teacher-created challenges)
+    custom_challenge_id: Optional[int] = Field(
+        default=None, foreign_key="custom_challenges.id", index=True
+    )
 
     # Hint level (1-3 for MVP, flexible for future validation)
     hint_level: int
@@ -178,9 +193,14 @@ class Attempt(SQLModel, table=True):
     # Foreign key
     user_id: int = Field(foreign_key="users.id", index=True)
 
-    # Challenge identifiers (indexed for analytics)
-    unit_id: int = Field(index=True)
-    challenge_id: int = Field(index=True)
+    # Challenge identifiers (for hardcoded challenges)
+    unit_id: Optional[int] = Field(default=None, index=True)
+    challenge_id: Optional[int] = Field(default=None, index=True)
+
+    # Custom challenge identifier (for teacher-created challenges)
+    custom_challenge_id: Optional[int] = Field(
+        default=None, foreign_key="custom_challenges.id", index=True
+    )
 
     # Attempt data
     query: str = Field(max_length=5000)  # Student's SQL query
@@ -188,3 +208,89 @@ class Attempt(SQLModel, table=True):
 
     # Timestamp
     attempted_at: datetime = Field(default_factory=datetime.now)
+
+
+class Dataset(SQLModel, table=True):
+    """
+    Dataset model - stores metadata about teacher-uploaded CSV files.
+
+    Each dataset has a corresponding dynamically created table in the database
+    where the CSV data is stored. Teachers can create custom challenges that
+    query these datasets.
+    """
+
+    __tablename__ = "datasets"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Ownership
+    teacher_id: int = Field(foreign_key="users.id", index=True)
+
+    # Dataset metadata
+    name: str = Field(max_length=200)  # User-friendly name
+    description: Optional[str] = Field(default=None, max_length=1000)
+    original_filename: str = Field(max_length=255)  # e.g., "sales_data.csv"
+
+    # Database info
+    table_name: str = Field(
+        max_length=100, unique=True, index=True
+    )  # e.g., "dataset_123"
+    row_count: int = Field(default=0)
+
+    # Schema storage (JSON string)
+    schema_json: str = Field(
+        sa_column=Column(Text)
+    )  # {"columns": [{"name": "id", "type": "INTEGER"}, ...]}
+
+    # Timestamps
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+
+
+class CustomChallenge(SQLModel, table=True):
+    """
+    CustomChallenge model - stores teacher-created challenges.
+
+    Each custom challenge is linked to a dataset and contains the expected
+    query, hints, and metadata. Teachers can create challenges for students
+    to practice SQL on custom datasets.
+    """
+
+    __tablename__ = "custom_challenges"
+
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Ownership
+    teacher_id: int = Field(foreign_key="users.id", index=True)
+    dataset_id: int = Field(foreign_key="datasets.id", index=True)
+
+    # Challenge content
+    title: str = Field(max_length=200)
+    description: str = Field(max_length=2000)
+    points: int = Field(default=100, ge=50, le=500)  # 50-500 points
+    difficulty: str = Field(
+        default="medium", max_length=20
+    )  # "easy", "medium", "hard"
+
+    # SQL query
+    expected_query: str = Field(max_length=5000)
+
+    # Hints (JSON array stored as string)
+    hints_json: str = Field(
+        sa_column=Column(Text)
+    )  # ["Hint 1", "Hint 2", "Hint 3"]
+
+    # Visibility
+    is_active: bool = Field(default=True)  # Can be deactivated without deletion
+    is_public: bool = Field(default=False)  # Future: share with other teachers
+
+    # Expected output (cached for result-based validation)
+    expected_output_json: Optional[str] = Field(
+        default=None, sa_column=Column(Text)
+    )  # Cached query result
+
+    # Timestamps
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)

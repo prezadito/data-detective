@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from app.database import get_session
-from app.models import User, Progress, Attempt
+from app.models import User, Progress, Attempt, CustomChallenge
 from app.schemas import (
     ChallengeSubmitRequest,
     ProgressResponse,
@@ -117,17 +117,17 @@ async def submit_challenge(
     """
     Submit a challenge solution (student-only).
 
-    Students submit their SQL query for a specific challenge.
-    The endpoint:
-    1. Validates the challenge exists
-    2. Validates the query matches the expected solution (MVP)
+    Students submit their SQL query for either a hardcoded challenge or
+    a custom challenge. The endpoint:
+    1. Validates the challenge exists (hardcoded or custom)
+    2. Validates the query matches the expected solution
     3. Creates an Attempt record for every submission (tracks all attempts)
     4. If correct: creates Progress record and awards points
     5. If incorrect: returns 400 error with helpful message
     6. Returns idempotent responses for correct submissions
 
     Args:
-        submission: Challenge submission data (unit_id, challenge_id, query, hints_used)
+        submission: Challenge submission data (unit_id/challenge_id OR custom_challenge_id, query, hints_used)
         current_user: Current authenticated user (injected from JWT)
         _: Student role check (403 if not student)
         session: Database session (injected)
@@ -139,79 +139,173 @@ async def submit_challenge(
         HTTPException: 401 if not authenticated
         HTTPException: 403 if not a student
         HTTPException: 404 if challenge doesn't exist
-        HTTPException: 400 if query is incorrect
+        HTTPException: 400 if query is incorrect or submission format invalid
     """
-    # 1. Validate challenge exists
-    challenge = get_challenge(submission.unit_id, submission.challenge_id)
-    if not challenge:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Challenge not found: unit={submission.unit_id}, challenge={submission.challenge_id}",
-        )
-
-    # 2. Validate query (MVP: simple string comparison after normalization)
-    is_correct = validate_query(submission.query, challenge["sample_solution"])
-
-    # 3. Create Attempt record (for EVERY submission - correct or incorrect)
-    attempt = Attempt(
-        user_id=current_user.id,
-        unit_id=submission.unit_id,
-        challenge_id=submission.challenge_id,
-        query=submission.query,
-        is_correct=is_correct,
+    # Determine challenge type
+    is_custom = submission.custom_challenge_id is not None
+    is_hardcoded = (
+        submission.unit_id is not None and submission.challenge_id is not None
     )
-    session.add(attempt)
-    session.commit()
 
-    # 4. If incorrect, return error
-    if not is_correct:
+    # Validate submission has exactly one challenge type
+    if is_custom and is_hardcoded:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Query is incorrect. Expected: {challenge['sample_solution']}",
+            detail="Cannot submit both hardcoded and custom challenge in same request",
         )
 
-    # 5. Check if already completed (idempotency - only for correct submissions)
-    statement = select(Progress).where(
-        Progress.user_id == current_user.id,
-        Progress.unit_id == submission.unit_id,
-        Progress.challenge_id == submission.challenge_id,
-    )
-    existing_progress = session.exec(statement).first()
+    if not is_custom and not is_hardcoded:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Must provide either (unit_id + challenge_id) or custom_challenge_id",
+        )
 
-    if existing_progress:
-        # Already completed - return existing record (idempotent)
-        return existing_progress
+    # Handle custom challenge submission
+    if is_custom:
+        custom_challenge = session.get(CustomChallenge, submission.custom_challenge_id)
+        if not custom_challenge:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Custom challenge not found: id={submission.custom_challenge_id}",
+            )
 
-    # 6. Create new progress record (only for first correct submission)
-    progress = Progress(
-        user_id=current_user.id,  # From JWT token - no spoofing!
-        unit_id=submission.unit_id,
-        challenge_id=submission.challenge_id,
-        points_earned=challenge["points"],  # From challenge definition
-        hints_used=submission.hints_used,
-        query=submission.query,
-    )
+        if not custom_challenge.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This challenge is no longer active",
+            )
 
-    try:
-        session.add(progress)
+        # Validate query
+        is_correct = validate_query(
+            submission.query, custom_challenge.expected_query
+        )
+
+        # Create Attempt record
+        attempt = Attempt(
+            user_id=current_user.id,
+            custom_challenge_id=submission.custom_challenge_id,
+            query=submission.query,
+            is_correct=is_correct,
+        )
+        session.add(attempt)
         session.commit()
-        session.refresh(progress)
-        # Invalidate leaderboard and weekly report caches after new submission
-        invalidate_cache()
-        invalidate_weekly_cache()
-        invalidate_analytics_cache()
-        return progress
 
-    except IntegrityError:
-        # Race condition: another request created it
-        # Rollback and return existing
-        session.rollback()
+        # If incorrect, return error
+        if not is_correct:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Query is incorrect. Expected: {custom_challenge.expected_query}",
+            )
+
+        # Check if already completed
+        statement = select(Progress).where(
+            Progress.user_id == current_user.id,
+            Progress.custom_challenge_id == submission.custom_challenge_id,
+        )
         existing_progress = session.exec(statement).first()
-        # Invalidate caches in case this completes a first-time submission
-        invalidate_cache()
-        invalidate_weekly_cache()
-        invalidate_analytics_cache()
-        return existing_progress
+
+        if existing_progress:
+            return existing_progress
+
+        # Create new progress record
+        progress = Progress(
+            user_id=current_user.id,
+            custom_challenge_id=submission.custom_challenge_id,
+            points_earned=custom_challenge.points,
+            hints_used=submission.hints_used,
+            query=submission.query,
+        )
+
+        try:
+            session.add(progress)
+            session.commit()
+            session.refresh(progress)
+            invalidate_cache()
+            invalidate_weekly_cache()
+            invalidate_analytics_cache()
+            return progress
+
+        except IntegrityError:
+            session.rollback()
+            existing_progress = session.exec(statement).first()
+            invalidate_cache()
+            invalidate_weekly_cache()
+            invalidate_analytics_cache()
+            return existing_progress
+
+    # Handle hardcoded challenge submission (original logic)
+    else:
+        # 1. Validate challenge exists
+        challenge = get_challenge(submission.unit_id, submission.challenge_id)
+        if not challenge:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Challenge not found: unit={submission.unit_id}, challenge={submission.challenge_id}",
+            )
+
+        # 2. Validate query (MVP: simple string comparison after normalization)
+        is_correct = validate_query(submission.query, challenge["sample_solution"])
+
+        # 3. Create Attempt record (for EVERY submission - correct or incorrect)
+        attempt = Attempt(
+            user_id=current_user.id,
+            unit_id=submission.unit_id,
+            challenge_id=submission.challenge_id,
+            query=submission.query,
+            is_correct=is_correct,
+        )
+        session.add(attempt)
+        session.commit()
+
+        # 4. If incorrect, return error
+        if not is_correct:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Query is incorrect. Expected: {challenge['sample_solution']}",
+            )
+
+        # 5. Check if already completed (idempotency - only for correct submissions)
+        statement = select(Progress).where(
+            Progress.user_id == current_user.id,
+            Progress.unit_id == submission.unit_id,
+            Progress.challenge_id == submission.challenge_id,
+        )
+        existing_progress = session.exec(statement).first()
+
+        if existing_progress:
+            # Already completed - return existing record (idempotent)
+            return existing_progress
+
+        # 6. Create new progress record (only for first correct submission)
+        progress = Progress(
+            user_id=current_user.id,  # From JWT token - no spoofing!
+            unit_id=submission.unit_id,
+            challenge_id=submission.challenge_id,
+            points_earned=challenge["points"],  # From challenge definition
+            hints_used=submission.hints_used,
+            query=submission.query,
+        )
+
+        try:
+            session.add(progress)
+            session.commit()
+            session.refresh(progress)
+            # Invalidate leaderboard and weekly report caches after new submission
+            invalidate_cache()
+            invalidate_weekly_cache()
+            invalidate_analytics_cache()
+            return progress
+
+        except IntegrityError:
+            # Race condition: another request created it
+            # Rollback and return existing
+            session.rollback()
+            existing_progress = session.exec(statement).first()
+            # Invalidate caches in case this completes a first-time submission
+            invalidate_cache()
+            invalidate_weekly_cache()
+            invalidate_analytics_cache()
+            return existing_progress
 
 
 @router.get("/me", response_model=ProgressSummaryResponse)
