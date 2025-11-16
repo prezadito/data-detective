@@ -12,6 +12,13 @@ export interface User {
 export type UserRole = 'teacher' | 'student';
 
 /**
+ * User update request
+ */
+export interface UpdateUserRequest {
+  name: string;
+}
+
+/**
  * Authentication types
  */
 export interface LoginCredentials {
@@ -92,6 +99,29 @@ export interface StudentProgress {
   accuracy_rate: number;
 }
 
+export interface ProgressSummaryStats {
+  total_points: number;
+  total_completed: number;
+  completion_percentage: number;
+}
+
+export interface ProgressDetailResponse {
+  id: number;
+  user_id: number;
+  unit_id: number;
+  challenge_id: number;
+  points_earned: number;
+  hints_used: number;
+  completed_at: string;
+  query: string;
+  challenge_title: string;
+}
+
+export interface ProgressSummaryResponse {
+  summary: ProgressSummaryStats;
+  progress: ProgressDetailResponse[];
+}
+
 /**
  * API Error response
  */
@@ -120,6 +150,20 @@ export interface ApiErrorDetail {
  */
 export interface HTTPError extends Error {
   response: Response;
+}
+
+/**
+ * Leaderboard types
+ */
+export interface LeaderboardEntry {
+  rank: number;
+  student_name: string;
+  total_points: number;
+  challenges_completed: number;
+}
+
+export interface LeaderboardResponse {
+  entries: LeaderboardEntry[];
 }
 
 /**
