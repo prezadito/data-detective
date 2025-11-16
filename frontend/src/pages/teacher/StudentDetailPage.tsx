@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { userService } from '@/services/userService';
-import { Navigation } from '@/components/navigation/Navigation';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { MetricsCard } from '@/components/teacher/MetricsCard';
 import { ProgressChart } from '@/components/teacher/ProgressChart';
@@ -61,7 +60,6 @@ export function StudentDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navigation />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-lg p-12 text-center">
             <LoadingSpinner />
@@ -76,7 +74,6 @@ export function StudentDetailPage() {
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navigation />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-lg p-12">
             <div className="border-l-4 border-red-500 bg-red-50 p-4">
@@ -106,8 +103,6 @@ export function StudentDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
