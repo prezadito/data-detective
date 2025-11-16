@@ -601,3 +601,38 @@ export interface ClassAnalyticsResponse {
   difficulty_distribution: ChallengeDistribution;
   weekly_trends: WeeklyTrend[];
 }
+
+/**
+ * Bulk import types for student CSV import (teachers only)
+ */
+
+/**
+ * Single error during bulk import
+ */
+export interface BulkImportError {
+  row_number: number;
+  email: string | null;
+  error: string;
+}
+
+/**
+ * Successfully imported student with generated password
+ */
+export interface ImportedStudent {
+  email: string;
+  name: string;
+  temporary_password: string;
+}
+
+/**
+ * Response from bulk import endpoint
+ * Returned by POST /import/students
+ */
+export interface BulkImportResponse {
+  message: string;
+  successful: number;
+  skipped: number;
+  failed: number;
+  imported_students: ImportedStudent[];
+  errors: BulkImportError[];
+}
