@@ -99,6 +99,31 @@ export interface StudentProgress {
   accuracy_rate: number;
 }
 
+/**
+ * Challenge submission request
+ * For POST /progress/submit
+ */
+export interface ChallengeSubmitRequest {
+  unit_id: number;
+  challenge_id: number;
+  query: string;
+  hints_used: number;
+}
+
+/**
+ * Progress response from challenge submission
+ * Returned by POST /progress/submit
+ */
+export interface ProgressResponse {
+  id: number;
+  user_id: number;
+  unit_id: number;
+  challenge_id: number;
+  points_earned: number;
+  hints_used: number;
+  completed_at: string;
+}
+
 export interface ProgressSummaryStats {
   total_points: number;
   total_completed: number;
