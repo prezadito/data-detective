@@ -80,13 +80,13 @@ export function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="mb-4 md:mb-0">
               <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                <span className="mr-3">🏆</span>
+                <span className="mr-3" aria-hidden="true">🏆</span>
                 Leaderboard
               </h1>
               <p className="text-gray-600 mt-2">
@@ -114,8 +114,9 @@ export function LeaderboardPage() {
                       ? 'bg-green-100 text-green-800'
                       : 'bg-gray-100 text-gray-700'
                   }`}
+                  aria-label={autoRefreshEnabled ? 'Auto-refresh is on. Click to turn off' : 'Auto-refresh is off. Click to turn on'}
                 >
-                  {autoRefreshEnabled ? '🔄 Auto-refresh: ON' : '⏸️ Auto-refresh: OFF'}
+                  <span aria-hidden="true">{autoRefreshEnabled ? '🔄' : '⏸️'}</span> Auto-refresh: {autoRefreshEnabled ? 'ON' : 'OFF'}
                 </button>
               </div>
 
@@ -131,10 +132,10 @@ export function LeaderboardPage() {
 
         {/* Error State */}
         {error && !isLoading && (
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-6 mb-8" role="alert">
             <div className="border-l-4 border-red-500 bg-red-50 p-4">
               <div className="flex items-start">
-                <span className="text-red-500 mr-2 mt-0.5">⚠</span>
+                <span className="text-red-500 mr-2 mt-0.5" aria-hidden="true">⚠</span>
                 <div>
                   <p className="text-sm font-medium text-red-800">
                     Error loading leaderboard
@@ -156,9 +157,9 @@ export function LeaderboardPage() {
 
         {/* Info Banner */}
         {!isLoading && leaderboard && leaderboard.entries.length > 0 && (
-          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6" role="complementary" aria-label="Tips and information">
             <div className="flex items-start">
-              <span className="text-blue-500 mr-3 text-2xl">💡</span>
+              <span className="text-blue-500 mr-3 text-2xl" aria-hidden="true">💡</span>
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-blue-900 mb-1">
                   Keep Learning!

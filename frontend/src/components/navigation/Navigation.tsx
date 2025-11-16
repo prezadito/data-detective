@@ -71,15 +71,16 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
+      <nav aria-label="Main navigation" className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             {/* Mobile Menu Button */}
             <button
               onClick={toggleMobileMenu}
               className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label="Toggle menu"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               <svg
                 className="w-6 h-6"
@@ -107,7 +108,7 @@ export function Navigation() {
 
             {/* Logo / Brand */}
             <div className="flex items-center">
-              <Link to="/practice" className="flex items-center">
+              <Link to="/practice" className="flex items-center" aria-label="Data Detective - Home">
                 <h1 className="text-lg sm:text-xl font-bold text-gray-900">
                   Data Detective
                 </h1>
@@ -115,13 +116,14 @@ export function Navigation() {
             </div>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
+            <div className="hidden md:flex items-center space-x-2 lg:space-x-4" role="navigation" aria-label="Primary">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition ${
                       isActive
                         ? 'bg-blue-600 text-white'
@@ -136,7 +138,7 @@ export function Navigation() {
 
             {/* User Info & Logout (Desktop) */}
             <div className="hidden md:flex items-center gap-4">
-              <div className="hidden lg:flex flex-col items-end">
+              <div className="hidden lg:flex flex-col items-end" aria-label="User information">
                 <span className="text-sm text-gray-700 font-medium">
                   {user.name}
                 </span>
@@ -144,14 +146,14 @@ export function Navigation() {
                   {user.role}
                 </span>
               </div>
-              <Button onClick={handleLogout} variant="outline" size="sm">
+              <Button onClick={handleLogout} variant="outline" size="sm" aria-label="Logout of your account">
                 Logout
               </Button>
             </div>
 
             {/* Mobile Logout Button */}
             <div className="md:hidden">
-              <Button onClick={handleLogout} variant="outline" size="sm">
+              <Button onClick={handleLogout} variant="outline" size="sm" aria-label="Logout of your account">
                 Logout
               </Button>
             </div>
@@ -170,16 +172,21 @@ export function Navigation() {
           />
 
           {/* Mobile Menu Panel */}
-          <div className="fixed top-16 left-0 right-0 bg-white shadow-lg z-50 md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div
+            id="mobile-navigation"
+            className="fixed top-16 left-0 right-0 bg-white shadow-lg z-50 md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
+            role="dialog"
+            aria-label="Mobile navigation menu"
+          >
             {/* User Info */}
-            <div className="px-4 py-4 border-b border-gray-200 bg-gray-50">
+            <div className="px-4 py-4 border-b border-gray-200 bg-gray-50" role="region" aria-label="User information">
               <p className="text-sm font-medium text-gray-900">{user.name}</p>
               <p className="text-xs text-gray-600">{user.email}</p>
               <p className="text-xs text-gray-500 capitalize mt-1">{user.role}</p>
             </div>
 
             {/* Navigation Links */}
-            <nav className="py-2">
+            <nav className="py-2" aria-label="Mobile navigation links">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
@@ -187,6 +194,7 @@ export function Navigation() {
                     key={item.path}
                     to={item.path}
                     onClick={closeMobileMenu}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`block px-4 py-3 text-base font-medium transition-colors ${
                       isActive
                         ? 'bg-blue-600 text-white border-l-4 border-blue-700'

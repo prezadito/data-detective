@@ -49,7 +49,7 @@ export function LeaderboardTable({
   if (entries.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-12 text-center">
-        <div className="text-gray-400 text-6xl mb-4">🏆</div>
+        <div className="text-gray-400 text-6xl mb-4" role="img" aria-label="Trophy">🏆</div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">
           No rankings yet
         </h3>
@@ -71,6 +71,16 @@ export function LeaderboardTable({
   };
 
   /**
+   * Get accessible label for trophy
+   */
+  const getTrophyLabel = (rank: number): string => {
+    if (rank === 1) return 'First place';
+    if (rank === 2) return 'Second place';
+    if (rank === 3) return 'Third place';
+    return `Rank ${rank}`;
+  };
+
+  /**
    * Check if entry is current user
    */
   const isCurrentUser = (entry: LeaderboardEntry): boolean => {
@@ -81,19 +91,19 @@ export function LeaderboardTable({
     <div className="bg-white rounded-lg shadow overflow-hidden">
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200" aria-label="Student leaderboard rankings">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Rank
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Student
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Points
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Challenges
               </th>
             </tr>
@@ -116,7 +126,9 @@ export function LeaderboardTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {trophy ? (
-                        <span className="text-3xl mr-2">{trophy}</span>
+                        <span className="text-3xl mr-2" role="img" aria-label={getTrophyLabel(entry.rank)}>
+                          {trophy}
+                        </span>
                       ) : (
                         <span className="text-lg font-bold text-gray-700 w-8">
                           {entry.rank}
@@ -146,20 +158,22 @@ export function LeaderboardTable({
                   {/* Points */}
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end">
-                      <span className="text-yellow-500 mr-1">🏆</span>
+                      <span className="text-yellow-500 mr-1" aria-hidden="true">🏆</span>
                       <span className="text-sm font-bold text-gray-900">
                         {entry.total_points}
                       </span>
+                      <span className="sr-only">points</span>
                     </div>
                   </td>
 
                   {/* Challenges Completed */}
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end">
-                      <span className="text-green-500 mr-1">✓</span>
+                      <span className="text-green-500 mr-1" aria-hidden="true">✓</span>
                       <span className="text-sm text-gray-700">
                         {entry.challenges_completed}
                       </span>
+                      <span className="sr-only">challenges completed</span>
                     </div>
                   </td>
                 </tr>
@@ -170,7 +184,7 @@ export function LeaderboardTable({
       </div>
 
       {/* Mobile Card View */}
-      <div className="md:hidden divide-y divide-gray-200">
+      <div className="md:hidden divide-y divide-gray-200" role="list" aria-label="Student leaderboard rankings">
         {entries.map((entry) => {
           const trophy = getTrophyIcon(entry.rank);
           const isCurrent = isCurrentUser(entry);
@@ -178,6 +192,7 @@ export function LeaderboardTable({
           return (
             <div
               key={`${entry.rank}-${entry.student_name}`}
+              role="listitem"
               className={`p-4 ${
                 isCurrent ? 'bg-blue-50 border-l-4 border-blue-500' : ''
               }`}
@@ -185,7 +200,9 @@ export function LeaderboardTable({
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center">
                   {trophy ? (
-                    <span className="text-2xl mr-2">{trophy}</span>
+                    <span className="text-2xl mr-2" role="img" aria-label={getTrophyLabel(entry.rank)}>
+                      {trophy}
+                    </span>
                   ) : (
                     <span className="text-lg font-bold text-gray-700 w-8">
                       {entry.rank}
@@ -212,13 +229,13 @@ export function LeaderboardTable({
 
               <div className="flex items-center justify-between text-sm mt-2">
                 <div className="flex items-center">
-                  <span className="text-yellow-500 mr-1">🏆</span>
+                  <span className="text-yellow-500 mr-1" aria-hidden="true">🏆</span>
                   <span className="font-bold text-gray-900">
                     {entry.total_points} points
                   </span>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-green-500 mr-1">✓</span>
+                  <span className="text-green-500 mr-1" aria-hidden="true">✓</span>
                   <span className="text-gray-700">
                     {entry.challenges_completed} completed
                   </span>
