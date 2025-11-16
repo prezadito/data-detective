@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import type { UserRole } from '@/types';
@@ -12,10 +12,10 @@ interface NavItem {
  * Navigation items for students
  */
 const studentNavItems: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard' },
-  { label: 'Challenges', path: '/challenges' },
+  { label: 'Practice', path: '/practice' },
+  { label: 'Progress', path: '/progress' },
   { label: 'Leaderboard', path: '/leaderboard' },
-  { label: 'My Progress', path: '/progress' },
+  { label: 'Dashboard', path: '/dashboard' },
   { label: 'Profile', path: '/profile' },
 ];
 
@@ -43,6 +43,7 @@ function getNavItems(role: UserRole): NavItem[] {
  */
 export function Navigation() {
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
@@ -61,7 +62,7 @@ export function Navigation() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo / Brand */}
           <div className="flex items-center">
-            <Link to="/dashboard" className="flex items-center">
+            <Link to="/practice" className="flex items-center">
               <h1 className="text-xl font-bold text-gray-900">
                 Data Detective
               </h1>
@@ -70,15 +71,22 @@ export function Navigation() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* User Info & Logout */}

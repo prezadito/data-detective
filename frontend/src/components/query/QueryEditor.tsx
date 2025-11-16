@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 import { useDatabase } from '@/hooks/useDatabase';
 import { Button } from '@/components/ui/Button';
+import { progressService } from '@/services/progressService';
+import { validateQueryResults } from '@/utils/validateQuery';
+import { showSuccessToast, showErrorToast, showApiErrorToast } from '@/utils/toast';
 import type { QueryResult } from '@/types/database';
+import type { ProgressResponse } from '@/types';
 
 export interface QueryEditorProps {
   /**
@@ -25,6 +29,33 @@ export interface QueryEditorProps {
    * @default 5
    */
   maxHistoryEntries?: number;
+
+  /**
+   * Expected query for validation (sample solution)
+   * If provided, enables submit functionality
+   */
+  expectedQuery?: string;
+
+  /**
+   * Unit ID for challenge submission
+   */
+  unitId?: number;
+
+  /**
+   * Challenge ID for challenge submission
+   */
+  challengeId?: number;
+
+  /**
+   * Number of hints used for this challenge
+   * @default 0
+   */
+  hintsUsed?: number;
+
+  /**
+   * Callback when challenge is successfully submitted
+   */
+  onSubmitSuccess?: (progress: ProgressResponse) => void;
 }
 
 export function QueryEditor({
@@ -32,14 +63,25 @@ export function QueryEditor({
   onQueryExecute,
   showHistory = true,
   maxHistoryEntries = 5,
+  expectedQuery,
+  unitId,
+  challengeId,
+  hintsUsed = 0,
+  onSubmitSuccess,
 }: QueryEditorProps) {
   const { executeQuery, queryHistory, isReady } = useDatabase();
   const [query, setQuery] = useState(initialQuery);
   const [result, setResult] = useState<QueryResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionTime, setExecutionTime] = useState<number | null>(null);
+  const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [isValidated, setIsValidated] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Determine if submit functionality is enabled
+  const canSubmit = Boolean(expectedQuery && unitId && challengeId);
 
   // Auto-focus textarea on mount
   useEffect(() => {
@@ -99,7 +141,91 @@ export function QueryEditor({
     setResult(null);
     setError(null);
     setExecutionTime(null);
+    setValidationMessage(null);
+    setIsValidated(false);
     textareaRef.current?.focus();
+  };
+
+  /**
+   * Validate query against expected output
+   */
+  const handleValidate = () => {
+    if (!expectedQuery) {
+      showErrorToast('No expected query provided for validation');
+      return;
+    }
+
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
+      setError('Please enter a SQL query');
+      return;
+    }
+
+    setIsExecuting(true);
+    setError(null);
+    setValidationMessage(null);
+    setIsValidated(false);
+
+    try {
+      // Run student's query
+      const studentResult = executeQuery(trimmedQuery);
+
+      // Run expected query
+      const expectedResult = executeQuery(expectedQuery);
+
+      // Validate results
+      const validation = validateQueryResults(studentResult, expectedResult);
+
+      if (validation.isValid) {
+        setIsValidated(true);
+        setValidationMessage(validation.message);
+        setResult(studentResult);
+        showSuccessToast('Query is correct! You can now submit.');
+      } else {
+        setValidationMessage(validation.message);
+        setResult(studentResult);
+        showErrorToast(validation.message);
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
+      showErrorToast(errorMessage);
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  /**
+   * Submit challenge to backend
+   */
+  const handleSubmit = async () => {
+    if (!canSubmit) {
+      showErrorToast('Submission not configured');
+      return;
+    }
+
+    if (!isValidated) {
+      showErrorToast('Please validate your query first by clicking "Check Answer"');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await progressService.submitChallenge({
+        unit_id: unitId!,
+        challenge_id: challengeId!,
+        query: query.trim(),
+        hints_used: hintsUsed,
+      });
+
+      showSuccessToast(`Challenge completed! You earned ${response.points_earned} points! 🎉`);
+      onSubmitSuccess?.(response);
+    } catch (err) {
+      await showApiErrorToast(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   /**
@@ -158,7 +284,7 @@ export function QueryEditor({
               Clear
             </Button>
             <Button
-              variant="primary"
+              variant="outline"
               size="sm"
               onClick={handleRunQuery}
               disabled={!isReady || !query.trim() || isExecuting}
@@ -166,6 +292,28 @@ export function QueryEditor({
             >
               Run Query
             </Button>
+            {canSubmit && (
+              <>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleValidate}
+                  disabled={!isReady || !query.trim() || isExecuting || isSubmitting}
+                  isLoading={isExecuting}
+                >
+                  Check Answer
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleSubmit}
+                  disabled={!isValidated || isSubmitting}
+                  isLoading={isSubmitting}
+                >
+                  Submit
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -188,8 +336,28 @@ export function QueryEditor({
         )}
       </div>
 
+      {/* Validation Message */}
+      {validationMessage && !error && (
+        <div
+          className={`mx-6 mt-6 border-l-4 p-4 ${
+            isValidated
+              ? 'border-green-500 bg-green-50'
+              : 'border-yellow-500 bg-yellow-50'
+          }`}
+        >
+          <div className="flex items-center">
+            <span className={`mr-2 ${isValidated ? 'text-green-500' : 'text-yellow-500'}`}>
+              {isValidated ? '✓' : '⚠'}
+            </span>
+            <p className={`text-sm ${isValidated ? 'text-green-700' : 'text-yellow-800'}`}>
+              {validationMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Success Banner */}
-      {result && !error && (
+      {result && !error && !validationMessage && (
         <div className="mx-6 mt-6 border-l-4 border-green-500 bg-green-50 p-4">
           <div className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
