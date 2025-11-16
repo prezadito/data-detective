@@ -16,6 +16,7 @@ const studentNavItems: NavItem[] = [
   { label: 'Challenges', path: '/challenges' },
   { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'My Progress', path: '/progress' },
+  { label: 'Profile', path: '/profile' },
 ];
 
 /**
@@ -26,6 +27,7 @@ const teacherNavItems: NavItem[] = [
   { label: 'Students', path: '/students' },
   { label: 'Analytics', path: '/analytics' },
   { label: 'Class Progress', path: '/class-progress' },
+  { label: 'Profile', path: '/profile' },
 ];
 
 /**
