@@ -27,6 +27,7 @@ const teacherNavItems: NavItem[] = [
   { label: 'Datasets', path: '/datasets' },
   { label: 'Challenges', path: '/challenges/custom' },
   { label: 'Students', path: '/teacher/students' },
+  { label: 'Analytics', path: '/teacher/analytics' },
   { label: 'Profile', path: '/profile' },
 ];
 

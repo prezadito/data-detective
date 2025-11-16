@@ -536,3 +536,68 @@ export interface StrugglingArea {
   recommendation: string;
   color: string;
 }
+
+/**
+ * Analytics types for class-wide statistics (teachers only)
+ */
+
+/**
+ * Analytics for a single challenge across all students
+ */
+export interface ChallengeAnalytics {
+  unit_id: number;
+  challenge_id: number;
+  challenge_title: string;
+  total_attempts: number;
+  correct_attempts: number;
+  success_rate: number; // 0-100
+  avg_hints_per_attempt: number;
+}
+
+/**
+ * Overall metrics for the entire class
+ */
+export interface ClassMetrics {
+  total_students: number;
+  active_students: number;
+  avg_completion_rate: number; // 0-100
+  median_points: number;
+  percentile_25: number;
+  percentile_50: number;
+  percentile_75: number;
+  total_challenges_completed: number;
+  total_attempts: number;
+  avg_success_rate: number; // 0-100
+}
+
+/**
+ * Challenges ranked by difficulty
+ */
+export interface ChallengeDistribution {
+  easiest_challenges: ChallengeAnalytics[]; // Top 3 by success rate
+  hardest_challenges: ChallengeAnalytics[]; // Bottom 3 by success rate
+}
+
+/**
+ * Class progress for a single week
+ */
+export interface WeeklyTrend {
+  week_start_date: string;
+  week_end_date: string;
+  completions: number;
+  total_points_earned: number;
+  unique_students: number;
+}
+
+/**
+ * Complete class-wide analytics response
+ * Returned by GET /analytics/class
+ */
+export interface ClassAnalyticsResponse {
+  generated_at: string;
+  cache_expires_at: string;
+  metrics: ClassMetrics;
+  challenges: ChallengeAnalytics[];
+  difficulty_distribution: ChallengeDistribution;
+  weekly_trends: WeeklyTrend[];
+}

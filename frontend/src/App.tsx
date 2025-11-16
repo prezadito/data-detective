@@ -20,6 +20,7 @@ import { ChallengeBuilderPage } from '@/pages/ChallengeBuilderPage';
 import { ChallengeLibraryPage } from '@/pages/ChallengeLibraryPage';
 import { StudentListPage } from '@/pages/teacher/StudentListPage';
 import { StudentDetailPage } from '@/pages/teacher/StudentDetailPage';
+import { AnalyticsPage } from '@/pages/teacher/AnalyticsPage';
 
 /**
  * Layout wrapper that conditionally renders Navigation
@@ -121,6 +122,14 @@ function AppLayout() {
           element={
             <RoleProtectedRoute requiredRole="teacher">
               <StudentDetailPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/analytics"
+          element={
+            <RoleProtectedRoute requiredRole="teacher">
+              <AnalyticsPage />
             </RoleProtectedRoute>
           }
         />
