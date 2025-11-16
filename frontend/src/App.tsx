@@ -18,6 +18,7 @@ import { DatasetDetailPage } from '@/pages/DatasetDetailPage';
 import { ChallengeBuilderPage } from '@/pages/ChallengeBuilderPage';
 import { ChallengeLibraryPage } from '@/pages/ChallengeLibraryPage';
 import { StudentListPage } from '@/pages/teacher/StudentListPage';
+import { StudentDetailPage } from '@/pages/teacher/StudentDetailPage';
 
 function App() {
   return (
@@ -107,6 +108,14 @@ function App() {
                   element={
                     <RoleProtectedRoute requiredRole="teacher">
                       <StudentListPage />
+                    </RoleProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/teacher/students/:id"
+                  element={
+                    <RoleProtectedRoute requiredRole="teacher">
+                      <StudentDetailPage />
                     </RoleProtectedRoute>
                   }
                 />
