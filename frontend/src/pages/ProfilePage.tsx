@@ -24,20 +24,24 @@ export function ProfilePage() {
     execute: fetchUser,
   } = useApi<User, []>(userService.getCurrentUser);
 
-  // Fetch progress stats
+  // Fetch progress stats (non-critical - don't show error toast)
   const {
     data: progressData,
     isLoading: isLoadingProgress,
     error: progressError,
     execute: fetchProgress,
-  } = useApi<ProgressSummaryResponse, []>(progressService.getMyProgress);
+  } = useApi<ProgressSummaryResponse, []>(progressService.getMyProgress, {
+    showErrorToast: false,
+  });
 
-  // Fetch leaderboard to calculate rank
+  // Fetch leaderboard to calculate rank (non-critical - don't show error toast)
   const {
     data: leaderboardData,
     isLoading: isLoadingLeaderboard,
     execute: fetchLeaderboard,
-  } = useApi<LeaderboardResponse, []>(leaderboardService.getLeaderboard);
+  } = useApi<LeaderboardResponse, []>(leaderboardService.getLeaderboard, {
+    showErrorToast: false,
+  });
 
   // Update profile
   const { execute: updateProfile, isLoading: isUpdating } = useApi(
