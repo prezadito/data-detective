@@ -100,6 +100,29 @@ export interface ApiError {
 }
 
 /**
+ * Validation error for form fields
+ */
+export interface ValidationError {
+  loc: string[];  // Field location (e.g., ["body", "email"])
+  msg: string;    // Error message
+  type: string;   // Error type (e.g., "value_error.email")
+}
+
+/**
+ * Detailed API error response with validation errors
+ */
+export interface ApiErrorDetail {
+  detail: string | ValidationError[];
+}
+
+/**
+ * HTTP Error from ky
+ */
+export interface HTTPError extends Error {
+  response: Response;
+}
+
+/**
  * Pagination types
  */
 export interface PaginatedResponse<T> {
