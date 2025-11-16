@@ -178,22 +178,24 @@ export function PracticePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Top Controls */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col space-y-4">
             {/* Unit Selector */}
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-medium text-gray-700">Select Unit:</label>
-              <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Select Unit:
+              </label>
+              <div className="flex flex-wrap gap-2">
                 {[1, 2, 3].map((unitId) => (
                   <button
                     key={unitId}
                     onClick={() => handleUnitChange(unitId)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex-1 sm:flex-none px-4 sm:px-6 py-3 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                       currentUnitId === unitId
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300'
                     }`}
                   >
                     Unit {unitId}
@@ -203,16 +205,18 @@ export function PracticePage() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={goToPreviousChallenge}
                 disabled={!canGoPrevious()}
+                className="w-full sm:w-auto"
               >
-                ← Previous
+                <span className="hidden sm:inline">← Previous</span>
+                <span className="sm:hidden">← Prev</span>
               </Button>
-              <span className="text-sm text-gray-600 px-2">
+              <span className="text-sm sm:text-base text-gray-600 px-2 text-center sm:whitespace-nowrap">
                 Challenge {currentChallengeId} of {CHALLENGES_PER_UNIT[currentUnitId]}
               </span>
               <Button
@@ -220,35 +224,42 @@ export function PracticePage() {
                 size="sm"
                 onClick={goToNextChallenge}
                 disabled={!canGoNext()}
+                className="w-full sm:w-auto"
               >
                 Next →
               </Button>
             </div>
-          </div>
 
-          {/* Keyboard shortcuts hint */}
-          <p className="text-xs text-gray-500 mt-3 text-center">
-            💡 Tip: Use Ctrl+← and Ctrl+→ to navigate between challenges
-          </p>
+            {/* Keyboard shortcuts hint */}
+            <p className="text-xs text-gray-500 text-center hidden sm:block">
+              💡 Tip: Use Ctrl+← and Ctrl+→ to navigate between challenges
+            </p>
+          </div>
         </div>
 
         {/* Loading State */}
         {isLoading && (
-          <div className="bg-white rounded-lg shadow p-12 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-center">
             <LoadingSpinner />
-            <span className="ml-3 text-gray-600">Loading challenge...</span>
+            <span className="ml-0 sm:ml-3 mt-3 sm:mt-0 text-sm sm:text-base text-gray-600">
+              Loading challenge...
+            </span>
           </div>
         )}
 
         {/* Error State */}
         {error && !isLoading && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="border-l-4 border-red-500 bg-red-50 p-4">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div className="border-l-4 border-red-500 bg-red-50 p-3 sm:p-4">
               <div className="flex items-start">
-                <span className="text-red-500 mr-2 mt-0.5">⚠</span>
-                <div>
-                  <p className="text-sm font-medium text-red-800">Error loading challenge</p>
-                  <p className="text-sm text-red-700 mt-1">{error}</p>
+                <span className="text-red-500 mr-2 mt-0.5 text-lg sm:text-xl">⚠</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm sm:text-base font-medium text-red-800">
+                    Error loading challenge
+                  </p>
+                  <p className="text-xs sm:text-sm text-red-700 mt-1 break-words">
+                    {error}
+                  </p>
                 </div>
               </div>
             </div>
@@ -257,9 +268,9 @@ export function PracticePage() {
 
         {/* Practice Layout */}
         {challenge && !isLoading && !error && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Left: Challenge Card */}
-            <div>
+            <div className="order-1">
               <ChallengeCard
                 challenge={challenge}
                 showHints={true}
@@ -272,7 +283,7 @@ export function PracticePage() {
             </div>
 
             {/* Right: Query Editor */}
-            <div>
+            <div className="order-2">
               <QueryEditor
                 key={`${currentUnitId}-${currentChallengeId}`}
                 initialQuery={query}
