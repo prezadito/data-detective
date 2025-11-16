@@ -7,6 +7,7 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Navigation } from '@/components/navigation/Navigation';
 import { SkipLink } from '@/components/ui/SkipLink';
+import { OfflineNotice } from '@/components/OfflineNotice';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
 import { DashboardPage } from '@/pages/DashboardPage';
@@ -37,6 +38,7 @@ function AppLayout() {
 
   return (
     <>
+      <OfflineNotice />
       <SkipLink />
       {!isAuthPage && !isTeacherRoute && <Navigation />}
       <Routes>

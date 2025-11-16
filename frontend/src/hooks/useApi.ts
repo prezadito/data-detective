@@ -45,6 +45,11 @@ interface UseApiReturn<T, TArgs extends unknown[]> {
   execute: (...args: TArgs) => Promise<T | null>;
 
   /**
+   * Retry the last failed API call with the same arguments
+   */
+  retry: () => Promise<T | null>;
+
+  /**
    * Reset the state
    */
   reset: () => void;
@@ -70,6 +75,7 @@ export function useApi<T, TArgs extends unknown[]>(
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastArgs, setLastArgs] = useState<TArgs | null>(null);
 
   const {
     onSuccess,
@@ -83,6 +89,7 @@ export function useApi<T, TArgs extends unknown[]>(
       try {
         setIsLoading(true);
         setError(null);
+        setLastArgs(args);
 
         const result = await apiFunction(...args);
         setData(result);
@@ -119,10 +126,19 @@ export function useApi<T, TArgs extends unknown[]>(
     [apiFunction, onSuccess, onError, successMessage, shouldShowErrorToast]
   );
 
+  const retry = useCallback(async (): Promise<T | null> => {
+    if (!lastArgs) {
+      console.warn('No previous API call to retry');
+      return null;
+    }
+    return execute(...lastArgs);
+  }, [lastArgs, execute]);
+
   const reset = useCallback(() => {
     setData(null);
     setError(null);
     setIsLoading(false);
+    setLastArgs(null);
   }, []);
 
   return {
@@ -130,6 +146,7 @@ export function useApi<T, TArgs extends unknown[]>(
     error,
     isLoading,
     execute,
+    retry,
     reset,
   };
 }
