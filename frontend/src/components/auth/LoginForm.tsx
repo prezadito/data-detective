@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useApi } from '@/hooks/useApi';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import type { LoginCredentials } from '@/types';
 
 // Validation schema matching backend requirements
@@ -36,8 +37,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     mode: 'onBlur',
   });
 
-  const { isLoading, execute: performLogin } = useApi(login, {
+  const { isLoading, error, retry, execute: performLogin } = useApi(login, {
     successMessage: 'Welcome back!',
+    showErrorToast: false, // We'll show errors inline instead
     onSuccess: () => {
       if (onSuccess) {
         onSuccess();
@@ -58,6 +60,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {error && (
+        <ErrorMessage
+          error={error}
+          title="Login failed"
+          onRetry={retry}
+        />
+      )}
       <Input
         {...register('email')}
         type="email"

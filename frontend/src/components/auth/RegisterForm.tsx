@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import { parseApiError } from '@/utils/errors';
 import type { RegisterData, LoginCredentials, UserRole } from '@/types';
 
 // Validation schema matching backend requirements
@@ -33,7 +35,8 @@ interface RegisterFormProps {
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const navigate = useNavigate();
   const { register: registerUser, login } = useAuth();
-  const [apiError, setApiError] = useState<string>('');
+  const [apiError, setApiError] = useState<unknown | null>(null);
+  const [lastFormData, setLastFormData] = useState<RegisterFormData | null>(null);
 
   const {
     register,
@@ -46,7 +49,8 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setApiError('');
+      setApiError(null);
+      setLastFormData(data);
 
       // Step 1: Register user
       const registerData: RegisterData = {
@@ -73,38 +77,24 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         navigate('/dashboard');
       }
     } catch (error) {
-      // Handle ky HTTPError
-      if (error && typeof error === 'object' && 'response' in error) {
-        try {
-          const kyError = error as { response: Response };
-          const errorData = await kyError.response.json() as { detail?: string };
-          setApiError(errorData.detail || 'Registration failed. Please try again.');
-        } catch {
-          setApiError('Registration failed. Please try again.');
-        }
-      } else if (error instanceof Error) {
-        // Network errors (connection refused, timeout, etc.)
-        if (error.name === 'TypeError' || error.message.includes('fetch') || error.message.includes('network')) {
-          setApiError('Cannot connect to server. Make sure the backend is running at http://localhost:8000');
-        } else {
-          setApiError(error.message);
-        }
-      } else {
-        setApiError('An unexpected error occurred. Please try again.');
-      }
+      setApiError(error);
+    }
+  };
+
+  const handleRetry = () => {
+    if (lastFormData) {
+      onSubmit(lastFormData);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {apiError && (
-        <div
-          className="p-4 bg-red-50 border border-red-200 rounded-md"
-          role="alert"
-          aria-live="assertive"
-        >
-          <p className="text-sm text-red-800">{apiError}</p>
-        </div>
+        <ErrorMessage
+          error={apiError}
+          title="Registration failed"
+          onRetry={handleRetry}
+        />
       )}
 
       <Input
