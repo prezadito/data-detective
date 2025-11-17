@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { LeaderboardEntry } from '@/types';
 
 export interface LeaderboardTableProps {
@@ -25,8 +26,9 @@ export interface LeaderboardTableProps {
 
 /**
  * LeaderboardTable component displays student rankings
+ * Memoized to prevent unnecessary re-renders when parent updates
  */
-export function LeaderboardTable({
+export const LeaderboardTable = memo(function LeaderboardTable({
   entries,
   currentUserName,
   isLoading = false,
@@ -247,6 +249,4 @@ export function LeaderboardTable({
       </div>
     </div>
   );
-}
-
-LeaderboardTable.displayName = 'LeaderboardTable';
+});

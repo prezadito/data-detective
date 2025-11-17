@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService } from '@/services/userService';
@@ -7,6 +7,7 @@ import { StudentTable } from '@/components/teacher/StudentTable';
 import { ExportButton } from '@/components/teacher/ExportButton';
 import { ImportModal } from '@/components/teacher/ImportModal';
 import { showApiErrorToast } from '@/utils/toast';
+import { useDebounce } from '@/utils/debounce';
 import type { StudentListResponse } from '@/types';
 
 export function StudentListPage() {
@@ -26,11 +27,40 @@ export function StudentListPage() {
   const pageSize = 50; // Fixed page size
   const searchQuery = searchParams.get('search') || '';
 
+  // Local state for immediate search input (for responsive UI)
+  const [searchInput, setSearchInput] = useState(searchQuery);
+
+  // Debounced search value (delays API calls until user stops typing)
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Sync local search input with URL search query (for browser back/forward)
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
+
+  // Update URL search params when debounced search changes
+  useEffect(() => {
+    if (debouncedSearch !== searchQuery) {
+      if (debouncedSearch) {
+        setSearchParams({
+          sort: sortBy,
+          page: '1', // Reset to first page on search
+          search: debouncedSearch,
+        });
+      } else {
+        setSearchParams({
+          sort: sortBy,
+          page: '1',
+        });
+      }
+    }
+  }, [debouncedSearch, searchQuery, sortBy, setSearchParams]);
+
   // Calculate offset from page
   const offset = (page - 1) * pageSize;
 
-  // Fetch students function (reusable)
-  const fetchStudents = async () => {
+  // Fetch students function (reusable, memoized to prevent recreation on every render)
+  const fetchStudents = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -49,40 +79,29 @@ export function StudentListPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [sortBy, offset, pageSize]);
 
   // Fetch students on mount and when params change
   useEffect(() => {
     fetchStudents();
-  }, [sortBy, offset, pageSize]);
+  }, [fetchStudents]);
 
-  // Handle sort change
-  const handleSortChange = (newSort: 'name' | 'points' | 'date') => {
+  // Handle sort change (memoized to prevent child component re-renders)
+  const handleSortChange = useCallback((newSort: 'name' | 'points' | 'date') => {
     setSearchParams({
       sort: newSort,
       page: '1', // Reset to first page on sort change
       ...(searchQuery && { search: searchQuery }),
     });
-  };
+  }, [setSearchParams, searchQuery]);
 
-  // Handle search change
-  const handleSearchChange = (query: string) => {
-    if (query) {
-      setSearchParams({
-        sort: sortBy,
-        page: '1', // Reset to first page on search
-        search: query,
-      });
-    } else {
-      setSearchParams({
-        sort: sortBy,
-        page: '1',
-      });
-    }
-  };
+  // Handle search change (updates local state immediately, URL will update after debounce)
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchInput(query);
+  }, []);
 
-  // Handle page change
-  const handlePageChange = (newPage: number) => {
+  // Handle page change (memoized to prevent child component re-renders)
+  const handlePageChange = useCallback((newPage: number) => {
     setSearchParams({
       sort: sortBy,
       page: newPage.toString(),
@@ -90,21 +109,21 @@ export function StudentListPage() {
     });
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [setSearchParams, sortBy, searchQuery]);
 
   // Calculate pagination
   const totalPages = data ? Math.ceil(data.total_count / pageSize) : 0;
   const showPagination = totalPages > 1;
 
-  // Handle student click
-  const handleStudentClick = (studentId: number) => {
+  // Handle student click (memoized to prevent child component re-renders)
+  const handleStudentClick = useCallback((studentId: number) => {
     navigate(`/teacher/students/${studentId}`);
-  };
+  }, [navigate]);
 
-  // Handle import success - refresh student list
-  const handleImportSuccess = () => {
+  // Handle import success - refresh student list (memoized to prevent child component re-renders)
+  const handleImportSuccess = useCallback(() => {
     fetchStudents();
-  };
+  }, [fetchStudents]);
 
   // Breadcrumbs
   const breadcrumbs = [
@@ -155,9 +174,10 @@ export function StudentListPage() {
               <input
                 type="text"
                 placeholder="Search by name or email..."
-                value={searchQuery}
+                value={searchInput}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                aria-label="Search students by name or email"
               />
               <div className="absolute left-3 top-3.5 text-gray-400">
                 <svg

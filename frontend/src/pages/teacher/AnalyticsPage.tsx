@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LineChart,
@@ -66,6 +66,42 @@ export function AnalyticsPage() {
     fetchAnalytics();
   }, []);
 
+  // Transform weekly trends for chart (memoized to prevent recalculation on every render)
+  // Hooks must be called before any early returns
+  const weeklyTrendsData = useMemo(() =>
+    data?.weekly_trends.map((trend) => ({
+      week: new Date(trend.week_start_date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      }),
+      completions: trend.completions,
+      points: trend.total_points_earned,
+      students: trend.unique_students,
+    })) || [],
+    [data?.weekly_trends]
+  );
+
+  // Transform challenge data for chart (memoized to prevent recalculation on every render)
+  const challengeData = useMemo(() =>
+    data?.challenges.map((challenge) => ({
+      name: challenge.challenge_title.length > 20
+        ? challenge.challenge_title.substring(0, 20) + '...'
+        : challenge.challenge_title,
+      fullName: challenge.challenge_title,
+      successRate: Math.round(challenge.success_rate),
+      attempts: challenge.total_attempts,
+      correctAttempts: challenge.correct_attempts,
+    })) || [],
+    [data?.challenges]
+  );
+
+  // Custom bar color based on success rate (memoized to prevent recreation on every render)
+  const getBarColor = useCallback((successRate: number) => {
+    if (successRate >= 70) return '#10b981'; // green
+    if (successRate >= 50) return '#f59e0b'; // yellow
+    return '#ef4444'; // red
+  }, []);
+
   // Breadcrumbs
   const breadcrumbs = [
     { label: 'Dashboard', path: '/teacher/dashboard' },
@@ -106,35 +142,6 @@ export function AnalyticsPage() {
       </TeacherLayout>
     );
   }
-
-  // Transform weekly trends for chart
-  const weeklyTrendsData = data.weekly_trends.map((trend) => ({
-    week: new Date(trend.week_start_date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    }),
-    completions: trend.completions,
-    points: trend.total_points_earned,
-    students: trend.unique_students,
-  }));
-
-  // Transform challenge data for chart
-  const challengeData = data.challenges.map((challenge) => ({
-    name: challenge.challenge_title.length > 20
-      ? challenge.challenge_title.substring(0, 20) + '...'
-      : challenge.challenge_title,
-    fullName: challenge.challenge_title,
-    successRate: Math.round(challenge.success_rate),
-    attempts: challenge.total_attempts,
-    correctAttempts: challenge.correct_attempts,
-  }));
-
-  // Custom bar color based on success rate
-  const getBarColor = (successRate: number) => {
-    if (successRate >= 70) return '#10b981'; // green
-    if (successRate >= 50) return '#f59e0b'; // yellow
-    return '#ef4444'; // red
-  };
 
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
