@@ -175,3 +175,98 @@ async def pricing(request: Request):
     context = get_base_context(request)
 
     return templates.TemplateResponse("pricing.html", context)
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    """
+    About page - server-side rendered for SEO.
+
+    Displays:
+    - Mission statement
+    - Company story and history
+    - Team information
+    - Core values
+    - Open source commitment
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("about.html", context)
+
+
+@router.get("/contact", response_class=HTMLResponse)
+async def contact(request: Request):
+    """
+    Contact page - server-side rendered for SEO.
+
+    Displays:
+    - Contact form for inquiries
+    - Contact information (email, support)
+    - FAQ section
+    - Response time expectations
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("contact.html", context)
+
+
+@router.get("/privacy", response_class=HTMLResponse)
+async def privacy(request: Request):
+    """
+    Privacy Policy page - server-side rendered for SEO.
+
+    Displays:
+    - Comprehensive privacy policy
+    - Data collection and usage information
+    - Student privacy and COPPA compliance
+    - Data security measures
+    - User rights and choices
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("privacy.html", context)
+
+
+@router.get("/terms", response_class=HTMLResponse)
+async def terms(request: Request):
+    """
+    Terms of Service page - server-side rendered for SEO.
+
+    Displays:
+    - Terms of Service agreement
+    - User rights and responsibilities
+    - Acceptable use policy
+    - AGPL-3.0 license information
+    - Disclaimers and liability limitations
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("terms.html", context)

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>Privacy Policy - Data Detective Academy</title>
+    <meta name="title" content="Privacy Policy - Data Detective Academy">
+    <meta name="description" content="Learn how Data Detective Academy collects, uses, and protects your personal information. We are committed to protecting student privacy and data security.">
+    <meta name="keywords" content="privacy policy, data protection, student privacy, COPPA compliance, data security">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Privacy Policy - Data Detective Academy">
+    <meta property="og:description" content="Learn how Data Detective Academy collects, uses, and protects your personal information.">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Privacy Policy - Data Detective Academy">
+    <meta name="twitter:description" content="Learn how Data Detective Academy collects, uses, and protects your personal information.">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-2xl font-bold text-primary flex items-center">
+                    <span class="text-3xl mr-2">🔍</span>
+                    Data Detective Academy
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-primary transition-colors">Home</a>
+                    <a href="/features" class="text-gray-700 hover:text-primary transition-colors">Features</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-primary transition-colors">Pricing</a>
+                    <a href="/about" class="text-gray-700 hover:text-primary transition-colors">About</a>
+                    <a href="/contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
+                    <div class="flex items-center space-x-4 ml-4">
+                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition-colors">Login</a>
+                        <a href="{{ frontend_url }}/register" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-primary to-primary-dark text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Privacy Policy</h1>
+                <p class="text-lg text-blue-100">Last Updated: {{ current_year }}-01-15</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Content -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8 md:p-12">
+                <!-- Introduction -->
+                <div class="mb-12">
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        At Data Detective Academy, we are committed to protecting the privacy and security of our users, especially students. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our educational platform.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        By using Data Detective Academy, you agree to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our services.
+                    </p>
+                </div>
+
+                <!-- Table of Contents -->
+                <div class="bg-blue-50 rounded-xl p-6 mb-12">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Table of Contents</h3>
+                    <ol class="space-y-2 text-gray-700">
+                        <li><a href="#information-collection" class="text-primary hover:text-primary-dark">1. Information We Collect</a></li>
+                        <li><a href="#how-we-use" class="text-primary hover:text-primary-dark">2. How We Use Your Information</a></li>
+                        <li><a href="#data-security" class="text-primary hover:text-primary-dark">3. Data Security</a></li>
+                        <li><a href="#student-privacy" class="text-primary hover:text-primary-dark">4. Student Privacy & COPPA Compliance</a></li>
+                        <li><a href="#cookies" class="text-primary hover:text-primary-dark">5. Cookies and Tracking Technologies</a></li>
+                        <li><a href="#third-party" class="text-primary hover:text-primary-dark">6. Third-Party Services</a></li>
+                        <li><a href="#data-retention" class="text-primary hover:text-primary-dark">7. Data Retention</a></li>
+                        <li><a href="#your-rights" class="text-primary hover:text-primary-dark">8. Your Rights and Choices</a></li>
+                        <li><a href="#changes" class="text-primary hover:text-primary-dark">9. Changes to This Policy</a></li>
+                        <li><a href="#contact-privacy" class="text-primary hover:text-primary-dark">10. Contact Us</a></li>
+                    </ol>
+                </div>
+
+                <!-- Section 1: Information Collection -->
+                <section id="information-collection" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Information We Collect</h2>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Personal Information</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">When you create an account, we collect:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Name</li>
+                        <li>Email address</li>
+                        <li>Password (encrypted)</li>
+                        <li>Role (student or teacher)</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Usage Information</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">We automatically collect certain information when you use our platform:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>SQL challenge attempts and submissions</li>
+                        <li>Progress and completion data</li>
+                        <li>Points earned and leaderboard rankings</li>
+                        <li>Hints accessed</li>
+                        <li>Login times and session duration</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Technical Information</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                        <li>IP address</li>
+                        <li>Browser type and version</li>
+                        <li>Device information</li>
+                        <li>Operating system</li>
+                    </ul>
+                </section>
+
+                <!-- Section 2: How We Use Information -->
+                <section id="how-we-use" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">2. How We Use Your Information</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">We use the information we collect to:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                        <li>Provide and maintain our educational services</li>
+                        <li>Personalize your learning experience</li>
+                        <li>Track your progress and achievements</li>
+                        <li>Generate leaderboards and analytics</li>
+                        <li>Allow teachers to monitor student progress</li>
+                        <li>Improve our platform and develop new features</li>
+                        <li>Send important service updates and notifications</li>
+                        <li>Respond to support requests</li>
+                        <li>Ensure platform security and prevent fraud</li>
+                        <li>Comply with legal obligations</li>
+                    </ul>
+                </section>
+
+                <!-- Section 3: Data Security -->
+                <section id="data-security" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Data Security</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">We implement industry-standard security measures to protect your data:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li><strong>Encryption:</strong> All passwords are encrypted using bcrypt hashing</li>
+                        <li><strong>HTTPS:</strong> All data transmission is encrypted using SSL/TLS</li>
+                        <li><strong>Access Controls:</strong> Strict role-based access controls limit who can view data</li>
+                        <li><strong>Authentication:</strong> JWT token-based authentication with short-lived access tokens</li>
+                        <li><strong>Regular Updates:</strong> We keep our systems and dependencies up to date</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        While we strive to protect your information, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security.
+                    </p>
+                </section>
+
+                <!-- Section 4: Student Privacy -->
+                <section id="student-privacy" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Student Privacy & COPPA Compliance</h2>
+                    <div class="bg-yellow-50 border-l-4 border-accent p-6 mb-4">
+                        <p class="text-gray-800 font-semibold mb-2">Protection of Student Information</p>
+                        <p class="text-gray-700">
+                            We take student privacy seriously and comply with applicable student privacy laws, including COPPA (Children's Online Privacy Protection Act) and FERPA (Family Educational Rights and Privacy Act).
+                        </p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Student Data Usage</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">Student data is used solely for educational purposes:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>We do not sell or rent student information to third parties</li>
+                        <li>We do not use student data for advertising or marketing</li>
+                        <li>Student data is only accessible to the student, their teachers, and authorized school administrators</li>
+                        <li>Parents and guardians have the right to review and request deletion of their child's data</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Parental Consent</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        For students under 13, we require verifiable parental consent before collecting personal information. Schools and teachers act as agents for parents in providing consent when using Data Detective Academy as part of their curriculum.
+                    </p>
+                </section>
+
+                <!-- Section 5: Cookies -->
+                <section id="cookies" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Cookies and Tracking Technologies</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">We use cookies and similar technologies to:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Keep you logged in to your account</li>
+                        <li>Remember your preferences</li>
+                        <li>Understand how you use our platform</li>
+                        <li>Improve platform performance</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        You can control cookies through your browser settings. However, disabling cookies may limit your ability to use certain features of our platform.
+                    </p>
+                </section>
+
+                <!-- Section 6: Third-Party Services -->
+                <section id="third-party" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Third-Party Services</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        Data Detective Academy is a self-hosted platform and does not rely on third-party services for core functionality. When we do use third-party services, we ensure they comply with applicable privacy laws and have appropriate data protection measures in place.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        We do not share student data with third parties except as required by law or with explicit consent.
+                    </p>
+                </section>
+
+                <!-- Section 7: Data Retention -->
+                <section id="data-retention" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Data Retention</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">We retain your information for as long as necessary to:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Provide our services</li>
+                        <li>Comply with legal obligations</li>
+                        <li>Resolve disputes</li>
+                        <li>Enforce our agreements</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        When you delete your account, we will delete or anonymize your personal information within 30 days, except where we are required to retain it by law.
+                    </p>
+                </section>
+
+                <!-- Section 8: Your Rights -->
+                <section id="your-rights" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">8. Your Rights and Choices</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">You have the following rights regarding your personal information:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li><strong>Access:</strong> Request a copy of your personal data</li>
+                        <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                        <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                        <li><strong>Export:</strong> Download your data in a portable format</li>
+                        <li><strong>Opt-out:</strong> Unsubscribe from non-essential communications</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        To exercise these rights, please contact us at <a href="mailto:privacy@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">privacy@datadetectiveacademy.com</a>
+                    </p>
+                </section>
+
+                <!-- Section 9: Changes -->
+                <section id="changes" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">9. Changes to This Policy</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        We may update this Privacy Policy from time to time. We will notify you of any material changes by:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Posting the updated policy on this page</li>
+                        <li>Updating the "Last Updated" date</li>
+                        <li>Sending an email notification for significant changes</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        Your continued use of Data Detective Academy after changes are posted constitutes your acceptance of the updated policy.
+                    </p>
+                </section>
+
+                <!-- Section 10: Contact -->
+                <section id="contact-privacy" class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">10. Contact Us</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        If you have questions or concerns about this Privacy Policy or our privacy practices, please contact us:
+                    </p>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <p class="text-gray-900 font-semibold mb-2">Data Detective Academy</p>
+                        <p class="text-gray-700">Email: <a href="mailto:privacy@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">privacy@datadetectiveacademy.com</a></p>
+                        <p class="text-gray-700">General Contact: <a href="mailto:support@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">support@datadetectiveacademy.com</a></p>
+                        <p class="text-gray-700 mt-4"><a href="/contact" class="text-primary hover:text-primary-dark font-semibold">Contact Form →</a></p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Data Detective Academy</h4>
+                    <p class="text-gray-400">Empowering students to master SQL through interactive, gamified learning experiences.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="/pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="{{ frontend_url }}/challenges" class="text-gray-400 hover:text-white transition-colors">Challenges</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                        <li><a href="/docs" class="text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+                        <li><a href="{{ frontend_url }}/help" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; {{ current_year }} Data Detective Academy. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

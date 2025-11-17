@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>Terms of Service - Data Detective Academy</title>
+    <meta name="title" content="Terms of Service - Data Detective Academy">
+    <meta name="description" content="Review the terms and conditions for using Data Detective Academy's SQL learning platform. Understand your rights and responsibilities as a user.">
+    <meta name="keywords" content="terms of service, user agreement, terms and conditions, legal agreement">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Terms of Service - Data Detective Academy">
+    <meta property="og:description" content="Review the terms and conditions for using Data Detective Academy's SQL learning platform.">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Terms of Service - Data Detective Academy">
+    <meta name="twitter:description" content="Review the terms and conditions for using Data Detective Academy's SQL learning platform.">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-2xl font-bold text-primary flex items-center">
+                    <span class="text-3xl mr-2">🔍</span>
+                    Data Detective Academy
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-primary transition-colors">Home</a>
+                    <a href="/features" class="text-gray-700 hover:text-primary transition-colors">Features</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-primary transition-colors">Pricing</a>
+                    <a href="/about" class="text-gray-700 hover:text-primary transition-colors">About</a>
+                    <a href="/contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
+                    <div class="flex items-center space-x-4 ml-4">
+                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition-colors">Login</a>
+                        <a href="{{ frontend_url }}/register" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-primary to-primary-dark text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Terms of Service</h1>
+                <p class="text-lg text-blue-100">Last Updated: {{ current_year }}-01-15</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms of Service Content -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8 md:p-12">
+                <!-- Introduction -->
+                <div class="mb-12">
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        Welcome to Data Detective Academy. These Terms of Service ("Terms") govern your access to and use of our educational platform. Please read these Terms carefully before using our services.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        By accessing or using Data Detective Academy, you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use our services.
+                    </p>
+                </div>
+
+                <!-- Table of Contents -->
+                <div class="bg-blue-50 rounded-xl p-6 mb-12">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Table of Contents</h3>
+                    <ol class="space-y-2 text-gray-700">
+                        <li><a href="#acceptance" class="text-primary hover:text-primary-dark">1. Acceptance of Terms</a></li>
+                        <li><a href="#eligibility" class="text-primary hover:text-primary-dark">2. Eligibility</a></li>
+                        <li><a href="#accounts" class="text-primary hover:text-primary-dark">3. User Accounts</a></li>
+                        <li><a href="#license" class="text-primary hover:text-primary-dark">4. License and Access</a></li>
+                        <li><a href="#acceptable-use" class="text-primary hover:text-primary-dark">5. Acceptable Use Policy</a></li>
+                        <li><a href="#intellectual-property" class="text-primary hover:text-primary-dark">6. Intellectual Property</a></li>
+                        <li><a href="#open-source" class="text-primary hover:text-primary-dark">7. Open Source License</a></li>
+                        <li><a href="#user-content" class="text-primary hover:text-primary-dark">8. User-Generated Content</a></li>
+                        <li><a href="#termination" class="text-primary hover:text-primary-dark">9. Termination</a></li>
+                        <li><a href="#disclaimers" class="text-primary hover:text-primary-dark">10. Disclaimers</a></li>
+                        <li><a href="#limitation-liability" class="text-primary hover:text-primary-dark">11. Limitation of Liability</a></li>
+                        <li><a href="#indemnification" class="text-primary hover:text-primary-dark">12. Indemnification</a></li>
+                        <li><a href="#changes-terms" class="text-primary hover:text-primary-dark">13. Changes to Terms</a></li>
+                        <li><a href="#governing-law" class="text-primary hover:text-primary-dark">14. Governing Law</a></li>
+                        <li><a href="#contact-terms" class="text-primary hover:text-primary-dark">15. Contact Information</a></li>
+                    </ol>
+                </div>
+
+                <!-- Section 1: Acceptance -->
+                <section id="acceptance" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Acceptance of Terms</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        By creating an account, accessing, or using Data Detective Academy, you acknowledge that you have read, understood, and agree to be bound by these Terms, along with our <a href="/privacy" class="text-primary hover:text-primary-dark">Privacy Policy</a>.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        We reserve the right to modify these Terms at any time. Your continued use of our services after changes are posted constitutes your acceptance of the modified Terms.
+                    </p>
+                </section>
+
+                <!-- Section 2: Eligibility -->
+                <section id="eligibility" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Eligibility</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        Data Detective Academy is an educational platform designed for students in grades 4-8 and their teachers. By using our services, you represent that:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>You are at least 13 years old, or using the platform with parental/teacher consent</li>
+                        <li>If you are a teacher, you have authorization to create accounts for your students</li>
+                        <li>You have the legal capacity to enter into these Terms</li>
+                        <li>You will comply with all applicable laws and regulations</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        For students under 13, parental consent is required. Schools and teachers may provide consent on behalf of parents when using the platform as part of their educational curriculum.
+                    </p>
+                </section>
+
+                <!-- Section 3: Accounts -->
+                <section id="accounts" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">3. User Accounts</h2>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Account Creation</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        To access certain features, you must create an account. When creating an account, you agree to:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Provide accurate, current, and complete information</li>
+                        <li>Maintain and update your information to keep it accurate</li>
+                        <li>Keep your password secure and confidential</li>
+                        <li>Notify us immediately of any unauthorized access to your account</li>
+                        <li>Accept responsibility for all activities that occur under your account</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">Teacher Accounts</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Teachers who create accounts for students are responsible for obtaining necessary parental consent and ensuring compliance with applicable student privacy laws. Teachers must not share student accounts with unauthorized parties.
+                    </p>
+                </section>
+
+                <!-- Section 4: License -->
+                <section id="license" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">4. License and Access</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to access and use Data Detective Academy for educational purposes.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">License Tiers</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                        <li><strong>Freedom Edition:</strong> Free access for individual students and teachers</li>
+                        <li><strong>School Edition:</strong> Paid license for schools with additional features</li>
+                        <li><strong>District Edition:</strong> Enterprise license for school districts</li>
+                    </ul>
+                </section>
+
+                <!-- Section 5: Acceptable Use -->
+                <section id="acceptable-use" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Acceptable Use Policy</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">You agree not to:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Use the platform for any unlawful purpose</li>
+                        <li>Attempt to gain unauthorized access to our systems or other users' accounts</li>
+                        <li>Upload viruses, malware, or other malicious code</li>
+                        <li>Harass, abuse, or harm other users</li>
+                        <li>Impersonate any person or entity</li>
+                        <li>Share your account credentials with others</li>
+                        <li>Use automated systems (bots, scrapers) without permission</li>
+                        <li>Interfere with or disrupt the platform's operation</li>
+                        <li>Reverse engineer or attempt to extract source code (except as permitted by AGPL-3.0)</li>
+                        <li>Remove or modify any copyright or proprietary notices</li>
+                    </ul>
+
+                    <div class="bg-red-50 border-l-4 border-red-500 p-6">
+                        <p class="text-gray-800 font-semibold mb-2">Academic Integrity</p>
+                        <p class="text-gray-700">
+                            Students are expected to complete challenges independently unless otherwise instructed by their teacher. Sharing solutions or copying answers violates our academic integrity policy and may result in account suspension.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 6: Intellectual Property -->
+                <section id="intellectual-property" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Intellectual Property</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        All content on Data Detective Academy, including but not limited to text, graphics, logos, icons, images, SQL challenges, and software, is the property of Data Detective Academy or its licensors and is protected by copyright, trademark, and other intellectual property laws.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        You may not copy, modify, distribute, sell, or exploit any content without our express written permission, except as permitted by the AGPL-3.0 license (see Section 7).
+                    </p>
+                </section>
+
+                <!-- Section 7: Open Source -->
+                <section id="open-source" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Open Source License</h2>
+                    <div class="bg-blue-50 border-l-4 border-primary p-6 mb-4">
+                        <p class="text-gray-800 font-semibold mb-2">AGPL-3.0 Licensed Software</p>
+                        <p class="text-gray-700 mb-3">
+                            Data Detective Academy is open source software licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+                        </p>
+                        <a href="https://github.com/prezadito/data-detective" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary-dark font-semibold">
+                            View Source Code on GitHub →
+                        </a>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3 mt-6">What This Means</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">Under AGPL-3.0, you are free to:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Use the software for any purpose</li>
+                        <li>Study and modify the source code</li>
+                        <li>Distribute copies of the software</li>
+                        <li>Distribute modified versions</li>
+                    </ul>
+
+                    <p class="text-gray-700 leading-relaxed mb-3">However, you must:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                        <li>Include the original copyright notice</li>
+                        <li>State significant changes made to the code</li>
+                        <li>Make source code available under AGPL-3.0 when distributing</li>
+                        <li>If you run a modified version on a server, make the source code available to users</li>
+                    </ul>
+                </section>
+
+                <!-- Section 8: User Content -->
+                <section id="user-content" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">8. User-Generated Content</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        When you submit SQL queries, feedback, or other content to Data Detective Academy, you retain ownership of your content. However, you grant us a worldwide, non-exclusive, royalty-free license to use, store, and display your content solely for the purpose of providing and improving our services.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        We do not claim ownership of student work or SQL queries. Student submissions are used solely for educational purposes and progress tracking.
+                    </p>
+                </section>
+
+                <!-- Section 9: Termination -->
+                <section id="termination" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">9. Termination</h2>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">By You</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        You may terminate your account at any time by contacting us or using the account deletion feature in your settings.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">By Us</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        We reserve the right to suspend or terminate your account at any time for:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Violation of these Terms</li>
+                        <li>Fraudulent or illegal activity</li>
+                        <li>Extended inactivity</li>
+                        <li>Any reason at our sole discretion</li>
+                    </ul>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        Upon termination, your right to access and use the platform will immediately cease. We may delete your account data in accordance with our data retention policies.
+                    </p>
+                </section>
+
+                <!-- Section 10: Disclaimers -->
+                <section id="disclaimers" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">10. Disclaimers</h2>
+                    <div class="bg-yellow-50 border-l-4 border-accent p-6">
+                        <p class="text-gray-800 font-semibold mb-2">Service Provided "AS IS"</p>
+                        <p class="text-gray-700 mb-3">
+                            DATA DETECTIVE ACADEMY IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+                        </p>
+                        <p class="text-gray-700">
+                            We do not guarantee that the platform will be uninterrupted, error-free, secure, or virus-free. We do not warrant the accuracy or completeness of any content on the platform.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 11: Limitation of Liability -->
+                <section id="limitation-liability" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">11. Limitation of Liability</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, DATA DETECTIVE ACADEMY AND ITS AFFILIATES, OFFICERS, EMPLOYEES, AGENTS, AND LICENSORS SHALL NOT BE LIABLE FOR:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Indirect, incidental, special, consequential, or punitive damages</li>
+                        <li>Loss of profits, revenue, data, or use</li>
+                        <li>Damages arising from your use or inability to use the platform</li>
+                        <li>Any unauthorized access to or alteration of your content</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        Our total liability for all claims related to the platform shall not exceed the amount you paid us in the twelve (12) months preceding the claim, or $100, whichever is greater.
+                    </p>
+                </section>
+
+                <!-- Section 12: Indemnification -->
+                <section id="indemnification" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">12. Indemnification</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        You agree to indemnify, defend, and hold harmless Data Detective Academy and its affiliates, officers, employees, agents, and licensors from any claims, liabilities, damages, losses, and expenses (including legal fees) arising from your use of the platform, violation of these Terms, or infringement of any third-party rights.
+                    </p>
+                </section>
+
+                <!-- Section 13: Changes to Terms -->
+                <section id="changes-terms" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">13. Changes to Terms</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        We reserve the right to modify these Terms at any time. When we make material changes, we will:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mb-4">
+                        <li>Post the updated Terms on this page</li>
+                        <li>Update the "Last Updated" date</li>
+                        <li>Notify users via email for significant changes</li>
+                    </ul>
+                    <p class="text-gray-700 leading-relaxed">
+                        Your continued use of the platform after changes are posted constitutes your acceptance of the modified Terms.
+                    </p>
+                </section>
+
+                <!-- Section 14: Governing Law -->
+                <section id="governing-law" class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">14. Governing Law</h2>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        Any disputes arising from these Terms or your use of the platform shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association, except where prohibited by law.
+                    </p>
+                </section>
+
+                <!-- Section 15: Contact -->
+                <section id="contact-terms" class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">15. Contact Information</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        If you have questions or concerns about these Terms, please contact us:
+                    </p>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <p class="text-gray-900 font-semibold mb-2">Data Detective Academy</p>
+                        <p class="text-gray-700">Email: <a href="mailto:legal@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">legal@datadetectiveacademy.com</a></p>
+                        <p class="text-gray-700">General Contact: <a href="mailto:support@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">support@datadetectiveacademy.com</a></p>
+                        <p class="text-gray-700 mt-4"><a href="/contact" class="text-primary hover:text-primary-dark font-semibold">Contact Form →</a></p>
+                    </div>
+                </section>
+
+                <!-- Acceptance Notice -->
+                <div class="bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl p-6 text-center">
+                    <p class="text-lg mb-4">
+                        By using Data Detective Academy, you acknowledge that you have read and understood these Terms of Service and agree to be bound by them.
+                    </p>
+                    <p class="text-blue-100">
+                        Thank you for being part of our learning community!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Data Detective Academy</h4>
+                    <p class="text-gray-400">Empowering students to master SQL through interactive, gamified learning experiences.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="/pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="{{ frontend_url }}/challenges" class="text-gray-400 hover:text-white transition-colors">Challenges</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                        <li><a href="/docs" class="text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+                        <li><a href="{{ frontend_url }}/help" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; {{ current_year }} Data Detective Academy. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

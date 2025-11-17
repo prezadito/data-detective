@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>Contact Us - Data Detective Academy</title>
+    <meta name="title" content="Contact Us - Data Detective Academy">
+    <meta name="description" content="Get in touch with the Data Detective Academy team. We're here to answer your questions about SQL education, platform features, and partnership opportunities.">
+    <meta name="keywords" content="contact, support, SQL education support, customer service, educational partnerships">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Contact Us - Data Detective Academy">
+    <meta property="og:description" content="Get in touch with the Data Detective Academy team. We're here to answer your questions about SQL education, platform features, and partnership opportunities.">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Contact Us - Data Detective Academy">
+    <meta name="twitter:description" content="Get in touch with the Data Detective Academy team. We're here to answer your questions about SQL education, platform features, and partnership opportunities.">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-2xl font-bold text-primary flex items-center">
+                    <span class="text-3xl mr-2">🔍</span>
+                    Data Detective Academy
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-primary transition-colors">Home</a>
+                    <a href="/features" class="text-gray-700 hover:text-primary transition-colors">Features</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-primary transition-colors">Pricing</a>
+                    <a href="/about" class="text-gray-700 hover:text-primary transition-colors">About</a>
+                    <a href="/contact" class="text-primary font-semibold">Contact</a>
+                    <div class="flex items-center space-x-4 ml-4">
+                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition-colors">Login</a>
+                        <a href="{{ frontend_url }}/register" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-primary to-primary-dark text-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">Get in Touch</h1>
+                <p class="text-xl md:text-2xl text-blue-100">
+                    We'd love to hear from you. Whether you have questions, feedback, or partnership inquiries, our team is here to help.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Contact Form -->
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+                        <form id="contact-form" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
+                                    placeholder="John Doe"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
+                                    placeholder="john@example.com"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="subject" class="block text-sm font-semibold text-gray-700 mb-2">Subject *</label>
+                                <select
+                                    id="subject"
+                                    name="subject"
+                                    required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
+                                >
+                                    <option value="">Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="school">School/District License</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">Message *</label>
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    required
+                                    rows="6"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow resize-none"
+                                    placeholder="Tell us how we can help you..."
+                                ></textarea>
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-dark transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
+                            >
+                                Send Message
+                            </button>
+
+                            <div id="form-message" class="hidden p-4 rounded-lg"></div>
+                        </form>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Contact Information</h2>
+                        <div class="space-y-8">
+                            <!-- Email -->
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 rounded-lg p-3 mr-4">
+                                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Email</h3>
+                                    <a href="mailto:support@datadetectiveacademy.com" class="text-primary hover:text-primary-dark">
+                                        support@datadetectiveacademy.com
+                                    </a>
+                                    <p class="text-sm text-gray-600 mt-1">We'll respond within 24-48 hours</p>
+                                </div>
+                            </div>
+
+                            <!-- Support -->
+                            <div class="flex items-start">
+                                <div class="bg-green-100 rounded-lg p-3 mr-4">
+                                    <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Technical Support</h3>
+                                    <p class="text-gray-700">For technical issues, please include:</p>
+                                    <ul class="text-sm text-gray-600 mt-1 ml-4 list-disc">
+                                        <li>Your account email</li>
+                                        <li>Description of the issue</li>
+                                        <li>Browser and device information</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Sales -->
+                            <div class="flex items-start">
+                                <div class="bg-yellow-100 rounded-lg p-3 mr-4">
+                                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">School & District Licenses</h3>
+                                    <p class="text-gray-700">Interested in bringing Data Detective Academy to your school or district?</p>
+                                    <a href="mailto:sales@datadetectiveacademy.com" class="text-primary hover:text-primary-dark text-sm">
+                                        sales@datadetectiveacademy.com
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- GitHub -->
+                            <div class="flex items-start">
+                                <div class="bg-gray-100 rounded-lg p-3 mr-4">
+                                    <svg class="w-6 h-6 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Open Source</h3>
+                                    <p class="text-gray-700">Found a bug or want to contribute?</p>
+                                    <a href="https://github.com/prezadito/data-detective" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary-dark text-sm">
+                                        Visit our GitHub repository
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Office Hours -->
+                        <div class="mt-12 bg-blue-50 rounded-2xl p-6">
+                            <h3 class="font-semibold text-gray-900 mb-3">Response Times</h3>
+                            <div class="space-y-2 text-sm text-gray-700">
+                                <div class="flex justify-between">
+                                    <span>General Inquiries:</span>
+                                    <span class="font-semibold">24-48 hours</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Technical Support:</span>
+                                    <span class="font-semibold">12-24 hours</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>School Partnerships:</span>
+                                    <span class="font-semibold">1-3 business days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto"></div>
+                </div>
+                <div class="space-y-6">
+                    <div class="border-l-4 border-primary bg-gray-50 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-2">How do I reset my password?</h3>
+                        <p class="text-gray-700">You can reset your password from the login page by clicking "Forgot Password" and following the instructions sent to your email.</p>
+                    </div>
+                    <div class="border-l-4 border-secondary bg-gray-50 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-2">Can I use Data Detective Academy with my entire class?</h3>
+                        <p class="text-gray-700">Absolutely! Teachers can create accounts and import entire class rosters. Check out our School Edition for enhanced features and analytics.</p>
+                    </div>
+                    <div class="border-l-4 border-accent bg-gray-50 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-2">Is there a mobile app?</h3>
+                        <p class="text-gray-700">Currently, Data Detective Academy is a web-based platform optimized for desktop and tablet browsers. A mobile app is on our roadmap for future development.</p>
+                    </div>
+                    <div class="border-l-4 border-gray-400 bg-gray-50 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-2">How can I suggest new features?</h3>
+                        <p class="text-gray-700">We love hearing from our community! You can submit feature requests via this contact form, through GitHub issues, or by emailing us directly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Data Detective Academy</h4>
+                    <p class="text-gray-400">Empowering students to master SQL through interactive, gamified learning experiences.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="/pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="{{ frontend_url }}/challenges" class="text-gray-400 hover:text-white transition-colors">Challenges</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                        <li><a href="/docs" class="text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+                        <li><a href="{{ frontend_url }}/help" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; {{ current_year }} Data Detective Academy. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Form Script -->
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formMessage = document.getElementById('form-message');
+            const submitButton = e.target.querySelector('button[type="submit"]');
+
+            // Disable submit button
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            // Simulate form submission (replace with actual API call)
+            setTimeout(() => {
+                // Show success message
+                formMessage.className = 'p-4 rounded-lg bg-green-50 border border-green-200 text-green-800';
+                formMessage.textContent = 'Thank you for your message! We\'ll get back to you within 24-48 hours.';
+                formMessage.classList.remove('hidden');
+
+                // Reset form
+                e.target.reset();
+
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.classList.add('hidden');
+                }, 5000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
