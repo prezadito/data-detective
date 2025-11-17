@@ -7,29 +7,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Primary Meta Tags -->
-    <title>Features - Data Detective Academy</title>
-    <meta name="title" content="Features - Data Detective Academy">
-    <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-    <meta name="keywords" content="SQL learning features, SQL education platform, database learning tools, gamified SQL features">
+    <title>Features - Data Detective Academy | Interactive SQL Learning Platform</title>
+    <meta name="title" content="Features - Data Detective Academy | Interactive SQL Learning Platform">
+    <meta name="description" content="Discover gamified SQL challenges, real-time progress tracking, leaderboards, teacher analytics, and smart hints. Perfect for students and educators. Free and open-source.">
+    <meta name="keywords" content="SQL learning features, SQL education platform, database learning tools, gamified SQL features, teacher analytics, progress tracking, SQL leaderboard">
     <meta name="author" content="Data Detective Academy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="Features - Data Detective Academy">
-    <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta property="og:title" content="Features - Data Detective Academy | Interactive SQL Learning Platform">
+    <meta property="og:description" content="Discover gamified SQL challenges, real-time progress tracking, leaderboards, teacher analytics, and smart hints. Perfect for students and educators.">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
     <meta property="og:site_name" content="Data Detective Academy">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ request.url }}">
     <meta name="twitter:title" content="Features - Data Detective Academy">
-    <meta name="twitter:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta name="twitter:description" content="Discover gamified SQL challenges, real-time progress tracking, leaderboards, teacher analytics, and smart hints.">
     <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Performance & DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,6 +55,48 @@
                 }
             }
         }
+    </script>
+
+    <!-- JSON-LD Structured Data - ItemList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Data Detective Academy Features",
+        "description": "Key features of the Data Detective Academy SQL learning platform",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Gamified Learning",
+                "description": "Interactive detective-themed challenges that make SQL learning engaging and fun"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Progress Tracking",
+                "description": "Real-time monitoring of student progress with detailed analytics and statistics"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Leaderboards",
+                "description": "Competitive leaderboards to motivate students and track achievements"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Teacher Analytics",
+                "description": "Comprehensive analytics dashboard for educators to monitor class performance"
+            },
+            {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Smart Hints",
+                "description": "Progressive hint system to help students learn without giving away answers"
+            }
+        ]
+    }
     </script>
 </head>
 <body class="font-sans antialiased">

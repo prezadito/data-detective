@@ -3,9 +3,12 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from app.database import create_db_and_tables
 from app.routes import (
@@ -43,6 +46,53 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+# Security and Performance Middleware
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security and performance headers to all responses."""
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+
+        # Security headers
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+        # Cache control for different content types
+        if request.url.path.startswith("/static/"):
+            # Cache static files for 1 year
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        elif request.url.path in [
+            "/",
+            "/features",
+            "/pricing",
+            "/about",
+            "/contact",
+            "/privacy",
+            "/terms",
+        ]:
+            # Cache marketing pages for 1 hour, allow revalidation
+            response.headers[
+                "Cache-Control"
+            ] = "public, max-age=3600, must-revalidate"
+        elif request.url.path in ["/robots.txt", "/sitemap.xml"]:
+            # Cache robots.txt and sitemap for 1 day
+            response.headers["Cache-Control"] = "public, max-age=86400"
+        else:
+            # API endpoints: no caching
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+        return response
+
+
+# Add compression middleware (compress responses > 500 bytes)
+app.add_middleware(GZipMiddleware, minimum_size=500)
+
+# Add security headers middleware
+app.add_middleware(SecurityHeadersMiddleware)
 
 # Configure CORS to allow frontend requests
 app.add_middleware(
