@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>Pricing - Data Detective Academy</title>
+    <meta name="title" content="Pricing - Data Detective Academy">
+    <meta name="description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions.">
+    <meta name="keywords" content="SQL learning pricing, SQL education cost, database learning platform, school SQL license">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Pricing - Data Detective Academy">
+    <meta property="og:description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions.">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Pricing - Data Detective Academy">
+    <meta name="twitter:description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions.">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/" class="text-2xl font-bold text-primary hover:text-primary-dark transition">
+                    🔍 Data Detective Academy
+                </a>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <ul class="flex space-x-6">
+                        <li><a href="/" class="text-gray-700 hover:text-primary transition font-medium">Home</a></li>
+                        <li><a href="/features" class="text-gray-700 hover:text-primary transition font-medium">Features</a></li>
+                        <li><a href="/pricing" class="text-primary transition font-medium">Pricing</a></li>
+                    </ul>
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition font-semibold">
+                            Login
+                        </a>
+                        <a href="{{ frontend_url }}/register" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg">
+                            Sign Up
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 hover:text-primary">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-purple-600 via-blue-600 to-blue-700 text-white py-16 md:py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                        Simple, Transparent Pricing
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-4 text-blue-100 max-w-3xl mx-auto">
+                        Choose the perfect plan for your SQL learning journey
+                    </p>
+                    <p class="text-lg text-blue-200 max-w-2xl mx-auto">
+                        From free self-hosted solutions to comprehensive school and district plans
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Cards -->
+        <section class="py-16 md:py-24 -mt-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-3 gap-8">
+
+                    <!-- Freedom Edition -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200 hover:border-gray-300 transition">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Freedom Edition</h3>
+                            <p class="text-gray-600">Self-hosted, open-source</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-baseline">
+                                <span class="text-5xl font-extrabold text-gray-900">Free</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">AGPL-3.0 Licensed</p>
+                        </div>
+
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Full source code access</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Self-host on your infrastructure</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">All 7 SQL challenges</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Unlimited students</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Community support</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-gray-300 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span class="text-gray-400">No managed hosting</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-gray-300 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span class="text-gray-400">No dedicated support</span>
+                            </li>
+                        </ul>
+
+                        <a href="https://github.com/data-detective/academy" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition">
+                            View on GitHub
+                        </a>
+                    </div>
+
+                    <!-- School Plan (Recommended) -->
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 border-4 border-primary relative transform md:scale-105">
+                        <!-- Recommended Badge -->
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2">
+                            <span class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                                RECOMMENDED
+                            </span>
+                        </div>
+
+                        <div class="mb-6 mt-4">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">School</h3>
+                            <p class="text-gray-600">Perfect for individual schools</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-baseline">
+                                <span class="text-5xl font-extrabold text-gray-900">$499</span>
+                                <span class="text-xl text-gray-600 ml-2">/year</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Up to 500 students</p>
+                        </div>
+
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium">Everything in Freedom Edition</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Fully managed cloud hosting</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Advanced teacher analytics</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Bulk student CSV import</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Priority email support</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">99.9% uptime SLA</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Automatic backups & updates</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Custom branding options</span>
+                            </li>
+                        </ul>
+
+                        <a href="#contact" class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl">
+                            Get Started
+                        </a>
+                    </div>
+
+                    <!-- District Plan -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200 hover:border-gray-300 transition">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">District</h3>
+                            <p class="text-gray-600">Enterprise solution</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-baseline">
+                                <span class="text-5xl font-extrabold text-gray-900">Custom</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Tailored to your needs</p>
+                        </div>
+
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium">Everything in School plan</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Unlimited students & schools</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Multi-school administration</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">SSO & LDAP integration</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Dedicated account manager</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Custom challenge development</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">On-premise deployment option</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Professional training & onboarding</span>
+                            </li>
+                        </ul>
+
+                        <a href="#contact" class="block w-full text-center bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition">
+                            Contact Sales
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Comparison Matrix -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                        Detailed Feature Comparison
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        See exactly what's included in each plan
+                    </p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-gray-300">
+                                <th class="text-left py-4 px-6 font-semibold text-gray-900">Feature</th>
+                                <th class="text-center py-4 px-6 font-semibold text-gray-900">Freedom</th>
+                                <th class="text-center py-4 px-6 font-semibold text-primary">School</th>
+                                <th class="text-center py-4 px-6 font-semibold text-gray-900">District</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <!-- Core Features -->
+                            <tr class="bg-gray-50">
+                                <td colspan="4" class="py-3 px-6 font-bold text-gray-700">Core Platform</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">SQL Challenges (7 total)</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Progress Tracking</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Leaderboard</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Hint System</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                            <!-- Hosting & Infrastructure -->
+                            <tr class="bg-gray-50">
+                                <td colspan="4" class="py-3 px-6 font-bold text-gray-700">Hosting & Infrastructure</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Student Limit</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Unlimited</td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">500</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Managed Cloud Hosting</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Uptime SLA</td>
+                                <td class="text-center py-4 px-6 text-gray-400">-</td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">99.9%</td>
+                                <td class="text-center py-4 px-6 text-gray-700">99.95%</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Automatic Backups</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">On-Premise Deployment</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                            <!-- Teacher Tools -->
+                            <tr class="bg-gray-50">
+                                <td colspan="4" class="py-3 px-6 font-bold text-gray-700">Teacher Tools</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Teacher Dashboard</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Analytics & Reporting</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Basic</td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">Advanced</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Advanced</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Bulk Student Import (CSV)</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Multi-School Administration</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                            <!-- Support & Customization -->
+                            <tr class="bg-gray-50">
+                                <td colspan="4" class="py-3 px-6 font-bold text-gray-700">Support & Customization</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Support Channel</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Community</td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">Email</td>
+                                <td class="text-center py-4 px-6 text-gray-700">Dedicated</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Response Time</td>
+                                <td class="text-center py-4 px-6 text-gray-400">-</td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">24 hours</td>
+                                <td class="text-center py-4 px-6 text-gray-700">4 hours</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Custom Branding</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">SSO / LDAP Integration</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Custom Challenge Development</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-gray-700">Professional Training</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
+                                <td class="text-center py-4 px-6 bg-blue-50 text-gray-700">Optional</td>
+                                <td class="text-center py-4 px-6">
+                                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                        Frequently Asked Questions
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        Everything you need to know about our pricing
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- FAQ Item 1 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            What's the difference between Freedom Edition and paid plans?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            The Freedom Edition is our fully open-source, self-hosted version licensed under AGPL-3.0. You get all the core features but need to host and maintain it yourself. Paid plans include managed cloud hosting, advanced analytics, priority support, and additional enterprise features like SSO integration and custom branding.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            Can I try before I buy?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Absolutely! You can start with the Freedom Edition to test all the core features. You can also request a 30-day trial of the School plan to experience managed hosting and advanced features. Contact our sales team to get started.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            How is billing handled?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            School plans are billed annually at $499/year. District plans have custom pricing based on your specific needs and are typically billed annually as well. We accept payment via invoice, credit card, or purchase order.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            What happens if we exceed the 500 student limit on the School plan?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            If you approach the 500 student limit, we'll contact you to discuss upgrading to a District plan or purchasing additional student capacity. We'll work with you to ensure uninterrupted service for your students.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            Can we customize challenges or create our own?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Custom challenge development is available exclusively on District plans. Our team will work with you to create challenges tailored to your curriculum and learning objectives. With the Freedom Edition, you can modify challenges yourself since it's open-source.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 6 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            Is data migration supported if we upgrade plans?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Yes! If you're upgrading from Freedom Edition to a paid plan, we provide free migration assistance to transfer your student data, progress records, and settings. Our support team will guide you through the entire process.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 7 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            Do you offer discounts for non-profit organizations?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Yes, we offer special pricing for qualified non-profit educational organizations. Contact our sales team with your non-profit documentation to learn about available discounts.
+                        </p>
+                    </div>
+
+                    <!-- FAQ Item 8 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">
+                            What kind of support is included?
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            Freedom Edition users have access to community support via GitHub. School plan includes priority email support with 24-hour response time. District plans get dedicated account managers with 4-hour response times and optional phone support.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Sales CTA -->
+        <section id="contact" class="py-16 md:py-24 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-6">
+                    Ready to Get Started?
+                </h2>
+                <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                    Whether you're a single teacher or a large school district, we have a plan that fits your needs. Contact our sales team to discuss the best option for you.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="mailto:sales@datadetective.academy" class="bg-white hover:bg-gray-100 text-blue-700 font-bold py-4 px-8 rounded-lg transition shadow-lg hover:shadow-xl inline-flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Contact Sales
+                    </a>
+                    <a href="{{ frontend_url }}/register" class="border-2 border-white hover:bg-white hover:text-blue-700 text-white font-bold py-4 px-8 rounded-lg transition inline-flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Start Free Trial
+                    </a>
+                </div>
+
+                <p class="text-blue-200 mt-8 text-sm">
+                    Questions? Email us at <a href="mailto:sales@datadetective.academy" class="underline hover:text-white">sales@datadetective.academy</a> or call (555) 123-4567
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <!-- Company Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Data Detective Academy</h4>
+                    <p class="text-gray-400 text-sm">
+                        Empowering students to master SQL through interactive, gamified learning experiences.
+                    </p>
+                </div>
+
+                <!-- Product Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/features" class="text-gray-400 hover:text-white transition">Features</a></li>
+                        <li><a href="/pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
+                        <li><a href="{{ frontend_url }}/challenges" class="text-gray-400 hover:text-white transition">Challenges</a></li>
+                        <li><a href="{{ frontend_url }}/leaderboard" class="text-gray-400 hover:text-white transition">Leaderboard</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/docs" class="text-gray-400 hover:text-white transition">Documentation</a></li>
+                        <li><a href="https://github.com/data-detective/academy" class="text-gray-400 hover:text-white transition">GitHub</a></li>
+                        <li><a href="{{ frontend_url }}/help" class="text-gray-400 hover:text-white transition">Help Center</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="https://www.gnu.org/licenses/agpl-3.0.en.html" class="text-gray-400 hover:text-white transition">AGPL-3.0 License</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; {{ current_year }} Data Detective Academy. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
