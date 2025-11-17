@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Data Detective Academy - Master SQL Through Interactive Challenges{% endblock %}
+
+{% block description %}Join thousands of students learning SQL through gamified detective challenges. Track progress, earn points, and compete on leaderboards. Perfect for grades 4-8.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>🔍 Master SQL Through Detective Work</h1>
+        <p>Interactive, gamified SQL learning designed for students in grades 4-8</p>
+        <div class="hero-cta">
+            <a href="{{ frontend_url }}/register" class="btn btn-large btn-primary">Start Learning Free</a>
+            <a href="{{ frontend_url }}/login" class="btn btn-large btn-secondary">View Demo</a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="section">
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.total_students }}+</span>
+                <span class="stat-label">Active Students</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.total_challenges }}</span>
+                <span class="stat-label">SQL Challenges</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.total_submissions }}+</span>
+                <span class="stat-label">Completed Challenges</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ stats.success_rate }}%</span>
+                <span class="stat-label">Success Rate</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section section-alt" id="features">
+    <div class="container">
+        <h2 class="text-center">Why Students Love Data Detective Academy</h2>
+        <p class="text-center" style="color: var(--color-text-light); margin-bottom: var(--spacing-xl);">
+            Learning SQL doesn't have to be boring. Our platform makes it engaging and fun!
+        </p>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3 class="feature-title">Gamified Learning</h3>
+                <p class="feature-description">
+                    Solve SQL challenges like a detective solving cases. Earn points, unlock achievements, and level up your database skills through interactive storytelling.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Track Your Progress</h3>
+                <p class="feature-description">
+                    Monitor your learning journey with detailed progress tracking. See which challenges you've completed, view your earned points, and track improvements over time.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3 class="feature-title">Competitive Leaderboards</h3>
+                <p class="feature-description">
+                    Compete with classmates on the leaderboard. Stay motivated by seeing your rank and working towards the top spot in your class or school.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3 class="feature-title">Intelligent Hints</h3>
+                <p class="feature-description">
+                    Stuck on a challenge? Access progressive hints that guide you to the solution without giving away the answer. Learn by discovering, not memorizing.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👩‍🏫</div>
+                <h3 class="feature-title">Teacher Dashboard</h3>
+                <p class="feature-description">
+                    Educators get powerful analytics tools to monitor student progress, identify struggling students, and track class-wide performance metrics.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Age-Appropriate Content</h3>
+                <p class="feature-description">
+                    Curriculum specifically designed for grades 4-8, with clear explanations, relatable examples, and a difficulty curve that matches student development.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section" id="about">
+    <div class="container text-center">
+        <h2>How It Works</h2>
+        <p style="color: var(--color-text-light); margin-bottom: var(--spacing-xl); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Getting started with Data Detective Academy is easy. Follow these simple steps to begin your SQL learning journey.
+        </p>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3 style="color: var(--color-primary); font-size: 2rem; margin-bottom: var(--spacing-sm);">1</h3>
+                <h4 class="feature-title">Create Your Account</h4>
+                <p class="feature-description">
+                    Sign up as a student or teacher. Students get instant access to challenges, while teachers can set up classes and invite students.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3 style="color: var(--color-primary); font-size: 2rem; margin-bottom: var(--spacing-sm);">2</h3>
+                <h4 class="feature-title">Start With Unit 1</h4>
+                <p class="feature-description">
+                    Begin with SELECT basics and work through progressively challenging units. Each challenge builds on previous concepts.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3 style="color: var(--color-primary); font-size: 2rem; margin-bottom: var(--spacing-sm);">3</h3>
+                <h4 class="feature-title">Earn Points & Compete</h4>
+                <p class="feature-description">
+                    Complete challenges to earn points, climb the leaderboard, and track your mastery of SQL concepts.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Curriculum Overview Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center">Comprehensive SQL Curriculum</h2>
+        <p class="text-center" style="color: var(--color-text-light); margin-bottom: var(--spacing-xl);">
+            Our curriculum covers essential SQL concepts through {{ stats.total_challenges }} interactive challenges
+        </p>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3 class="feature-title">📘 Unit 1: SELECT Basics</h3>
+                <p class="feature-description">
+                    Learn how to query data from databases using SELECT statements. Master filtering with WHERE clauses and selecting specific columns.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">📗 Unit 2: JOINs</h3>
+                <p class="feature-description">
+                    Understand how to combine data from multiple tables using INNER JOIN, LEFT JOIN, and other join operations.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">📕 Unit 3: Aggregations</h3>
+                <p class="feature-description">
+                    Master aggregate functions like COUNT, SUM, AVG, and learn to group data with GROUP BY for powerful data analysis.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials / Social Proof Section -->
+<section class="section">
+    <div class="container text-center">
+        <h2>Loved by Students and Teachers</h2>
+        <div class="features" style="margin-top: var(--spacing-xl);">
+            <div class="feature-card">
+                <p style="font-style: italic; color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+                    "I never thought learning SQL could be this fun! The detective theme makes it feel like a game instead of homework."
+                </p>
+                <p style="font-weight: 600; color: var(--color-primary);">- Sarah M., 7th Grade Student</p>
+            </div>
+
+            <div class="feature-card">
+                <p style="font-style: italic; color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+                    "The analytics dashboard helps me identify which students need extra help. Progress tracking is incredibly detailed."
+                </p>
+                <p style="font-weight: 600; color: var(--color-primary);">- Mr. Johnson, Middle School Teacher</p>
+            </div>
+
+            <div class="feature-card">
+                <p style="font-style: italic; color: var(--color-text-light); margin-bottom: var(--spacing-md);">
+                    "The leaderboard motivates me to keep practicing. I love competing with my classmates!"
+                </p>
+                <p style="font-weight: 600; color: var(--color-primary);">- Alex T., 6th Grade Student</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Become a Data Detective?</h2>
+        <p>Join {{ stats.total_students }}+ students already mastering SQL through our platform.</p>
+        <a href="{{ frontend_url }}/register" class="btn btn-large" style="background-color: white; color: var(--color-primary);">
+            Start Learning Free Today
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,8 +1,12 @@
 """Data Detective Academy - Main Application"""
 
 from contextlib import asynccontextmanager
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
 from app.database import create_db_and_tables
 from app.routes import (
     auth,
@@ -17,6 +21,7 @@ from app.routes import (
     challenges,
     datasets,
     custom_challenges,
+    marketing,
 )
 
 
@@ -51,6 +56,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files (CSS, images, etc.) for marketing pages
+static_path = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
 # Include routers
 # NOTE: Order matters! Custom challenges must come before challenges
 # to avoid route conflicts (/challenges/custom vs /challenges/{unit_id})
@@ -67,15 +76,8 @@ app.include_router(datasets.router)
 app.include_router(custom_challenges.router)  # Before challenges!
 app.include_router(challenges.router)
 
-
-@app.get("/")
-def read_root():
-    """
-    Root endpoint - welcome message
-    Returns:
-        dict: welcome message and api version
-    """
-    return {"message": "Welcome to Data Detective Academy API", "version": "1.0.0"}
+# Include marketing router LAST (serves "/" with HTML landing page)
+app.include_router(marketing.router)
 
 
 @app.get("/health")
