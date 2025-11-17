@@ -21,6 +21,9 @@ uv.lock
 *.db
 *.sqlite3
 
+# Database backups
+backups/
+
 # Node
 node_modules/
 dist/

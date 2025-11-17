@@ -77,6 +77,51 @@ uv run ruff format .
 uv run sqlite_web data_detective_academy.db
 ```
 
+### Database Migrations
+```bash
+# Apply all pending migrations
+uv run alembic upgrade head
+
+# Create new migration after model changes
+uv run alembic revision --autogenerate -m "Description of changes"
+
+# Rollback last migration
+uv run alembic downgrade -1
+
+# Check migration status
+uv run alembic current
+
+# View migration history
+uv run alembic history
+```
+
+### Seed Data
+```bash
+# Seed database with sample data (1 teacher, 5 students, sample progress)
+uv run python scripts/seed.py
+
+# Minimal seed (1 teacher, 2 students, no progress)
+uv run python scripts/seed.py --minimal
+
+# Clear all data and reseed (⚠️ DESTRUCTIVE!)
+uv run python scripts/seed.py --clear
+```
+
+**Default Accounts After Seeding:**
+- Teacher: `teacher@example.com` / `teacher123`
+- Students: `alice@example.com` / `student123` (and 4 more)
+
+### Backup and Restore
+```bash
+# Create timestamped backup (supports SQLite and PostgreSQL)
+./scripts/backup.sh
+
+# Restore from backup file
+./scripts/restore.sh backups/backup_YYYYMMDD_HHMMSS.db.gz
+```
+
+**See [DATABASE.md](DATABASE.md) for comprehensive database management documentation.**
+
 ## Architecture
 
 ### Application Structure
@@ -106,6 +151,24 @@ class User(SQLModel, table=True):
 class UserResponse(BaseModel):
     # password_hash NOT included - never expose in API
 ```
+
+**Database Migrations with Alembic**:
+- **Alembic** is configured for automatic migration generation from SQLModel changes
+- Migration files are in `alembic/versions/` directory
+- `alembic/env.py` imports all models for autogenerate support
+- `alembic.ini` reads `DATABASE_URL` from environment variables
+
+**Migration Workflow**:
+1. Modify models in `app/models.py`
+2. Generate migration: `uv run alembic revision --autogenerate -m "Description"`
+3. Review generated migration in `alembic/versions/`
+4. Apply migration: `uv run alembic upgrade head`
+
+**Important Migration Notes**:
+- Alembic can't auto-detect column renames (requires manual migration)
+- Always review auto-generated migrations before applying
+- Test both upgrade and downgrade paths
+- Backup database before applying migrations in production
 
 ### Database Session Management
 
