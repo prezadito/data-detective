@@ -9,8 +9,9 @@ interface ErrorMessageProps {
 
   /**
    * Optional callback for retry action
+   * Can return void, Promise<void>, or Promise with any value (e.g., Promise<T | null>)
    */
-  onRetry?: () => void | Promise<void>;
+  onRetry?: () => void | Promise<unknown>;
 
   /**
    * Optional title for the error message

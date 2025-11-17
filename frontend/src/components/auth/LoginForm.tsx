@@ -60,13 +60,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {error && (
+      {error ? (
         <ErrorMessage
           error={error}
           title="Login failed"
           onRetry={retry}
         />
-      )}
+      ) : null}
       <Input
         {...register('email')}
         type="email"
