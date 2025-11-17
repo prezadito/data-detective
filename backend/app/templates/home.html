@@ -11,8 +11,16 @@
         <h1>🔍 Master SQL Through Detective Work</h1>
         <p>Interactive, gamified SQL learning designed for students in grades 4-8</p>
         <div class="hero-cta">
-            <a href="{{ frontend_url }}/register" class="btn btn-large btn-primary">Start Learning Free</a>
-            <a href="{{ frontend_url }}/login" class="btn btn-large btn-secondary">View Demo</a>
+            <a href="{{ frontend_url }}/register"
+               class="btn btn-large btn-primary"
+               onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Hero Section'}})">
+                Start Learning Free
+            </a>
+            <a href="{{ frontend_url }}/login"
+               class="btn btn-large btn-secondary"
+               onclick="if(window.plausible) plausible('Demo Click', {props: {location: 'Hero Section'}})">
+                View Demo
+            </a>
         </div>
     </div>
 </section>
@@ -204,7 +212,10 @@
     <div class="container">
         <h2>Ready to Become a Data Detective?</h2>
         <p>Join {{ stats.total_students }}+ students already mastering SQL through our platform.</p>
-        <a href="{{ frontend_url }}/register" class="btn btn-large" style="background-color: white; color: var(--color-primary);">
+        <a href="{{ frontend_url }}/register"
+           class="btn btn-large"
+           style="background-color: white; color: var(--color-primary);"
+           onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Bottom CTA'}})">
             Start Learning Free Today
         </a>
     </div>

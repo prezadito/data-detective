@@ -57,6 +57,24 @@
         }
     </script>
 
+    <!-- Analytics -->
+    {% if analytics_enabled %}
+        {% if analytics_provider == 'plausible' %}
+            <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+            <script defer data-domain="{{ analytics_domain }}" src="{{ analytics_script_url }}"></script>
+            <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+        {% elif analytics_provider == 'google' %}
+            <!-- Google Analytics 4 -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ analytics_id }}"></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '{{ analytics_id }}', {'anonymize_ip': true});
+            </script>
+        {% endif %}
+    {% endif %}
+
     <!-- JSON-LD Structured Data - ItemList -->
     <script type="application/ld+json">
     {
@@ -119,10 +137,14 @@
                         <li><a href="/contact" class="text-gray-700 hover:text-primary transition font-medium">Contact</a></li>
                     </ul>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition font-semibold">
+                        <a href="{{ frontend_url }}/login"
+                           class="text-primary hover:text-primary-dark transition font-semibold"
+                           onclick="if(window.plausible) plausible('Login Click', {props: {location: 'Features Header'}})">
                             Login
                         </a>
-                        <a href="{{ frontend_url }}/register" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg">
+                        <a href="{{ frontend_url }}/register"
+                           class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg"
+                           onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Features Header'}})">
                             Sign Up
                         </a>
                     </div>
@@ -606,10 +628,14 @@
                     Lorem ipsum dolor sit amet consectetur adipiscing elit. Join thousands of students today!
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ frontend_url }}/register" class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <a href="{{ frontend_url }}/register"
+                       class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                       onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Features CTA Section'}})">
                         Sign Up Free
                     </a>
-                    <a href="#pricing" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg">
+                    <a href="/pricing"
+                       class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg"
+                       onclick="if(window.plausible) plausible('View Pricing Click', {props: {location: 'Features CTA Section'}})">
                         View Pricing
                     </a>
                 </div>

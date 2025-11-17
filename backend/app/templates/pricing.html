@@ -57,6 +57,24 @@
         }
     </script>
 
+    <!-- Analytics -->
+    {% if analytics_enabled %}
+        {% if analytics_provider == 'plausible' %}
+            <!-- Plausible Analytics - Privacy-friendly, GDPR compliant -->
+            <script defer data-domain="{{ analytics_domain }}" src="{{ analytics_script_url }}"></script>
+            <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+        {% elif analytics_provider == 'google' %}
+            <!-- Google Analytics 4 -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ analytics_id }}"></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '{{ analytics_id }}', {'anonymize_ip': true});
+            </script>
+        {% endif %}
+    {% endif %}
+
     <!-- JSON-LD Structured Data - Offers -->
     <script type="application/ld+json">
     {
@@ -125,10 +143,14 @@
                         <li><a href="/contact" class="text-gray-700 hover:text-primary transition font-medium">Contact</a></li>
                     </ul>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition font-semibold">
+                        <a href="{{ frontend_url }}/login"
+                           class="text-primary hover:text-primary-dark transition font-semibold"
+                           onclick="if(window.plausible) plausible('Login Click', {props: {location: 'Pricing Header'}})">
                             Login
                         </a>
-                        <a href="{{ frontend_url }}/register" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg">
+                        <a href="{{ frontend_url }}/register"
+                           class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg"
+                           onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Pricing Header'}})">
                             Sign Up
                         </a>
                     </div>
@@ -227,7 +249,11 @@
                             </li>
                         </ul>
 
-                        <a href="https://github.com/data-detective/academy" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition">
+                        <a href="https://github.com/data-detective/academy"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition"
+                           onclick="if(window.plausible) plausible('GitHub Click', {props: {plan: 'Freedom Edition', location: 'Pricing Page'}})">
                             View on GitHub
                         </a>
                     </div>
@@ -305,7 +331,9 @@
                             </li>
                         </ul>
 
-                        <a href="#contact" class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl">
+                        <a href="#contact"
+                           class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl"
+                           onclick="if(window.plausible) plausible('Get Started Click', {props: {plan: 'School', location: 'Pricing Page'}})">
                             Get Started
                         </a>
                     </div>
@@ -375,7 +403,9 @@
                             </li>
                         </ul>
 
-                        <a href="#contact" class="block w-full text-center bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition">
+                        <a href="#contact"
+                           class="block w-full text-center bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition"
+                           onclick="if(window.plausible) plausible('Contact Sales Click', {props: {plan: 'District', location: 'Pricing Page'}})">
                             Contact Sales
                         </a>
                     </div>
@@ -817,13 +847,17 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="mailto:sales@datadetective.academy" class="bg-white hover:bg-gray-100 text-blue-700 font-bold py-4 px-8 rounded-lg transition shadow-lg hover:shadow-xl inline-flex items-center">
+                    <a href="mailto:sales@datadetective.academy"
+                       class="bg-white hover:bg-gray-100 text-blue-700 font-bold py-4 px-8 rounded-lg transition shadow-lg hover:shadow-xl inline-flex items-center"
+                       onclick="if(window.plausible) plausible('Contact Sales Email Click', {props: {location: 'Pricing CTA Section'}})">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                         Contact Sales
                     </a>
-                    <a href="{{ frontend_url }}/register" class="border-2 border-white hover:bg-white hover:text-blue-700 text-white font-bold py-4 px-8 rounded-lg transition inline-flex items-center">
+                    <a href="{{ frontend_url }}/register"
+                       class="border-2 border-white hover:bg-white hover:text-blue-700 text-white font-bold py-4 px-8 rounded-lg transition inline-flex items-center"
+                       onclick="if(window.plausible) plausible('Sign Up Click', {props: {location: 'Pricing CTA Section'}})">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>

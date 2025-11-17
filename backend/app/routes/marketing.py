@@ -36,11 +36,30 @@ def get_base_context(request: Request, **kwargs) -> dict:
     """
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
+    # Analytics configuration
+    analytics_enabled = os.getenv("ANALYTICS_ENABLED", "false").lower() == "true"
+    analytics_provider = os.getenv("ANALYTICS_PROVIDER", "plausible")  # 'plausible' or 'google'
+
+    # Plausible configuration
+    analytics_domain = os.getenv("ANALYTICS_DOMAIN", "datadetective.academy")
+    analytics_script_url = os.getenv(
+        "ANALYTICS_SCRIPT_URL",
+        "https://plausible.io/js/script.js"  # Use hosted Plausible or self-hosted URL
+    )
+
+    # Google Analytics configuration (if using GA instead)
+    analytics_id = os.getenv("ANALYTICS_ID", "")  # e.g., G-XXXXXXXXXX for GA4
+
     return {
         "request": request,
         "app_name": "Data Detective Academy",
         "current_year": datetime.now().year,
         "frontend_url": frontend_url,
+        "analytics_enabled": analytics_enabled,
+        "analytics_provider": analytics_provider,
+        "analytics_domain": analytics_domain,
+        "analytics_script_url": analytics_script_url,
+        "analytics_id": analytics_id,
         **kwargs,  # Merge page-specific context
     }
 
