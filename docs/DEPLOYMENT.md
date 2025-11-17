@@ -505,6 +505,301 @@ heroku config:set SECRET_KEY="your-secret-key"
 git push heroku main
 ```
 
+#### Render.com (Recommended for Free Tier)
+
+**Why Render.com?**
+- Free tier includes PostgreSQL (1GB) + Web Service
+- Zero-downtime deploys
+- Automatic SSL certificates
+- Built-in health checks
+- Deploy from Git (auto-deploys on push)
+- No credit card required for free tier
+
+##### Step 1: Prepare Repository
+
+The repository already includes `render.yaml` for automated deployment.
+
+##### Step 2: Create Render Account
+
+1. Go to https://render.com/
+2. Sign up with GitHub/GitLab
+3. Authorize Render to access your repository
+
+##### Step 3: Deploy Using render.yaml (Recommended)
+
+**Option A: Blueprint Deployment (Easiest)**
+
+1. Go to https://dashboard.render.com/
+2. Click **"New +"** → **"Blueprint"**
+3. Connect your GitHub/GitLab repository
+4. Select the repository containing `render.yaml`
+5. Click **"Apply"**
+6. Render will automatically:
+   - Create PostgreSQL database (1GB free)
+   - Create web service for backend
+   - Configure environment variables
+   - Set up auto-deploys from main branch
+
+**Option B: Manual Dashboard Setup**
+
+If you prefer manual setup or need to customize:
+
+**1. Create PostgreSQL Database:**
+   - Dashboard → **"New +"** → **"PostgreSQL"**
+   - Name: `data-detective-db`
+   - Database: `data_detective_academy`
+   - User: `data_detective_user`
+   - Region: `Oregon` (or closest to users)
+   - Plan: **Free** (1GB, expires after 90 days)
+   - Click **"Create Database"**
+   - Copy the **Internal Database URL** (starts with `postgresql://`)
+
+**2. Create Web Service:**
+   - Dashboard → **"New +"** → **"Web Service"**
+   - Connect repository → Select your repo
+   - Configure:
+     - **Name**: `data-detective-api`
+     - **Region**: `Oregon` (same as database)
+     - **Branch**: `main`
+     - **Root Directory**: `backend`
+     - **Runtime**: `Python 3`
+     - **Build Command**:
+       ```bash
+       pip install uv && uv sync --no-dev
+       ```
+     - **Start Command**:
+       ```bash
+       uvicorn app.main:app --host 0.0.0.0 --port $PORT
+       ```
+     - **Plan**: **Free**
+
+**3. Configure Environment Variables:**
+
+Click **"Environment"** tab and add:
+
+```bash
+# Database (use Internal Database URL from step 1)
+DATABASE_URL=postgresql://data_detective_user:PASSWORD@HOST/data_detective_academy
+
+# JWT Settings
+SECRET_KEY=<click "Generate" button for secure random value>
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Environment
+ENVIRONMENT=production
+DEBUG=false
+
+# CORS - Update after deploying frontend
+ALLOWED_ORIGINS=https://data-detective.onrender.com,http://localhost:3000
+FRONTEND_URL=https://data-detective.onrender.com
+
+# Analytics (Optional)
+ANALYTICS_ENABLED=false
+ANALYTICS_PROVIDER=plausible
+ANALYTICS_DOMAIN=datadetective.academy
+ANALYTICS_SCRIPT_URL=https://plausible.io/js/script.js
+```
+
+**4. Configure Health Check:**
+   - **Health Check Path**: `/health`
+   - Render will automatically ping this endpoint
+   - Service is marked unhealthy if it fails 3 consecutive checks
+
+**5. Deploy:**
+   - Click **"Create Web Service"**
+   - Render will build and deploy automatically
+   - Monitor logs in the dashboard
+   - First deploy takes 5-10 minutes
+
+##### Step 4: Verify Deployment
+
+```bash
+# Check health endpoint
+curl https://data-detective-api.onrender.com/health
+
+# Expected response:
+# {"status":"healthy"}
+
+# Check API info
+curl https://data-detective-api.onrender.com/api/info
+
+# Test API docs
+# Visit: https://data-detective-api.onrender.com/docs
+```
+
+##### Step 5: Database Migration
+
+After first deployment, database tables are automatically created via the `lifespan` function in `app/main.py`.
+
+To verify tables were created:
+
+1. Go to Render Dashboard → PostgreSQL database
+2. Click **"Connect"** → Copy external connection string
+3. Use a PostgreSQL client or command line:
+   ```bash
+   psql "postgresql://data_detective_user:PASSWORD@HOST/data_detective_academy"
+
+   # List tables
+   \dt
+
+   # Expected tables:
+   # users, refresh_tokens, password_reset_tokens, progress, hints, attempts
+   ```
+
+If using Alembic migrations:
+
+```bash
+# SSH into Render shell (if available on paid plan)
+alembic upgrade head
+```
+
+##### Step 6: Set Up Auto-Deploys
+
+1. Go to web service **"Settings"** → **"Build & Deploy"**
+2. Enable **"Auto-Deploy"**: `Yes`
+3. Every push to `main` branch will trigger automatic deployment
+4. Zero-downtime deploys (new version rolled out gradually)
+
+##### Step 7: Custom Domain (Optional)
+
+1. Go to web service **"Settings"** → **"Custom Domain"**
+2. Add your domain: `api.yourdomain.com`
+3. Add CNAME record in your DNS provider:
+   ```
+   CNAME  api  data-detective-api.onrender.com
+   ```
+4. Render automatically provisions SSL certificate
+5. Update `ALLOWED_ORIGINS` environment variable with new domain
+
+##### Step 8: Update Frontend Configuration
+
+After backend is deployed, update frontend environment variables:
+
+```bash
+# Frontend .env
+VITE_API_URL=https://data-detective-api.onrender.com
+```
+
+Rebuild and redeploy frontend.
+
+##### Render.com Free Tier Limitations
+
+**PostgreSQL:**
+- 1GB storage
+- Expires after 90 days (must upgrade or migrate)
+- Automatic daily backups (7-day retention)
+
+**Web Service:**
+- 512MB RAM
+- Shared CPU
+- Spins down after 15 minutes of inactivity
+- Cold start takes 30-60 seconds
+- 750 hours/month free (enough for 1 service running 24/7)
+
+**Performance Tips:**
+- Free tier services "sleep" after inactivity - first request may be slow
+- Consider using a cron job to ping `/health` every 10 minutes
+- Use Render's paid Starter plan ($7/month) for always-on service
+
+##### Monitoring and Logs
+
+**View Logs:**
+1. Dashboard → Web Service → **"Logs"** tab
+2. Real-time streaming logs
+3. Search and filter capabilities
+
+**Metrics:**
+1. Dashboard → Web Service → **"Metrics"** tab
+2. CPU, Memory, Request rate
+3. Response times
+
+**Alerts:**
+1. Dashboard → Web Service → **"Settings"** → **"Alerts"**
+2. Configure email alerts for:
+   - Deploy failures
+   - Health check failures
+   - High memory usage
+
+##### Troubleshooting Render Deployment
+
+**Build fails:**
+```bash
+# Check Python version compatibility
+# Render uses Python 3.11 by default
+# Update pyproject.toml if needed:
+requires-python = ">=3.11"
+
+# Ensure uv is installed in build command
+pip install uv && uv sync --no-dev
+```
+
+**Service won't start:**
+```bash
+# Check logs for errors
+# Common issues:
+# - DATABASE_URL not set correctly
+# - SECRET_KEY missing
+# - Port binding (must use $PORT environment variable)
+
+# Verify start command uses $PORT:
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+**Database connection errors:**
+```bash
+# Use Internal Database URL (not external) for better performance
+# Format: postgresql://user:pass@internal-host/dbname
+
+# Check database is running
+# Dashboard → PostgreSQL → Status should be "Available"
+```
+
+**Slow cold starts:**
+```bash
+# Free tier spins down after 15 minutes inactivity
+# Solutions:
+# 1. Upgrade to paid plan ($7/month for always-on)
+# 2. Use cron job to ping /health every 10 minutes
+# 3. Set up UptimeRobot (free) to ping your service
+
+# Example: Use cron-job.org (free service)
+# Add job: https://data-detective-api.onrender.com/health
+# Interval: Every 10 minutes
+```
+
+**SSL certificate issues:**
+```bash
+# Render automatically provisions SSL
+# If custom domain SSL fails:
+# 1. Verify CNAME record is correct
+# 2. Wait up to 24 hours for DNS propagation
+# 3. Check Dashboard → Custom Domain → Status
+```
+
+##### Cost Optimization
+
+**Free tier usage:**
+```
+PostgreSQL: $0 (first 90 days, then $7/month)
+Web Service: $0 (750 hours/month)
+Total: $0 for first 90 days
+```
+
+**After 90 days:**
+```
+PostgreSQL Starter: $7/month (25GB)
+Web Service Free: $0 (with sleep mode)
+OR
+Web Service Starter: $7/month (always-on)
+Total: $7-14/month
+```
+
+**Alternatives after free tier expires:**
+- Migrate to Supabase (free PostgreSQL)
+- Use Railway.com (free $5/month credit)
+- Use Heroku hobby tier ($7/month)
+
 ---
 
 ## Frontend Deployment

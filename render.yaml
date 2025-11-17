@@ -1,0 +1,68 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: data-detective-db
+    plan: free
+    databaseName: data_detective_academy
+    databaseUser: data_detective_user
+    ipAllowList: []  # Allow connections from anywhere (required for free tier)
+
+  # Backend API Service
+  - type: web
+    name: data-detective-api
+    runtime: python
+    plan: free
+    region: oregon  # Choose region closest to your users
+    branch: main  # Deploy from main branch
+    rootDir: backend  # Backend code is in backend/ directory
+    # Note: Render uses Python 3.11 by default. If you need 3.12+, update pyproject.toml
+    # to requires-python = ">=3.11" for compatibility
+    buildCommand: |
+      pip install uv
+      uv sync --no-dev
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+
+    envVars:
+      # Database - automatically linked from PostgreSQL service above
+      - key: DATABASE_URL
+        fromDatabase:
+          name: data-detective-db
+          property: connectionString
+
+      # JWT Settings
+      - key: SECRET_KEY
+        generateValue: true  # Auto-generate secure secret
+
+      - key: ALGORITHM
+        value: HS256
+
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+
+      # Environment Settings
+      - key: ENVIRONMENT
+        value: production
+
+      - key: DEBUG
+        value: false
+
+      # CORS - Update this with your frontend URL after deploying frontend
+      - key: ALLOWED_ORIGINS
+        value: https://data-detective.onrender.com,http://localhost:3000
+
+      - key: FRONTEND_URL
+        value: https://data-detective.onrender.com
+
+      # Analytics (optional)
+      - key: ANALYTICS_ENABLED
+        value: false
+
+      - key: ANALYTICS_PROVIDER
+        value: plausible
+
+      - key: ANALYTICS_DOMAIN
+        value: datadetective.academy
+
+      - key: ANALYTICS_SCRIPT_URL
+        value: https://plausible.io/js/script.js
