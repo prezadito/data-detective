@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}Data Detective Academy - Learn SQL Through Gamified Challenges{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}{{ self.title() }}{% endblock %}">
+    <meta name="description" content="{% block description %}Master SQL through interactive detective-themed challenges. Perfect for students in grades 4-8. Track progress, earn points, and compete on leaderboards.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}SQL learning, SQL education, SQL for kids, database learning, gamified SQL, SQL challenges, learn SQL online{% endblock %}">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}{{ self.meta_title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', path='images/og-image.jpg') }}{% endblock %}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ self.og_title() }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ self.og_description() }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ self.og_image() }}{% endblock %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/marketing.css') }}">
+    {% block styles %}{% endblock %}
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="{{ frontend_url }}">
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">🔍 Data Detective Academy</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                    <a href="{{ frontend_url }}/login" class="btn btn-secondary">Login</a>
+                    <a href="{{ frontend_url }}/register" class="btn btn-primary">Sign Up</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Data Detective Academy</h4>
+                    <p>Empowering students to master SQL through interactive, gamified learning experiences.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="{{ frontend_url }}/challenges">Challenges</a></li>
+                        <li><a href="{{ frontend_url }}/leaderboard">Leaderboard</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="/docs">API Documentation</a></li>
+                        <li><a href="{{ frontend_url }}/help">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; {{ current_year }} Data Detective Academy. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>
