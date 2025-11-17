@@ -126,4 +126,4 @@ async def home(request: Request, session: Session = Depends(get_session)):
         stats=stats,
     )
 
-    return templates.TemplateResponse("home.html", context)
+    return templates.TemplateResponse("landing.html", context)
