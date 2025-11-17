@@ -175,6 +175,7 @@ export async function waitForToast(
 export async function disableAutoRefresh(page: Page): Promise<void> {
   await page.evaluate(() => {
     // Override setInterval to prevent auto-refresh
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).setInterval = () => 0;
   });
 }
@@ -201,9 +202,9 @@ export async function waitForLoadingToComplete(
  * Get table data from a table element
  * @param page - Playwright page object
  * @param tableSelector - Selector for the table
- * @returns Array of row data objects
+ * @returns Array of row data (each row is an array of cell text)
  */
-export async function getTableData(page: Page, tableSelector: string): Promise<any[]> {
+export async function getTableData(page: Page, tableSelector: string): Promise<(string | undefined)[][]> {
   return await page.evaluate((selector) => {
     const table = document.querySelector(selector);
     if (!table) return [];

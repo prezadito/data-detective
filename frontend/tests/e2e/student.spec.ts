@@ -2,8 +2,6 @@ import { test, expect, TEST_USERS } from './fixtures/auth';
 import {
   waitForNavigation,
   waitForAPICall,
-  waitForText,
-  waitForToast,
   clearLocalStorage,
   getLocalStorageItem,
   waitForLoadingToComplete,
@@ -20,7 +18,7 @@ import {
  */
 
 test.describe('Student Authentication Flow', () => {
-  test('should allow user registration with valid details', async ({ page, testUsers }) => {
+  test('should allow user registration with valid details', async ({ page }) => {
     // Navigate to register page
     await page.goto('/register');
 

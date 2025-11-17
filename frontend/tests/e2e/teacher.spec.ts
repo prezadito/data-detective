@@ -1,8 +1,6 @@
-import { test, expect, TEST_USERS } from './fixtures/auth';
+import { test, expect } from './fixtures/auth';
 import {
   waitForNavigation,
-  waitForAPICall,
-  waitForText,
   waitForLoadingToComplete,
   getLocalStorageItem,
   clearLocalStorage,

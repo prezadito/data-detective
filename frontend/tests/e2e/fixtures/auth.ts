@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-empty-pattern */
 import { test as base, Page } from '@playwright/test';
 
 /**
