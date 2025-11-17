@@ -70,6 +70,128 @@ pnpm lint
 pnpm exec tsc --noEmit
 ```
 
+## Testing
+
+### Unit Tests (Vitest)
+
+```bash
+# Run unit tests
+pnpm test
+
+# Run tests with UI
+pnpm test:ui
+
+# Run tests with coverage
+pnpm test:coverage
+```
+
+### E2E Tests (Playwright)
+
+End-to-end tests cover critical user journeys using Playwright. Tests run across multiple browsers (Chromium, Firefox) with automatic screenshot and video capture on failure.
+
+#### Prerequisites
+
+1. **Backend must be running** on `http://localhost:8000`
+2. **Test users must exist** in the database:
+   - Student: `e2e-student@test.com` / `Test123!`
+   - Teacher: `e2e-teacher@test.com` / `Test123!`
+
+You can create these users by:
+```bash
+# Option 1: Register via the UI
+# 1. Start the backend server
+# 2. Navigate to http://localhost:3000/register
+# 3. Create both users with the credentials above
+
+# Option 2: Use backend API or database seeding script
+```
+
+#### Running E2E Tests
+
+```bash
+# Run all E2E tests (headless)
+pnpm test:e2e
+
+# Run tests with UI (interactive mode)
+pnpm test:e2e:ui
+
+# Run tests in headed mode (see browser)
+pnpm test:e2e:headed
+
+# Run tests in debug mode
+pnpm test:e2e:debug
+
+# View test report
+pnpm test:e2e:report
+```
+
+#### Test Structure
+
+```
+tests/e2e/
+├── fixtures/
+│   └── auth.ts           # Authentication fixtures & test users
+├── support/
+│   └── helpers.ts        # Common test utilities
+├── student.spec.ts       # Student user journey tests
+└── teacher.spec.ts       # Teacher user journey tests
+```
+
+#### Test Coverage
+
+**Student Tests** (`student.spec.ts`):
+- Authentication (register, login, logout)
+- Challenge solving workflow
+- Progress tracking
+- Leaderboard interaction
+- Navigation and routing
+
+**Teacher Tests** (`teacher.spec.ts`):
+- Teacher authentication
+- Student management (list, search, sort)
+- Student detail view
+- Analytics dashboard
+- Data visualization (charts)
+
+#### Test Artifacts
+
+Test results are saved to:
+- **Screenshots**: `test-results/screenshots/` (on failure)
+- **Videos**: `test-results/` (on failure)
+- **Traces**: `test-results/` (on failure)
+- **HTML Report**: `playwright-report/`
+
+#### Playwright Configuration
+
+The `playwright.config.ts` includes:
+- Multi-browser testing (Chromium, Firefox)
+- Parallel test execution (4 workers)
+- Automatic screenshot/video on failure
+- Auto-start dev server
+- Retry logic for flaky tests (CI only)
+
+#### Troubleshooting E2E Tests
+
+**Tests fail immediately:**
+- Ensure backend is running on port 8000
+- Verify test users exist in database
+- Check that frontend dev server can start on port 3000
+
+**Authentication tests fail:**
+- Verify test user credentials are correct
+- Check that backend authentication endpoints are working
+- Clear browser storage: `localStorage.clear()`
+
+**Timeout errors:**
+- Increase timeout in `playwright.config.ts`
+- Check network connectivity to backend
+- Verify API responses are not delayed
+
+**Flaky tests:**
+- Tests use `waitFor` helpers to handle async operations
+- Auto-refresh is disabled in tests to prevent race conditions
+- Increase `expect.timeout` if assertions are timing out
+
 ## Configuration
 
 ### Environment Variables
