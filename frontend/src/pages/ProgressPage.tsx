@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { progressService } from '@/services/progressService';
@@ -41,15 +41,19 @@ export function ProgressPage() {
     navigate(`/practice?unit=${unitId}&challenge=${challengeId}`);
   };
 
-  // Filter progress items by selected unit
-  const filteredItems = selectedUnit
-    ? progress?.progress_items.filter((item) => item.unit_id === selectedUnit)
-    : progress?.progress_items;
+  // Filter progress items by selected unit (memoized to prevent recalculation on every render)
+  const filteredItems = useMemo(() =>
+    selectedUnit
+      ? progress?.progress_items.filter((item) => item.unit_id === selectedUnit)
+      : progress?.progress_items,
+    [progress?.progress_items, selectedUnit]
+  );
 
-  // Get unique unit IDs for filter
-  const availableUnits = progress
-    ? Array.from(new Set(progress.progress_items.map((item) => item.unit_id))).sort()
-    : [];
+  // Get unique unit IDs for filter (memoized to prevent recalculation on every render)
+  const availableUnits = useMemo(() => {
+    if (!progress?.progress_items) return [];
+    return Array.from(new Set(progress.progress_items.map((item) => item.unit_id))).sort();
+  }, [progress?.progress_items]);
 
   return (
     <div className="min-h-screen bg-gray-50">

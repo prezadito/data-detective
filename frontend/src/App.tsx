@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { DatabaseProvider } from '@/contexts/DatabaseContext';
@@ -8,23 +9,40 @@ import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Navigation } from '@/components/navigation/Navigation';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { LoginPage } from '@/pages/LoginPage';
-import { RegisterPage } from '@/pages/RegisterPage';
-import { DashboardPage } from '@/pages/DashboardPage';
-import { ProfilePage } from '@/pages/ProfilePage';
-import { PracticePage } from '@/pages/PracticePage';
-import { ProgressPage } from '@/pages/ProgressPage';
-import { LeaderboardPage } from '@/pages/LeaderboardPage';
-import { DatasetsPage } from '@/pages/DatasetsPage';
-import { DatasetUploadPage } from '@/pages/DatasetUploadPage';
-import { DatasetDetailPage } from '@/pages/DatasetDetailPage';
-import { ChallengeBuilderPage } from '@/pages/ChallengeBuilderPage';
-import { ChallengeLibraryPage } from '@/pages/ChallengeLibraryPage';
-import { StudentListPage } from '@/pages/teacher/StudentListPage';
-import { StudentDetailPage } from '@/pages/teacher/StudentDetailPage';
-import { AnalyticsPage } from '@/pages/teacher/AnalyticsPage';
-import { WeeklyReportPage } from '@/pages/teacher/WeeklyReportPage';
-import { Dashboard as TeacherDashboard } from '@/pages/teacher/Dashboard';
+
+// Lazy load all route components for code splitting
+// Note: Pages use named exports, so we use .then() to map to default export
+const LoginPage = lazy(() => import('@/pages/LoginPage').then(m => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('@/pages/RegisterPage').then(m => ({ default: m.RegisterPage })));
+const DashboardPage = lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const PracticePage = lazy(() => import('@/pages/PracticePage').then(m => ({ default: m.PracticePage })));
+const ProgressPage = lazy(() => import('@/pages/ProgressPage').then(m => ({ default: m.ProgressPage })));
+const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage').then(m => ({ default: m.LeaderboardPage })));
+const DatasetsPage = lazy(() => import('@/pages/DatasetsPage').then(m => ({ default: m.DatasetsPage })));
+const DatasetUploadPage = lazy(() => import('@/pages/DatasetUploadPage').then(m => ({ default: m.DatasetUploadPage })));
+const DatasetDetailPage = lazy(() => import('@/pages/DatasetDetailPage').then(m => ({ default: m.DatasetDetailPage })));
+const ChallengeBuilderPage = lazy(() => import('@/pages/ChallengeBuilderPage').then(m => ({ default: m.ChallengeBuilderPage })));
+const ChallengeLibraryPage = lazy(() => import('@/pages/ChallengeLibraryPage').then(m => ({ default: m.ChallengeLibraryPage })));
+const StudentListPage = lazy(() => import('@/pages/teacher/StudentListPage').then(m => ({ default: m.StudentListPage })));
+const StudentDetailPage = lazy(() => import('@/pages/teacher/StudentDetailPage').then(m => ({ default: m.StudentDetailPage })));
+const AnalyticsPage = lazy(() => import('@/pages/teacher/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
+const WeeklyReportPage = lazy(() => import('@/pages/teacher/WeeklyReportPage').then(m => ({ default: m.WeeklyReportPage })));
+const TeacherDashboard = lazy(() => import('@/pages/teacher/Dashboard').then(m => ({ default: m.Dashboard })));
+
+/**
+ * Loading fallback component displayed while lazy-loaded routes are loading
+ */
+function RouteLoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <p className="mt-4 text-gray-600">Loading...</p>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Layout wrapper that conditionally renders Navigation
@@ -41,9 +59,10 @@ function AppLayout() {
       <OfflineNotice />
       <SkipLink />
       {!isAuthPage && !isTeacherRoute && <Navigation />}
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/practice"
           element={
@@ -159,7 +178,8 @@ function AppLayout() {
         />
         <Route path="/" element={<Navigate to="/practice" replace />} />
         <Route path="*" element={<Navigate to="/practice" replace />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   );
 }

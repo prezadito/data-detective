@@ -1,5 +1,59 @@
+import { memo, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { StudentWithStats } from '@/types';
+
+// Helper functions extracted outside component to prevent recreation on every render
+
+/**
+ * Calculate completion percentage (out of 7 total challenges)
+ */
+function getCompletionPercentage(completed: number): number {
+  return Math.round((completed / 7) * 100);
+}
+
+/**
+ * Get color for completion percentage
+ */
+function getCompletionColor(percentage: number): string {
+  if (percentage >= 80) return 'text-green-600 bg-green-50';
+  if (percentage >= 50) return 'text-blue-600 bg-blue-50';
+  if (percentage >= 20) return 'text-yellow-600 bg-yellow-50';
+  return 'text-gray-600 bg-gray-50';
+}
+
+/**
+ * Format date (e.g., "Jan 15, 2025")
+ */
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+/**
+ * Calculate days since creation
+ */
+function getDaysSince(dateString: string): number {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
+/**
+ * Get activity indicator
+ */
+function getActivityIndicator(createdAt: string): { text: string; color: string } {
+  const days = getDaysSince(createdAt);
+  if (days <= 1) return { text: 'Active today', color: 'text-green-600' };
+  if (days <= 7) return { text: 'Active this week', color: 'text-blue-600' };
+  if (days <= 30) return { text: 'Active this month', color: 'text-yellow-600' };
+  return { text: `${days} days ago`, color: 'text-gray-600' };
+}
 
 export interface StudentTableProps {
   /**
@@ -36,8 +90,9 @@ export interface StudentTableProps {
 
 /**
  * StudentTable component displays student list with sortable columns
+ * Memoized to prevent unnecessary re-renders when parent updates
  */
-export function StudentTable({
+export const StudentTable = memo(function StudentTable({
   students,
   isLoading = false,
   sortBy = 'name',
@@ -47,64 +102,26 @@ export function StudentTable({
 }: StudentTableProps) {
   const navigate = useNavigate();
 
-  // Filter students by search query (client-side)
-  const filteredStudents = students.filter((student) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      student.name.toLowerCase().includes(query) ||
-      student.email.toLowerCase().includes(query)
-    );
-  });
+  // Filter students by search query (client-side, memoized to prevent recalculation on every render)
+  const filteredStudents = useMemo(() =>
+    students.filter((student) => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        student.name.toLowerCase().includes(query) ||
+        student.email.toLowerCase().includes(query)
+      );
+    }),
+    [students, searchQuery]
+  );
 
-  // Calculate completion percentage (out of 7 total challenges)
-  const getCompletionPercentage = (completed: number): number => {
-    return Math.round((completed / 7) * 100);
-  };
-
-  // Get color for completion percentage
-  const getCompletionColor = (percentage: number): string => {
-    if (percentage >= 80) return 'text-green-600 bg-green-50';
-    if (percentage >= 50) return 'text-blue-600 bg-blue-50';
-    if (percentage >= 20) return 'text-yellow-600 bg-yellow-50';
-    return 'text-gray-600 bg-gray-50';
-  };
-
-  // Get sort icon
-  const getSortIcon = (field: 'name' | 'points' | 'date'): string => {
+  // Get sort icon (memoized since it depends on sortBy prop)
+  const getSortIcon = useCallback((field: 'name' | 'points' | 'date'): string => {
     if (sortBy === field) {
       return field === 'points' ? '↓' : '↑';
     }
     return '⇅';
-  };
-
-  // Format date (e.g., "Jan 15, 2025")
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  // Calculate days since creation
-  const getDaysSince = (dateString: string): number => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  // Get activity indicator
-  const getActivityIndicator = (createdAt: string): { text: string; color: string } => {
-    const days = getDaysSince(createdAt);
-    if (days <= 1) return { text: 'Active today', color: 'text-green-600' };
-    if (days <= 7) return { text: 'Active this week', color: 'text-blue-600' };
-    if (days <= 30) return { text: 'Active this month', color: 'text-yellow-600' };
-    return { text: `${days} days ago`, color: 'text-gray-600' };
-  };
+  }, [sortBy]);
 
   // Handle student click
   const handleStudentClick = (studentId: number) => {
@@ -326,6 +343,4 @@ export function StudentTable({
       </div>
     </div>
   );
-}
-
-StudentTable.displayName = 'StudentTable';
+});

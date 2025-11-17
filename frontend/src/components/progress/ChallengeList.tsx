@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import type { ProgressDetailResponse } from '@/types';
 
 export interface ChallengeListProps {
@@ -27,8 +27,9 @@ interface UnitGroup {
 
 /**
  * ChallengeList component displays completed challenges grouped by unit
+ * Memoized to prevent unnecessary re-renders when parent updates
  */
-export function ChallengeList({
+export const ChallengeList = memo(function ChallengeList({
   progressItems,
   onChallengeClick,
 }: ChallengeListProps) {
@@ -167,7 +168,7 @@ export function ChallengeList({
       )}
     </div>
   );
-}
+});
 
 /**
  * Get unit title based on unit ID
@@ -180,5 +181,3 @@ function getUnitTitle(unitId: number): string {
   };
   return titles[unitId] || `Unit ${unitId}`;
 }
-
-ChallengeList.displayName = 'ChallengeList';
