@@ -2,6 +2,8 @@
 
 from contextlib import asynccontextmanager
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +13,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.database import create_db_and_tables
+
+# Load environment variables
+load_dotenv()
 from app.routes import (
     auth,
     users,
@@ -95,12 +100,16 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(SecurityHeadersMiddleware)
 
 # Configure CORS to allow frontend requests
+# Load allowed origins from environment variable (comma-separated list)
+# Default to localhost ports for development
+allowed_origins_env = os.getenv(
+    "ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173"
+)
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-    ],  # Vite dev server ports
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -147,4 +156,5 @@ def api_info():
     Returns:
         dict: API name and environment
     """
-    return {"app": "Data Detective Academy", "environment": "development"}
+    environment = os.getenv("ENVIRONMENT", "development")
+    return {"app": "Data Detective Academy", "environment": environment}
