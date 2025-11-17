@@ -127,3 +127,28 @@ async def home(request: Request, session: Session = Depends(get_session)):
     )
 
     return templates.TemplateResponse("landing.html", context)
+
+
+@router.get("/features", response_class=HTMLResponse)
+async def features(request: Request):
+    """
+    Features page - server-side rendered for SEO.
+
+    Displays:
+    - Comprehensive feature descriptions with icons
+    - Screenshots/mockups of the platform
+    - Student benefits section
+    - Teacher benefits section
+    - Feature comparison table
+    - CTA linking to pricing page
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("features.html", context)

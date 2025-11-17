@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Tags -->
+    <title>Features - Data Detective Academy</title>
+    <meta name="title" content="Features - Data Detective Academy">
+    <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta name="keywords" content="SQL learning features, SQL education platform, database learning tools, gamified SQL features">
+    <meta name="author" content="Data Detective Academy">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Features - Data Detective Academy">
+    <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+    <meta property="og:site_name" content="Data Detective Academy">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Features - Data Detective Academy">
+    <meta name="twitter:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/" class="text-2xl font-bold text-primary hover:text-primary-dark transition">
+                    🔍 Data Detective Academy
+                </a>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <ul class="flex space-x-6">
+                        <li><a href="/" class="text-gray-700 hover:text-primary transition font-medium">Home</a></li>
+                        <li><a href="/features" class="text-primary transition font-medium">Features</a></li>
+                        <li><a href="#pricing" class="text-gray-700 hover:text-primary transition font-medium">Pricing</a></li>
+                    </ul>
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ frontend_url }}/login" class="text-primary hover:text-primary-dark transition font-semibold">
+                            Login
+                        </a>
+                        <a href="{{ frontend_url }}/register" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition font-semibold shadow-md hover:shadow-lg">
+                            Sign Up
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 hover:text-primary">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-purple-600 via-blue-600 to-blue-700 text-white py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                        Lorem Ipsum Feature Set
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua quis nostrud exercitation ullamco laboris nisi ut aliquip.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Features Grid -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Comprehensive Platform Features
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1: Interactive Challenges -->
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Interactive SQL Challenges</h3>
+                        <p class="text-gray-700 mb-4">
+                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>Duis aute irure dolor reprehenderit</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>Excepteur sint occaecat cupidatat</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>Sed ut perspiciatis unde omnis</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 2: Progress Tracking -->
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">📊</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Real-time Progress Tracking</h3>
+                        <p class="text-gray-700 mb-4">
+                            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>Nemo enim ipsam voluptatem</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>Neque porro quisquam dolorem</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>Quis autem vel eum iure</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 3: Gamification -->
+                    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">🏆</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Gamification & Leaderboards</h3>
+                        <p class="text-gray-700 mb-4">
+                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-yellow-600 mr-2">✓</span>
+                                <span>At vero eos et accusamus</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-yellow-600 mr-2">✓</span>
+                                <span>Et iusto odio dignissimos</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-yellow-600 mr-2">✓</span>
+                                <span>Blanditiis praesentium voluptatum</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 4: Smart Hints -->
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">💡</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Intelligent Hint System</h3>
+                        <p class="text-gray-700 mb-4">
+                            Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>Temporibus autem quibusdam</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>Officiis debitis aut rerum</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>Saepe eveniet ut voluptates</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 5: Teacher Analytics -->
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">📈</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Teacher Analytics Dashboard</h3>
+                        <p class="text-gray-700 mb-4">
+                            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>Eaque ipsa quae ab illo</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>Inventore veritatis quasi</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>Beatae vitae dicta sunt</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 6: Bulk Import -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-8 rounded-xl shadow-md hover:shadow-xl transition">
+                        <div class="text-5xl mb-4">📥</div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Bulk Student Import</h3>
+                        <p class="text-gray-700 mb-4">
+                            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magni dolores.
+                        </p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <span class="text-indigo-600 mr-2">✓</span>
+                                <span>Neque porro quisquam est</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-indigo-600 mr-2">✓</span>
+                                <span>Qui dolorem ipsum quia</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-indigo-600 mr-2">✓</span>
+                                <span>Adipisci velit sed quia</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots/Mockups Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Platform Screenshots
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Screenshot 1 -->
+                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                        <img src="{{ url_for('static', path='images/screenshot-placeholder-1.svg') }}" alt="Challenge interface screenshot" class="w-full h-64 object-cover rounded-lg bg-gradient-to-br from-blue-200 to-purple-300">
+                        <div class="mt-4">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Interactive Challenge Interface</h3>
+                            <p class="text-gray-600">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt.</p>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot 2 -->
+                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                        <img src="{{ url_for('static', path='images/screenshot-placeholder-2.svg') }}" alt="Progress dashboard screenshot" class="w-full h-64 object-cover rounded-lg bg-gradient-to-br from-green-200 to-blue-300">
+                        <div class="mt-4">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Student Progress Dashboard</h3>
+                            <p class="text-gray-600">Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot 3 -->
+                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                        <img src="{{ url_for('static', path='images/screenshot-placeholder-3.svg') }}" alt="Leaderboard screenshot" class="w-full h-64 object-cover rounded-lg bg-gradient-to-br from-yellow-200 to-orange-300">
+                        <div class="mt-4">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Real-time Leaderboard</h3>
+                            <p class="text-gray-600">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.</p>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot 4 -->
+                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                        <img src="{{ url_for('static', path='images/screenshot-placeholder-4.svg') }}" alt="Teacher analytics screenshot" class="w-full h-64 object-cover rounded-lg bg-gradient-to-br from-red-200 to-pink-300">
+                        <div class="mt-4">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Teacher Analytics Panel</h3>
+                            <p class="text-gray-600">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Benefits Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                            Benefits for Students
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-8">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 text-blue-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Learn at Your Own Pace</h3>
+                                    <p class="text-gray-600">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-green-100 text-green-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Instant Feedback</h3>
+                                    <p class="text-gray-600">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-purple-100 text-purple-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Build Real Skills</h3>
+                                    <p class="text-gray-600">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-yellow-100 text-yellow-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Earn Rewards & Recognition</h3>
+                                    <p class="text-gray-600">Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{{ url_for('static', path='images/student-benefits-placeholder.svg') }}" alt="Student benefits illustration" class="rounded-lg shadow-2xl w-full h-auto bg-gradient-to-br from-blue-300 to-purple-400 p-12">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teacher Benefits Section -->
+        <section class="py-20 bg-gradient-to-r from-blue-50 to-purple-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <img src="{{ url_for('static', path='images/teacher-benefits-placeholder.svg') }}" alt="Teacher benefits illustration" class="rounded-lg shadow-2xl w-full h-auto bg-gradient-to-br from-green-300 to-blue-400 p-12">
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                            Benefits for Teachers
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-8">
+                            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-red-100 text-red-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Comprehensive Analytics</h3>
+                                    <p class="text-gray-600">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-indigo-100 text-indigo-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Easy Class Management</h3>
+                                    <p class="text-gray-600">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-green-100 text-green-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Save Time with Automation</h3>
+                                    <p class="text-gray-600">Sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-orange-100 text-orange-600 rounded-full p-3 mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Export & Reporting Tools</h3>
+                                    <p class="text-gray-600">Ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Comparison Table -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Feature Comparison
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod.
+                    </p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-white shadow-lg rounded-lg overflow-hidden">
+                        <thead class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Feature</th>
+                                <th class="px-6 py-4 text-center font-bold">Student Account</th>
+                                <th class="px-6 py-4 text-center font-bold">Teacher Account</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Interactive SQL Challenges</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Progress Tracking</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Leaderboard Access</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Smart Hints</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-gray-300 text-2xl">−</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Class Analytics Dashboard</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-gray-300 text-2xl">−</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Student Management</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-gray-300 text-2xl">−</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Bulk Import (CSV)</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-gray-300 text-2xl">−</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 bg-gray-50">
+                                <td class="px-6 py-4 font-medium text-gray-900">Export & Reporting</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-gray-300 text-2xl">−</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-green-500 text-2xl">✓</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-gradient-to-r from-primary to-blue-700 text-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">
+                    Ready to Get Started?
+                </h2>
+                <p class="text-xl mb-10 text-blue-100">
+                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Join thousands of students today!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ frontend_url }}/register" class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        Sign Up Free
+                    </a>
+                    <a href="#pricing" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg">
+                        View Pricing
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <!-- Company Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Data Detective Academy</h4>
+                    <p class="text-gray-400">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.
+                    </p>
+                </div>
+
+                <!-- Product Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/features" class="hover:text-white transition">Features</a></li>
+                        <li><a href="{{ frontend_url }}/challenges" class="hover:text-white transition">Challenges</a></li>
+                        <li><a href="{{ frontend_url }}/leaderboard" class="hover:text-white transition">Leaderboard</a></li>
+                        <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/docs" class="hover:text-white transition">Documentation</a></li>
+                        <li><a href="/" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="/help" class="hover:text-white transition">Help Center</a></li>
+                        <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/privacy" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="/terms" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="/license" class="hover:text-white transition">License (AGPL-3.0)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; {{ current_year }} Data Detective Academy. All rights reserved. Licensed under AGPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
