@@ -152,3 +152,26 @@ async def features(request: Request):
     context = get_base_context(request)
 
     return templates.TemplateResponse("features.html", context)
+
+
+@router.get("/pricing", response_class=HTMLResponse)
+async def pricing(request: Request):
+    """
+    Pricing page - server-side rendered for SEO.
+
+    Displays:
+    - Three pricing tiers: Freedom Edition, School, and District
+    - Detailed feature comparison matrix
+    - FAQ section answering common pricing questions
+    - Contact sales CTA for enterprise customers
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        Rendered HTML template
+    """
+    # Build context
+    context = get_base_context(request)
+
+    return templates.TemplateResponse("pricing.html", context)
