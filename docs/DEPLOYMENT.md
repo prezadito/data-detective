@@ -966,31 +966,345 @@ netlify env:set VITE_API_URL https://api.yourdomain.com
 
 ### Vercel Deployment
 
-#### Git Integration
+**Recommended for Frontend Hosting**
 
-1. Push code to GitHub/GitLab
-2. Go to https://vercel.com/
-3. Click "New Project"
-4. Import repository
-5. Configure:
-   - Framework Preset: Vite
-   - Root Directory: `frontend`
-   - Build Command: `pnpm build`
-   - Output Directory: `dist`
-6. Add environment variables
-7. Deploy
+Vercel is the ideal platform for deploying the Data Detective Academy frontend. It offers:
+- Automatic Vite framework detection
+- Zero-configuration deployments
+- Built-in CDN and edge network
+- Automatic HTTPS/SSL certificates
+- Preview deployments for every pull request
+- Generous free tier (100GB bandwidth/month)
 
-**vercel.json:**
+#### Prerequisites
+
+Before deploying to Vercel, ensure you have:
+- Backend API deployed and accessible (e.g., Render.com)
+- Backend API URL (e.g., `https://data-detective-api.onrender.com`)
+- GitHub/GitLab account with repository access
+- Vercel account (free tier available)
+
+---
+
+#### Option 1: Git Integration (Recommended)
+
+**Step 1: Prepare Repository**
+
+The repository already includes `frontend/vercel.json` with optimized configuration for:
+- SPA routing (React Router support)
+- Security headers (XSS, CSRF protection)
+- Asset caching (1-year cache for static assets)
+- API proxy configuration
+
+**Step 2: Create Vercel Account**
+
+1. Go to https://vercel.com/
+2. Click **"Sign Up"**
+3. Choose **"Continue with GitHub"** (or GitLab/Bitbucket)
+4. Authorize Vercel to access your repositories
+
+**Step 3: Import Project**
+
+1. From Vercel Dashboard, click **"Add New..."** → **"Project"**
+2. Find your repository in the list (or use search)
+3. Click **"Import"** next to `data-detective` repository
+
+**Step 4: Configure Project Settings**
+
+Vercel will auto-detect the Vite framework. Configure these settings:
+
+```
+Framework Preset: Vite (auto-detected)
+Root Directory: frontend
+Build Command: pnpm build (auto-detected)
+Output Directory: dist (auto-detected)
+Install Command: pnpm install (auto-detected)
+Node.js Version: 20.x (default)
+```
+
+**Important**: Set **Root Directory** to `frontend` since this is a monorepo.
+
+**Step 5: Configure Environment Variables**
+
+Click **"Environment Variables"** and add:
+
+| Name | Value | Environment |
+|------|-------|-------------|
+| `VITE_API_URL` | `https://your-backend-api.onrender.com` | Production, Preview, Development |
+| `VITE_APP_NAME` | `Data Detective` | Production, Preview, Development |
+| `VITE_APP_VERSION` | `1.0.0` | Production, Preview, Development |
+| `VITE_ENV` | `production` | Production |
+| `VITE_ENV` | `preview` | Preview |
+
+**Example Configuration:**
+
+```env
+# Production Environment Variables
+VITE_API_URL=https://data-detective-api.onrender.com
+VITE_APP_NAME=Data Detective
+VITE_APP_VERSION=1.0.0
+VITE_ENV=production
+```
+
+**Step 6: Deploy**
+
+1. Click **"Deploy"**
+2. Vercel will:
+   - Clone your repository
+   - Install dependencies with `pnpm install`
+   - Build the frontend with `pnpm build`
+   - Deploy to global CDN
+   - Provision SSL certificate
+3. First deployment takes 2-5 minutes
+4. Monitor build logs in real-time
+
+**Step 7: Verify Deployment**
+
+After deployment completes:
+
+```bash
+# Your site will be available at:
+https://data-detective.vercel.app
+
+# Or custom domain:
+https://yourdomain.com
+
+# Check the deployment
+curl -I https://data-detective.vercel.app
+
+# Expected response:
+HTTP/2 200
+content-type: text/html
+x-vercel-id: ...
+```
+
+**Step 8: Update Backend CORS**
+
+Update your backend's `ALLOWED_ORIGINS` environment variable to include your Vercel domain:
+
+```bash
+# Backend .env
+ALLOWED_ORIGINS=https://data-detective.vercel.app,https://yourdomain.com
+FRONTEND_URL=https://data-detective.vercel.app
+```
+
+Redeploy backend after updating CORS settings.
+
+---
+
+#### Option 2: Vercel CLI Deployment
+
+For advanced users or CI/CD pipelines:
+
+**Step 1: Install Vercel CLI**
+
+```bash
+# Install globally
+npm install -g vercel
+
+# Or use with npx
+npx vercel --version
+```
+
+**Step 2: Login to Vercel**
+
+```bash
+vercel login
+# Follow prompts to authenticate
+```
+
+**Step 3: Configure Project**
+
+```bash
+cd frontend
+
+# Initialize Vercel project (first time only)
+vercel link
+
+# Select options:
+# - Link to existing project? N (if first time)
+# - Project name: data-detective
+# - Directory: ./ (current directory is frontend)
+```
+
+**Step 4: Set Environment Variables**
+
+```bash
+# Production environment
+vercel env add VITE_API_URL production
+# Enter value: https://data-detective-api.onrender.com
+
+vercel env add VITE_APP_NAME production
+# Enter value: Data Detective
+
+vercel env add VITE_APP_VERSION production
+# Enter value: 1.0.0
+
+vercel env add VITE_ENV production
+# Enter value: production
+
+# Preview environment (optional)
+vercel env add VITE_API_URL preview
+vercel env add VITE_ENV preview
+# Enter value: preview
+```
+
+**Step 5: Deploy**
+
+```bash
+# Deploy to preview
+vercel
+
+# Deploy to production
+vercel --prod
+
+# Deploy with specific name
+vercel --prod --name data-detective-academy
+```
+
+---
+
+#### Custom Domain Configuration
+
+**Step 1: Add Domain in Vercel**
+
+1. Go to project **"Settings"** → **"Domains"**
+2. Click **"Add"**
+3. Enter your domain: `datadetective.academy` or `app.yourdomain.com`
+4. Click **"Add"**
+
+**Step 2: Configure DNS**
+
+Vercel provides DNS records to add to your domain provider:
+
+**Option A: Use Vercel as DNS (Recommended)**
+```
+Nameservers:
+ns1.vercel-dns.com
+ns2.vercel-dns.com
+```
+
+**Option B: Use CNAME Record**
+```
+Type: CNAME
+Name: www (or subdomain)
+Value: cname.vercel-dns.com
+TTL: 3600
+```
+
+**Option C: Use A Record (Apex domain)**
+```
+Type: A
+Name: @
+Value: 76.76.21.21
+TTL: 3600
+```
+
+**Step 3: Wait for DNS Propagation**
+
+- DNS propagation takes 5 minutes to 48 hours
+- Vercel automatically provisions SSL certificate once DNS resolves
+- Check status in Vercel Dashboard → Domains
+
+**Step 4: Verify SSL**
+
+```bash
+# Check SSL certificate
+curl -I https://yourdomain.com
+
+# Expected headers:
+HTTP/2 200
+content-type: text/html
+strict-transport-security: max-age=31536000
+```
+
+---
+
+#### Preview Deployments
+
+Vercel automatically creates preview deployments for every pull request:
+
+**How It Works:**
+
+1. Create feature branch:
+   ```bash
+   git checkout -b feature/new-challenge
+   ```
+
+2. Make changes and push:
+   ```bash
+   git add .
+   git commit -m "Add new challenge UI"
+   git push origin feature/new-challenge
+   ```
+
+3. Create pull request on GitHub
+
+4. Vercel automatically:
+   - Builds the branch
+   - Creates unique preview URL: `https://data-detective-git-feature-new-challenge.vercel.app`
+   - Adds comment to PR with preview link
+   - Updates preview on every new commit
+
+**Benefits:**
+
+- Test changes before merging to main
+- Share previews with team/stakeholders
+- Automatic cleanup when PR is closed
+- Same environment as production
+
+**Access Preview Deployments:**
+
+- From GitHub PR comments (Vercel bot posts link)
+- From Vercel Dashboard → Deployments
+- Each commit gets unique preview URL
+
+---
+
+#### Production Deployment Workflow
+
+**Automatic Deployments:**
+
+```bash
+# Merge to main branch triggers production deployment
+git checkout main
+git merge feature/new-challenge
+git push origin main
+
+# Vercel automatically:
+# 1. Detects push to main
+# 2. Builds frontend (pnpm build)
+# 3. Deploys to production
+# 4. Updates https://data-detective.vercel.app
+```
+
+**Manual Deployments:**
+
+```bash
+# From Vercel Dashboard
+# Deployments → Select deployment → "Promote to Production"
+
+# Or rollback to previous deployment
+# Deployments → Select old deployment → "Promote to Production"
+```
+
+---
+
+#### Vercel Configuration Reference
+
+**frontend/vercel.json:**
+
 ```json
 {
-  "buildCommand": "cd frontend && pnpm build",
-  "outputDirectory": "frontend/dist",
-  "devCommand": "cd frontend && pnpm dev",
-  "installCommand": "cd frontend && pnpm install",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install",
+  "framework": "vite",
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/api/:path*",
+      "destination": "https://your-backend-url.com/:path*"
     }
   ],
   "headers": [
@@ -1002,9 +1316,392 @@ netlify env:set VITE_API_URL https://api.yourdomain.com
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
     }
   ]
 }
+```
+
+**Configuration Explanations:**
+
+- **rewrites**: Proxy `/api/*` requests to backend (optional, use environment variables instead)
+- **headers.assets**: Cache static assets for 1 year (immutable)
+- **headers.security**: Security headers (XSS, clickjacking protection)
+- **routes**: SPA routing - serve `index.html` for all non-file routes
+
+---
+
+#### Performance Optimization
+
+**1. Enable Edge Caching**
+
+Vercel's CDN automatically caches static assets. Verify caching:
+
+```bash
+curl -I https://data-detective.vercel.app/assets/index-abc123.js
+
+# Expected header:
+cache-control: public, max-age=31536000, immutable
+x-vercel-cache: HIT
+```
+
+**2. Analyze Bundle Size**
+
+```bash
+cd frontend
+
+# Build and analyze
+pnpm build:analyze
+
+# Opens bundle visualization
+# dist/stats.html shows chunk sizes
+```
+
+**3. Environment-Specific Builds**
+
+Vite automatically optimizes for production:
+- Minification (esbuild)
+- Tree shaking (removes unused code)
+- Code splitting (manual chunks configured)
+- Asset optimization (images, fonts)
+
+**4. Monitor Performance**
+
+- Vercel Dashboard → Analytics → Web Vitals
+- Tracks: LCP, FID, CLS, TTFB
+- Free tier includes basic analytics
+
+---
+
+#### Troubleshooting Vercel Deployments
+
+**Build Fails:**
+
+```bash
+# Common issues:
+# 1. TypeScript errors
+pnpm exec tsc --noEmit  # Run locally to check
+
+# 2. Missing dependencies
+pnpm install  # Ensure package.json is up-to-date
+
+# 3. Environment variables not set
+# Check Vercel Dashboard → Settings → Environment Variables
+
+# View build logs:
+# Vercel Dashboard → Deployments → Select deployment → View logs
+```
+
+**404 on Routes:**
+
+If you get 404 errors on routes like `/dashboard`:
+
+```json
+// Verify vercel.json has SPA routing:
+{
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
+    }
+  ]
+}
+```
+
+**API Connection Issues:**
+
+```bash
+# Check VITE_API_URL is set correctly
+# Vercel Dashboard → Settings → Environment Variables
+
+# Verify backend CORS allows Vercel domain:
+# Backend .env:
+ALLOWED_ORIGINS=https://data-detective.vercel.app
+
+# Check browser console for CORS errors
+# Open DevTools → Console → Network tab
+```
+
+**Slow Cold Starts:**
+
+```bash
+# Vercel free tier doesn't have cold starts (unlike serverless functions)
+# Frontend is always available (served from CDN)
+
+# If API is slow (Render.com free tier):
+# - Backend on Render free tier spins down after 15 minutes
+# - First API request may take 30-60 seconds
+# - Consider upgrading backend to paid tier ($7/month)
+```
+
+**Environment Variables Not Working:**
+
+```bash
+# Ensure variables are prefixed with VITE_
+VITE_API_URL=...  # ✓ Correct
+API_URL=...       # ✗ Won't work
+
+# Redeploy after adding environment variables:
+# Vercel Dashboard → Deployments → "Redeploy"
+```
+
+**Build Command Fails:**
+
+```bash
+# If custom build command fails, verify in vercel.json:
+"buildCommand": "pnpm build"  # Not "cd frontend && pnpm build"
+
+# Root Directory should be set to "frontend" in project settings
+```
+
+---
+
+#### Vercel Free Tier Limits
+
+**Included in Free Tier:**
+
+- 100GB bandwidth/month
+- Unlimited deployments
+- Unlimited preview deployments
+- Automatic HTTPS/SSL
+- Global CDN (edge network)
+- 6,000 build minutes/month
+- 100 GB-hours serverless function execution
+- Web Analytics (basic)
+
+**Limits:**
+
+- Maximum 100 deployments per day
+- 3 team members maximum
+- Community support only
+
+**When to Upgrade ($20/month Pro):**
+
+- More than 100GB bandwidth needed
+- Advanced analytics required
+- Password protection for previews
+- Custom deployment protection
+- Priority support
+
+---
+
+#### Post-Deployment Checklist
+
+After successful Vercel deployment:
+
+- [ ] Frontend accessible at Vercel URL
+- [ ] Custom domain configured (if applicable)
+- [ ] SSL certificate active (HTTPS working)
+- [ ] Environment variables set correctly
+- [ ] Backend CORS updated with Vercel domain
+- [ ] API connections working (test login/register)
+- [ ] Preview deployments enabled for PRs
+- [ ] Build notifications configured (optional)
+- [ ] Analytics enabled (optional)
+- [ ] Team members invited (if applicable)
+
+---
+
+#### Continuous Deployment Workflow
+
+**Complete CI/CD Pipeline:**
+
+```bash
+# 1. Developer creates feature branch
+git checkout -b feature/leaderboard-ui
+
+# 2. Make changes, commit, push
+git add .
+git commit -m "Add leaderboard sorting options"
+git push origin feature/leaderboard-ui
+
+# 3. Create pull request on GitHub
+# → Vercel automatically creates preview deployment
+# → Preview URL posted in PR comments
+
+# 4. Review preview, make changes if needed
+# → Every new commit updates the preview
+
+# 5. Merge PR to main
+# → Vercel automatically deploys to production
+# → https://data-detective.vercel.app updated
+
+# 6. Monitor deployment
+# → Vercel Dashboard shows real-time status
+# → Rollback available if issues detected
+```
+
+---
+
+#### Alternative: Vercel CLI in CI/CD
+
+**GitHub Actions Example:**
+
+```yaml
+# .github/workflows/deploy-frontend.yml
+name: Deploy Frontend to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install
+
+      - name: Build
+        working-directory: frontend
+        run: pnpm build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_APP_NAME: Data Detective
+          VITE_APP_VERSION: 1.0.0
+          VITE_ENV: production
+
+      - name: Deploy to Vercel
+        working-directory: frontend
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+```
+
+---
+
+#### Monitoring and Maintenance
+
+**View Deployment Logs:**
+
+```bash
+# Via Dashboard
+# Vercel Dashboard → Deployments → Select deployment → Logs
+
+# Via CLI
+vercel logs data-detective.vercel.app
+
+# View build logs
+vercel logs data-detective.vercel.app --build
+```
+
+**Monitor Performance:**
+
+```bash
+# Access Web Analytics
+# Vercel Dashboard → Analytics
+
+# Key metrics:
+# - Visitors (unique, total)
+# - Page views
+# - Top pages
+# - Referrers
+# - Devices
+```
+
+**Deployment Notifications:**
+
+```bash
+# Configure in Vercel Dashboard:
+# Settings → Notifications
+
+# Options:
+# - Email notifications
+# - Slack integration
+# - Discord webhook
+# - Custom webhooks
+
+# Notification triggers:
+# - Deployment started
+# - Deployment ready
+# - Deployment failed
+# - Deployment promoted
+```
+
+---
+
+#### Cost Estimation
+
+**Free Tier (Hobby):**
+```
+100GB bandwidth: $0/month
+Unlimited builds: $0/month
+Total: $0/month
+
+Good for:
+- Personal projects
+- Small applications
+- Development/testing
+- Low to medium traffic
+```
+
+**Pro Tier ($20/month):**
+```
+1TB bandwidth: $20/month
+Advanced analytics: Included
+Team features: Included
+Total: $20/month
+
+Good for:
+- Production applications
+- Team collaboration
+- High traffic sites
+- Commercial projects
+```
+
+**Expected Usage for Data Detective:**
+```
+Estimated monthly bandwidth: 10-50GB (within free tier)
+- Average page size: 500KB
+- Estimated monthly users: 100-1000
+- Pages per session: 10
+- Bandwidth: 100 users × 10 pages × 500KB = 0.5GB
 ```
 
 ---
