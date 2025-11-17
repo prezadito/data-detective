@@ -16,6 +16,8 @@ uv.lock
 # FastAPI
 .env
 .env.local
+.env.production
+.env.staging
 *.db
 *.sqlite3
 
