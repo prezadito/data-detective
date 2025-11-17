@@ -7,7 +7,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { parseApiError } from '@/utils/errors';
 import type { RegisterData, LoginCredentials, UserRole } from '@/types';
 
 // Validation schema matching backend requirements
@@ -89,13 +88,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {apiError && (
+      {apiError ? (
         <ErrorMessage
           error={apiError}
           title="Registration failed"
           onRetry={handleRetry}
         />
-      )}
+      ) : null}
 
       <Input
         {...register('email')}
