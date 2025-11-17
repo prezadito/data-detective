@@ -7,11 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Primary Meta Tags -->
-    <title>Privacy Policy - Data Detective Academy</title>
-    <meta name="title" content="Privacy Policy - Data Detective Academy">
+    <title>Privacy Policy - Data Detective Academy | Student Data Protection</title>
+    <meta name="title" content="Privacy Policy - Data Detective Academy | Student Data Protection">
     <meta name="description" content="Learn how Data Detective Academy collects, uses, and protects your personal information. We are committed to protecting student privacy and data security.">
     <meta name="keywords" content="privacy policy, data protection, student privacy, COPPA compliance, data security">
     <meta name="author" content="Data Detective Academy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -20,6 +22,7 @@
     <meta property="og:description" content="Learn how Data Detective Academy collects, uses, and protects your personal information.">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
     <meta property="og:site_name" content="Data Detective Academy">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -30,6 +33,10 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Performance & DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>

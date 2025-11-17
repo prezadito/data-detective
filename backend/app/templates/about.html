@@ -7,29 +7,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Primary Meta Tags -->
-    <title>About Us - Data Detective Academy</title>
-    <meta name="title" content="About Us - Data Detective Academy">
-    <meta name="description" content="Learn about Data Detective Academy's mission to make SQL education accessible and engaging for students in grades 4-8 through gamified learning experiences.">
-    <meta name="keywords" content="SQL education, database learning, educational technology, STEM education, computer science for kids">
+    <title>About Us - Data Detective Academy | Our Mission & Story</title>
+    <meta name="title" content="About Us - Data Detective Academy | Our Mission & Story">
+    <meta name="description" content="Learn about Data Detective Academy's mission to make SQL education accessible and engaging for students in grades 4-8 through gamified learning experiences. Open-source and AGPL-licensed.">
+    <meta name="keywords" content="SQL education, database learning, educational technology, STEM education, computer science for kids, open source education, AGPL">
     <meta name="author" content="Data Detective Academy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="About Us - Data Detective Academy">
+    <meta property="og:title" content="About Us - Data Detective Academy | Our Mission & Story">
     <meta property="og:description" content="Learn about Data Detective Academy's mission to make SQL education accessible and engaging for students in grades 4-8 through gamified learning experiences.">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
     <meta property="og:site_name" content="Data Detective Academy">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ request.url }}">
     <meta name="twitter:title" content="About Us - Data Detective Academy">
-    <meta name="twitter:description" content="Learn about Data Detective Academy's mission to make SQL education accessible and engaging for students in grades 4-8 through gamified learning experiences.">
+    <meta name="twitter:description" content="Learn about Data Detective Academy's mission to make SQL education accessible and engaging for students in grades 4-8.">
     <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Performance & DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,6 +55,25 @@
                 }
             }
         }
+    </script>
+
+    <!-- JSON-LD Structured Data - AboutPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "name": "About Data Detective Academy",
+        "description": "Learn about our mission to make SQL education accessible and engaging",
+        "mainEntity": {
+            "@type": "EducationalOrganization",
+            "name": "Data Detective Academy",
+            "description": "Free and open-source SQL learning platform for students in grades 4-8",
+            "foundingDate": "2024",
+            "knowsAbout": ["SQL", "Database Education", "Gamified Learning", "Educational Technology"],
+            "slogan": "Master SQL Through Interactive Challenges",
+            "nonprofitStatus": "OpenSource"
+        }
+    }
     </script>
 </head>
 <body class="bg-gray-50">

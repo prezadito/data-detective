@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func
 from sqlmodel import Session, select
@@ -270,3 +270,137 @@ async def terms(request: Request):
     context = get_base_context(request)
 
     return templates.TemplateResponse("terms.html", context)
+
+
+@router.get("/robots.txt", response_class=PlainTextResponse)
+async def robots_txt():
+    """
+    Robots.txt file for search engine crawlers.
+
+    Returns:
+        Plain text robots.txt content
+    """
+    robots_content = """# robots.txt for Data Detective Academy
+# https://www.robotstxt.org/
+
+# Allow all crawlers to access public content
+User-agent: *
+Allow: /
+Allow: /features
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+
+# Disallow access to API endpoints (should be accessed via frontend)
+Disallow: /api/
+Disallow: /auth/
+Disallow: /users/
+Disallow: /challenges/
+Disallow: /progress/
+Disallow: /leaderboard/
+Disallow: /hints/
+Disallow: /reports/
+Disallow: /analytics/
+Disallow: /export/
+Disallow: /import/
+Disallow: /datasets/
+
+# Disallow access to static admin/internal files
+Disallow: /static/admin/
+Disallow: /.env
+Disallow: /.git
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: {base_url}/sitemap.xml
+"""
+    # Get base URL from environment or use default
+    base_url = os.getenv("BASE_URL", "http://localhost:8000")
+    return robots_content.format(base_url=base_url)
+
+
+@router.get("/sitemap.xml", response_class=Response)
+async def sitemap_xml(request: Request):
+    """
+    Dynamic sitemap.xml generation for SEO.
+
+    Generates a sitemap containing:
+    - All marketing pages (home, features, pricing, about, contact, privacy, terms)
+    - Last modification dates
+    - Change frequency hints
+    - Priority values
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        XML sitemap content
+    """
+    # Get base URL from request
+    base_url = f"{request.url.scheme}://{request.url.netloc}"
+
+    # Define pages with their metadata
+    pages = [
+        {
+            "loc": f"{base_url}/",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "daily",
+            "priority": "1.0",
+        },
+        {
+            "loc": f"{base_url}/features",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "weekly",
+            "priority": "0.9",
+        },
+        {
+            "loc": f"{base_url}/pricing",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "weekly",
+            "priority": "0.9",
+        },
+        {
+            "loc": f"{base_url}/about",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "monthly",
+            "priority": "0.7",
+        },
+        {
+            "loc": f"{base_url}/contact",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "monthly",
+            "priority": "0.6",
+        },
+        {
+            "loc": f"{base_url}/privacy",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "monthly",
+            "priority": "0.5",
+        },
+        {
+            "loc": f"{base_url}/terms",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "changefreq": "monthly",
+            "priority": "0.5",
+        },
+    ]
+
+    # Build sitemap XML
+    sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    sitemap_xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+
+    for page in pages:
+        sitemap_xml += "  <url>\n"
+        sitemap_xml += f"    <loc>{page['loc']}</loc>\n"
+        sitemap_xml += f"    <lastmod>{page['lastmod']}</lastmod>\n"
+        sitemap_xml += f"    <changefreq>{page['changefreq']}</changefreq>\n"
+        sitemap_xml += f"    <priority>{page['priority']}</priority>\n"
+        sitemap_xml += "  </url>\n"
+
+    sitemap_xml += "</urlset>"
+
+    return Response(content=sitemap_xml, media_type="application/xml")

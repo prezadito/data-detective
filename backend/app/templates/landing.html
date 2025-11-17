@@ -9,27 +9,34 @@
     <!-- Primary Meta Tags -->
     <title>Data Detective Academy - Master SQL Through Interactive Challenges</title>
     <meta name="title" content="Data Detective Academy - Master SQL Through Interactive Challenges">
-    <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-    <meta name="keywords" content="SQL learning, SQL education, database learning, gamified SQL, SQL challenges, learn SQL online">
+    <meta name="description" content="Master SQL through detective-themed gamified challenges designed for grades 4-8. Track progress, earn points, compete on leaderboards. Free and open-source SQL education platform.">
+    <meta name="keywords" content="SQL learning, SQL education, database learning, gamified SQL, SQL challenges, learn SQL online, SQL for kids, SQL grades 4-8, interactive SQL">
     <meta name="author" content="Data Detective Academy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="Data Detective Academy - Master SQL Through Interactive Challenges">
-    <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta property="og:description" content="Master SQL through detective-themed gamified challenges designed for grades 4-8. Track progress, earn points, compete on leaderboards. Free and open-source SQL education platform.">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
     <meta property="og:site_name" content="Data Detective Academy">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ request.url }}">
     <meta name="twitter:title" content="Data Detective Academy - Master SQL Through Interactive Challenges">
-    <meta name="twitter:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+    <meta name="twitter:description" content="Master SQL through detective-themed gamified challenges designed for grades 4-8. Track progress, earn points, compete on leaderboards.">
     <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.svg') }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Performance & DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,9 +63,9 @@
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
         "name": "Data Detective Academy",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Interactive SQL learning platform for students.",
-        "url": "{{ request.url }}",
-        "logo": "{{ url_for('static', path='images/logo.svg') }}",
+        "description": "Interactive SQL learning platform for students in grades 4-8 featuring gamified detective-themed challenges, progress tracking, and leaderboards.",
+        "url": "{{ request.url.scheme }}://{{ request.url.netloc }}",
+        "logo": "{{ request.url.scheme }}://{{ request.url.netloc }}{{ url_for('static', path='images/logo.svg') }}",
         "foundingDate": "2024",
         "sameAs": [],
         "address": {
@@ -68,14 +75,15 @@
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "Customer Service",
-            "email": "support@datadetectiveacademy.com"
+            "email": "support@datadetectiveacademy.com",
+            "availableLanguage": "English"
         },
         "offers": {
             "@type": "Offer",
             "category": "Educational Services",
             "priceCurrency": "USD",
             "price": "0",
-            "description": "Free SQL learning platform"
+            "description": "Free and open-source SQL learning platform"
         }
     }
     </script>
@@ -86,17 +94,41 @@
         "@context": "https://schema.org",
         "@type": "Course",
         "name": "Interactive SQL Challenges",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Learn SQL through gamified detective-themed challenges.",
+        "description": "Master SQL through gamified detective-themed challenges. Complete 7 interactive challenges across 3 units covering SELECT statements, JOINs, and aggregations.",
         "provider": {
             "@type": "Organization",
-            "name": "Data Detective Academy"
+            "name": "Data Detective Academy",
+            "url": "{{ request.url.scheme }}://{{ request.url.netloc }}"
         },
         "educationalLevel": "Beginner to Intermediate",
+        "audience": {
+            "@type": "EducationalAudience",
+            "educationalRole": "student",
+            "audienceType": "Students grades 4-8"
+        },
         "coursePrerequisites": "None",
         "hasCourseInstance": {
             "@type": "CourseInstance",
             "courseMode": "Online",
             "courseWorkload": "PT10H"
+        },
+        "inLanguage": "en-US",
+        "isAccessibleForFree": true,
+        "educationalCredentialAwarded": "Certificate of Completion"
+    }
+    </script>
+
+    <!-- Website Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Data Detective Academy",
+        "url": "{{ request.url.scheme }}://{{ request.url.netloc }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ request.url.scheme }}://{{ request.url.netloc }}/challenges?q={search_term_string}",
+            "query-input": "required name=search_term_string"
         }
     }
     </script>

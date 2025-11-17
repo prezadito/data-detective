@@ -7,19 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Primary Meta Tags -->
-    <title>Pricing - Data Detective Academy</title>
-    <meta name="title" content="Pricing - Data Detective Academy">
-    <meta name="description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions.">
-    <meta name="keywords" content="SQL learning pricing, SQL education cost, database learning platform, school SQL license">
+    <title>Pricing - Data Detective Academy | Free & Paid SQL Learning Plans</title>
+    <meta name="title" content="Pricing - Data Detective Academy | Free & Paid SQL Learning Plans">
+    <meta name="description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions. Flexible pricing for educators.">
+    <meta name="keywords" content="SQL learning pricing, SQL education cost, database learning platform, school SQL license, free SQL education, SQL for schools">
     <meta name="author" content="Data Detective Academy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="Pricing - Data Detective Academy">
+    <meta property="og:title" content="Pricing - Data Detective Academy | Free & Paid SQL Learning Plans">
     <meta property="og:description" content="Choose the perfect plan for your SQL learning needs. From self-hosted Freedom Edition to comprehensive school and district solutions.">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.svg') }}">
     <meta property="og:site_name" content="Data Detective Academy">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -30,6 +33,10 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+
+    <!-- Performance & DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,6 +55,54 @@
                 }
             }
         }
+    </script>
+
+    <!-- JSON-LD Structured Data - Offers -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Data Detective Academy",
+        "description": "SQL learning platform with gamified challenges",
+        "brand": {
+            "@type": "Organization",
+            "name": "Data Detective Academy"
+        },
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Freedom Edition",
+                "description": "Self-hosted free edition with full features",
+                "price": "0",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "priceValidUntil": "2025-12-31"
+            },
+            {
+                "@type": "Offer",
+                "name": "School Plan",
+                "description": "Managed hosting for schools with support",
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "299",
+                    "priceCurrency": "USD",
+                    "unitText": "YEAR"
+                },
+                "availability": "https://schema.org/InStock"
+            },
+            {
+                "@type": "Offer",
+                "name": "District Plan",
+                "description": "Enterprise solution for school districts",
+                "priceSpecification": {
+                    "@type": "PriceSpecification",
+                    "priceCurrency": "USD",
+                    "price": "Contact for pricing"
+                },
+                "availability": "https://schema.org/PreOrder"
+            }
+        ]
+    }
     </script>
 </head>
 <body class="font-sans antialiased bg-gray-50">
