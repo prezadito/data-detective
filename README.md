@@ -134,6 +134,17 @@ pnpm dev
 - **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute to the project
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
+### Production Readiness
+- **[Security Audit](docs/SECURITY_AUDIT.md)** - Comprehensive security audit and testing guide
+- **[Launch Checklist](docs/LAUNCH_CHECKLIST.md)** - Pre-deployment verification checklist
+- **[Backup Verification](docs/BACKUP_VERIFICATION.md)** - Backup and disaster recovery procedures
+- **[Load Testing Guide](load-tests/README.md)** - Performance testing with k6
+
+### Operations & Monitoring
+- **[CI/CD Pipeline](docs/CI_CD.md)** - Continuous integration and deployment guide
+- **[Monitoring Guide](docs/MONITORING.md)** - Logging, error tracking, and uptime monitoring
+- **[Environment Variables](docs/ENV_VARIABLES.md)** - Configuration reference
+
 ### Component Documentation
 - **[Frontend Components](docs/COMPONENTS.md)** - React component library reference
 - **[Frontend README](frontend/README.md)** - Frontend development guide
