@@ -20,7 +20,9 @@ from app.challenges import get_challenge, validate_query
 from app.routes.leaderboard import invalidate_cache
 from app.routes.reports import invalidate_weekly_cache
 from app.routes.analytics import invalidate_analytics_cache
+from app.logging_config import get_logger
 
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/progress", tags=["Progress"])
 
@@ -192,6 +194,14 @@ async def submit_challenge(
 
         # If incorrect, return error
         if not is_correct:
+            logger.warning(
+                f"Incorrect challenge submission: custom_challenge_id={submission.custom_challenge_id}",
+                extra={
+                    "user_id": current_user.id,
+                    "custom_challenge_id": submission.custom_challenge_id,
+                    "is_correct": False,
+                },
+            )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Query is incorrect. Expected: {custom_challenge.expected_query}",
@@ -223,6 +233,17 @@ async def submit_challenge(
             invalidate_cache()
             invalidate_weekly_cache()
             invalidate_analytics_cache()
+
+            logger.info(
+                f"Challenge completed: custom_challenge_id={submission.custom_challenge_id}, points={custom_challenge.points}",
+                extra={
+                    "user_id": current_user.id,
+                    "custom_challenge_id": submission.custom_challenge_id,
+                    "points_earned": custom_challenge.points,
+                    "hints_used": submission.hints_used,
+                },
+            )
+
             return progress
 
         except IntegrityError:
@@ -259,6 +280,15 @@ async def submit_challenge(
 
         # 4. If incorrect, return error
         if not is_correct:
+            logger.warning(
+                f"Incorrect challenge submission: unit={submission.unit_id}, challenge={submission.challenge_id}",
+                extra={
+                    "user_id": current_user.id,
+                    "unit_id": submission.unit_id,
+                    "challenge_id": submission.challenge_id,
+                    "is_correct": False,
+                },
+            )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Query is incorrect. Expected: {challenge['sample_solution']}",
@@ -294,6 +324,18 @@ async def submit_challenge(
             invalidate_cache()
             invalidate_weekly_cache()
             invalidate_analytics_cache()
+
+            logger.info(
+                f"Challenge completed: unit={submission.unit_id}, challenge={submission.challenge_id}, points={challenge['points']}",
+                extra={
+                    "user_id": current_user.id,
+                    "unit_id": submission.unit_id,
+                    "challenge_id": submission.challenge_id,
+                    "points_earned": challenge["points"],
+                    "hints_used": submission.hints_used,
+                },
+            )
+
             return progress
 
         except IntegrityError:

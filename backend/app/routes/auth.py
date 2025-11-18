@@ -29,7 +29,9 @@ from app.auth import (
     create_password_reset_token,
     verify_and_use_reset_token,
 )
+from app.logging_config import get_logger
 
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -56,6 +58,10 @@ def register_user(user_data: UserCreate, session: Session = Depends(get_session)
     existing_user = session.exec(statement).first()
 
     if existing_user:
+        logger.warning(
+            f"Registration attempt with existing email: {user_data.email}",
+            extra={"email": user_data.email, "role": user_data.role},
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
@@ -75,6 +81,11 @@ def register_user(user_data: UserCreate, session: Session = Depends(get_session)
     session.add(new_user)
     session.commit()
     session.refresh(new_user)  # Get the ID assigned by database
+
+    logger.info(
+        f"New user registered: {new_user.email} (role: {new_user.role})",
+        extra={"user_id": new_user.id, "email": new_user.email, "role": new_user.role},
+    )
 
     return new_user
 
@@ -101,6 +112,10 @@ def login(login_data: UserLogin, session: Session = Depends(get_session)):
     # Verify user exists and password is correct
     # IMPORTANT: Use same error message for both cases to prevent user enumeration
     if not user or not verify_password(login_data.password, user.password_hash):
+        logger.warning(
+            f"Failed login attempt for email: {login_data.email}",
+            extra={"email": login_data.email},
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -111,6 +126,11 @@ def login(login_data: UserLogin, session: Session = Depends(get_session)):
     user.last_login = datetime.now()
     session.add(user)
     session.commit()
+
+    logger.info(
+        f"User logged in: {user.email}",
+        extra={"user_id": user.id, "email": user.email, "role": user.role},
+    )
 
     # Create JWT access token with user information
     access_token = create_access_token(
@@ -186,7 +206,13 @@ def logout(request: RefreshTokenRequest, session: Session = Depends(get_session)
         HTTPException: 401 if refresh token is invalid
     """
     # Revoke the refresh token
-    revoke_refresh_token(request.refresh_token, session)
+    user = revoke_refresh_token(request.refresh_token, session)
+
+    if user:
+        logger.info(
+            f"User logged out: {user.email}",
+            extra={"user_id": user.id, "email": user.email},
+        )
 
     return {"message": "Successfully logged out"}
 
